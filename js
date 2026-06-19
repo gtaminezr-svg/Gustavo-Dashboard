@@ -28,18 +28,7 @@
     cargarListasDesplegables();
     generarBarraMesesDinamica();
 
-    // Ocultar la columna de nombres al hacer clic fuera del sidebar
-    document.addEventListener('click', function(e) {
-      const sidebar = document.querySelector('.sidebar');
-      const panel = document.getElementById('namesPanel');
-      if (!sidebar || !panel) return;
-      if (panel.classList.contains('collapsed')) return;
-      if (!sidebar.contains(e.target)) {
-        panel.classList.add('collapsed');
-        const main = document.querySelector('.main-content');
-        if (main) main.classList.add('rail-only');
-      }
-    });
+    // (La barra lateral se contrae/expande solo con el botón hamburguesa)
   };
 
   function cerrarSesion() {
@@ -61,24 +50,23 @@
     });
   }
 
-  // Hamburguesa: muestra/oculta la columna de nombres
+  // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
   function toggleNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.toggle('collapsed');
+    if (sidebar) sidebar.classList.toggle('collapsed');
     if (main) main.classList.toggle('rail-only');
   }
 
   function abrirNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.remove('collapsed');
+    if (sidebar) sidebar.classList.remove('collapsed');
     if (main) main.classList.remove('rail-only');
   }
 
   // Navegación desde la barra de iconos o desde los nombres: despliega el panel y dirige a la sección
   function irASeccion(key) {
-    abrirNamesPanel();
     switch (key) {
       case 'Pendiente': cambiarBandeja('Pendiente'); break;
       case 'EnProceso': cambiarBandeja('En Proceso'); break;
@@ -89,9 +77,9 @@
       case 'Calendario': mostrarVistaBaseDashboard(); break;
       case 'RegistroPersonal': mostrarVistaRegistroPersonal(); break;
     }
-    // Sincronizar el icono activo en la barra de iconos
-    document.querySelectorAll('.rail-icon[data-sec]').forEach(b => b.classList.remove('active'));
-    const rb = document.querySelector('.rail-icon[data-sec="' + key + '"]');
+    // Sincronizar la sección activa (icono + nombre en una sola píldora)
+    document.querySelectorAll('.menu-item[data-sec]').forEach(b => b.classList.remove('active'));
+    const rb = document.querySelector('.menu-item[data-sec="' + key + '"]');
     if (rb) rb.classList.add('active');
   }
 

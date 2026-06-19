@@ -12,46 +12,35 @@
 </head>
 <body>
   <div class="app-container">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
 
-      <!-- COLUMNA DE ICONOS -->
-      <div class="icon-rail">
-        <button class="rail-hamburger" onclick="toggleNamesPanel()" title="Menú"><i class="fas fa-bars"></i></button>
-        <div class="rail-icons">
-          <button class="rail-icon active" data-sec="Pendiente" onclick="irASeccion('Pendiente')" title="Pendientes"><i class="fas fa-clock"></i></button>
-          <button class="rail-icon" data-sec="EnProceso" onclick="irASeccion('EnProceso')" title="En Proceso"><i class="fas fa-spinner"></i></button>
-          <button class="rail-icon" data-sec="Completado" onclick="irASeccion('Completado')" title="Completados"><i class="fas fa-check-circle"></i></button>
-          <button class="rail-icon" data-sec="Desestimados" onclick="irASeccion('Desestimados')" title="Desestimados"><i class="fas fa-ban"></i></button>
-          <button class="rail-icon" data-sec="Estadisticas" onclick="irASeccion('Estadisticas')" title="Estadísticas"><i class="fas fa-chart-line"></i></button>
-          <button class="rail-icon" data-sec="PanelCasos" onclick="irASeccion('PanelCasos')" title="Panel de Casos"><i class="fas fa-clipboard-list"></i></button>
-          <button class="rail-icon" data-sec="Calendario" onclick="irASeccion('Calendario')" title="Calendario"><i class="fas fa-database"></i></button>
-          <button class="rail-icon" data-sec="RegistroPersonal" onclick="irASeccion('RegistroPersonal')" title="Registro de Personal"><i class="fas fa-user-plus"></i></button>
-        </div>
-      </div>
-
-      <!-- COLUMNA DE NOMBRES -->
-      <div class="names-panel" id="namesPanel">
+      <!-- ENCABEZADO: logo + botón hamburguesa -->
+      <div class="sidebar-header">
         <div class="logo">
           <i class="fas fa-flask"></i>
           <span>LabSystem</span>
         </div>
-        <nav>
-          <div class="menu-item active" id="menu-Pendiente" onclick="irASeccion('Pendiente')"><span>Pendientes</span></div>
-          <div class="menu-item" id="menu-EnProceso" onclick="irASeccion('EnProceso')"><span>En Proceso</span></div>
-          <div class="menu-item" id="menu-Completado" onclick="irASeccion('Completado')"><span>Completados</span></div>
-          <div id="menu-Desestimados" class="menu-item" onclick="irASeccion('Desestimados')"><span>Desestimados</span></div>
-          <div class="menu-item" id="menu-Estadisticas" onclick="irASeccion('Estadisticas')"><span>Estadísticas</span></div>
-          <div class="menu-item" id="menu-PanelCasos" onclick="irASeccion('PanelCasos')"><span>Panel de Casos</span></div>
-          <div class="menu-item" id="menu-BaseDashboard" onclick="irASeccion('Calendario')"><span>Calendario</span></div>
-          <div class="menu-item" id="menu-RegistroPersonal" onclick="irASeccion('RegistroPersonal')"><span>Registro de Personal</span></div>
-        </nav>
+        <button class="rail-hamburger" onclick="toggleNamesPanel()" title="Menú"><i class="fas fa-bars"></i></button>
+      </div>
 
-        <!-- Bloque inferior: Cerrar Sesión + progreso -->
-        <div style="margin-top:auto;">
-          <div class="menu-item" id="menu-CerrarSesion" onclick="cerrarSesion()" style="color:#f87171;"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
+      <!-- MENÚ: cada sección = icono + nombre en una sola píldora -->
+      <nav>
+        <div class="menu-item active" id="menu-Pendiente" data-sec="Pendiente" onclick="irASeccion('Pendiente')" title="Pendientes"><i class="fas fa-clock"></i><span>Pendientes</span></div>
+        <div class="menu-item" id="menu-EnProceso" data-sec="EnProceso" onclick="irASeccion('EnProceso')" title="En Proceso"><i class="fas fa-spinner"></i><span>En Proceso</span></div>
+        <div class="menu-item" id="menu-Completado" data-sec="Completado" onclick="irASeccion('Completado')" title="Completados"><i class="fas fa-check-circle"></i><span>Completados</span></div>
+        <div class="menu-item" id="menu-Desestimados" data-sec="Desestimados" onclick="irASeccion('Desestimados')" title="Desestimados"><i class="fas fa-ban"></i><span>Desestimados</span></div>
+        <div class="menu-item" id="menu-Estadisticas" data-sec="Estadisticas" onclick="irASeccion('Estadisticas')" title="Estadísticas"><i class="fas fa-chart-line"></i><span>Estadísticas</span></div>
+        <div class="menu-item" id="menu-PanelCasos" data-sec="PanelCasos" onclick="irASeccion('PanelCasos')" title="Panel de Casos"><i class="fas fa-clipboard-list"></i><span>Panel de Casos</span></div>
+        <div class="menu-item" id="menu-BaseDashboard" data-sec="Calendario" onclick="irASeccion('Calendario')" title="Calendario"><i class="fas fa-database"></i><span>Calendario</span></div>
+        <div class="menu-item" id="menu-RegistroPersonal" data-sec="RegistroPersonal" onclick="irASeccion('RegistroPersonal')" title="Registro de Personal"><i class="fas fa-user-plus"></i><span>Registro de Personal</span></div>
+      </nav>
 
-          <!-- Barra de progreso de casos cerrados -->
-          <div id="progresoCasosWrap" style="padding:14px 16px 10px; white-space:nowrap; overflow:hidden;">
+      <!-- BLOQUE INFERIOR: Cerrar Sesión + progreso -->
+      <div class="sidebar-footer">
+        <div class="menu-item logout" id="menu-CerrarSesion" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
+
+        <!-- Barra de progreso de casos cerrados -->
+        <div id="progresoCasosWrap" style="padding:14px 16px 10px; white-space:nowrap; overflow:hidden;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
               <span style="font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#8b8b8b;">Casos Cerrados</span>
               <span id="progresoCasosPct" style="font-size:12px; font-weight:800; color:#ffffff;">0%</span>
@@ -61,9 +50,8 @@
             </div>
           </div>
         </div>
-      </div>
     </aside>
-      
+
     <main class="main-content">
       <div class="search-container" id="searchContainer"></div>
 
