@@ -434,11 +434,14 @@
           </button>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
-          <button title="Perfil" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-user"></i>
-          </button>
           <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
             <i class="fas fa-sync-alt"></i>
+          </button>
+          <button title="Notificaciones" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button title="Perfil" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-user"></i>
           </button>
         </div>
       `;
