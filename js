@@ -433,9 +433,14 @@
             <i class="fas fa-search"></i>
           </button>
         </div>
-        <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="display:flex; align-items:center; gap:8px; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; border-radius:50px; padding:0 20px; height:44px; font-size:14px; font-weight:700; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
-          <span>Actualizar</span> <i class="fas fa-sync-alt"></i>
-        </button>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button title="Perfil" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-user"></i>
+          </button>
+          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
       `;
     }
 
