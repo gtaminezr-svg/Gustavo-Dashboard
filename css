@@ -83,8 +83,28 @@ body {
 .rail-icon:hover{ background:#1f1f1f; color:#ffffff; }
 .rail-icon.active{
   background:#ffffff; color:#111111;
+  position:relative;
   border-radius:14px 0 0 14px;
   box-shadow:13px 0 0 #ffffff;
+}
+/* Curva cóncava hacia el contenido cuando el panel está COLAPSADO */
+.sidebar:has(.names-panel.collapsed) .rail-icon.active::before,
+.sidebar:has(.names-panel.collapsed) .rail-icon.active::after{
+  content:'';
+  position:absolute;
+  right:-13px;
+  width:14px; height:14px;
+  background:var(--dashboard-bg);
+}
+.sidebar:has(.names-panel.collapsed) .rail-icon.active::before{
+  top:-14px;
+  -webkit-mask:radial-gradient(circle at 100% 100%, transparent 14px, #000 14.5px);
+          mask:radial-gradient(circle at 100% 100%, transparent 14px, #000 14.5px);
+}
+.sidebar:has(.names-panel.collapsed) .rail-icon.active::after{
+  bottom:-14px;
+  -webkit-mask:radial-gradient(circle at 100% 0, transparent 14px, #000 14.5px);
+          mask:radial-gradient(circle at 100% 0, transparent 14px, #000 14.5px);
 }
 .rail-logout{ margin-top:auto; color:#f87171; }
 .rail-logout:hover{ background:#2a1515; color:#fca5a5; }
@@ -98,13 +118,14 @@ body {
   flex-direction:column;
   padding:16px 12px;
   box-sizing:border-box;
-  overflow:hidden;
+  overflow:visible;
   transition:width .28s ease, padding .28s ease, opacity .25s ease;
 }
 .names-panel.collapsed{
   width:0;
   padding:18px 0;
   opacity:0;
+  overflow:hidden;
 }
 
 .logo{
@@ -150,8 +171,28 @@ nav {
   background:white;
   color:#111111;
   font-weight:600;
-  border-radius:0 18px 18px 0;
-  box-shadow:-12px 0 0 #ffffff;
+  position:relative;
+  border-radius:0;
+  box-shadow:-12px 0 0 #ffffff, 12px 0 0 #ffffff;
+}
+/* Curva cóncava hacia el contenido cuando el panel está EXPANDIDO */
+.menu-item.active::before,
+.menu-item.active::after{
+  content:'';
+  position:absolute;
+  right:-12px;
+  width:14px; height:14px;
+  background:var(--dashboard-bg);
+}
+.menu-item.active::before{
+  top:-14px;
+  -webkit-mask:radial-gradient(circle at 100% 100%, transparent 14px, #000 14.5px);
+          mask:radial-gradient(circle at 100% 100%, transparent 14px, #000 14.5px);
+}
+.menu-item.active::after{
+  bottom:-14px;
+  -webkit-mask:radial-gradient(circle at 100% 0, transparent 14px, #000 14.5px);
+          mask:radial-gradient(circle at 100% 0, transparent 14px, #000 14.5px);
 }
 
 /* ==========================================================================
