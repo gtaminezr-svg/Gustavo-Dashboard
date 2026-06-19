@@ -1,0 +1,173 @@
+<div class="main">
+  <div class="topbar">
+    <input type="text" id="inputBuscar" class="search" placeholder="Buscar paciente por DNI o Nombre...">
+    <button class="btn-actualizar" onclick="cargarDatosSistema()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="vista-pendientes" class="seccion-vista">
+    <div class="cards">
+      <div class="card">
+        <h1 id="contador-pendientes">0</h1>
+        <p>Pacientes Pendientes</p>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2>Bandeja de Pacientes Pendientes</h2>
+        <button class="btn-nuevo-paciente" onclick="abrirModalNuevo()">+ Nuevo Registro</button>
+      </div>
+      <table id="tabla-pendientes">
+        <thead>
+          <tr>
+            <th>Nombre Completo</th>
+            <th>DNI / Documento</th>
+            <th>Edad / Examen</th>
+            <th>Estado / Ficha</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+        <span id="info-pag-pendientes">Página 1 de 1</span>
+        <div>
+          <button id="btn-ant-pendientes" class="btn-pagina" disabled>Anterior</button>
+          <button id="btn-sig-pendientes" class="btn-pagina" disabled>Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="vista-proceso" class="seccion-vista" style="display: none;">
+    <div class="cards">
+      <div class="card" style="border-left-color: #f39c12;">
+        <h1 id="contador-proceso" style="color: #f39c12;">0</h1>
+        <p>Pacientes En Proceso</p>
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <h2>Bandeja de Pacientes En Proceso</h2>
+      <table id="tabla-proceso">
+        <thead>
+          <tr>
+            <th>Nombre Completo</th>
+            <th>DNI / Documento</th>
+            <th>Edad / Examen</th>
+            <th>Estado / Ficha</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+        <span id="info-pag-proceso">Página 1 de 1</span>
+        <div>
+          <button id="btn-ant-proceso" class="btn-pagina" disabled>Anterior</button>
+          <button id="btn-sig-proceso" class="btn-pagina" disabled>Siguiente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalClinico" class="modal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Ficha de Registro Clínico</h2>
+        <button id="btnEditarFicha" class="btn-editar-interno">EDITAR FICHA</button>
+      </div>
+      
+      <form id="formularioPaciente" onsubmit="event.preventDefault();">
+        <div class="modal-grid">
+          <div class="input-group">
+            <label for="txtNombre">Nombre Completo</label>
+            <input type="text" id="txtNombre" placeholder="Ej. Juan Pérez" required>
+          </div>
+          <div class="input-group">
+            <label for="txtDni">DNI / Documento</label>
+            <input type="text" id="txtDni" placeholder="Ej. 1779918236" required>
+          </div>
+        </div>
+
+      <div class="modal-grid">
+        <div class="input-group">
+          <label for="txtEdad">
+            Edad / Detalle
+          </label>
+
+          <input
+            type="text"
+            id="txtEdad"
+            placeholder="Ej. 34 años o Urocultivo"
+          >
+        </div>
+
+        <div class="input-group">
+
+<div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+">
+
+  <label for="estado">
+    Estado del Paciente
+  </label>
+
+  <button
+    type="button"
+    id="btnEditarProceso"
+    onclick="manejarCambioEstado()"
+    style="
+      display:none;
+      align-items:center;
+      gap:6px;
+      background:#2b1070;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      padding:8px 14px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+    "
+  >
+    <i class="fas fa-clipboard-list"></i>
+    Actualizar Proceso
+  </button>
+
+</div>
+
+          <select
+            id="estado"
+            onchange="manejarCambioEstado()"
+          >
+            <option value="Pendiente">
+              Pendiente
+            </option>
+
+            <option value="En Proceso">
+              En Proceso
+            </option>
+
+          </select>
+
+        </div>
+</div> 
+
+
+
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancelar" onclick="cerrarModalClinico()">Cancelar</button>
+          <button type="button" class="btn-guardar" onclick="guardarCambiosFichaClinica()">Guardar Registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 
