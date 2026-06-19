@@ -81,7 +81,11 @@ body {
   transition:.2s;
 }
 .rail-icon:hover{ background:#1f1f1f; color:#ffffff; }
-.rail-icon.active{ background:#ffffff; color:#111111; }
+.rail-icon.active{
+  background:#ffffff; color:#111111;
+  border-radius:14px 0 0 14px;
+  box-shadow:13px 0 0 #ffffff;
+}
 .rail-logout{ margin-top:auto; color:#f87171; }
 .rail-logout:hover{ background:#2a1515; color:#fca5a5; }
 
@@ -146,6 +150,8 @@ nav {
   background:white;
   color:#111111;
   font-weight:600;
+  border-radius:0 18px 18px 0;
+  box-shadow:-12px 0 0 #ffffff;
 }
 
 /* ==========================================================================
