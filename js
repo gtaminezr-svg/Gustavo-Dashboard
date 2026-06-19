@@ -423,14 +423,15 @@
     sc.style.background = '';
     sc.style.boxShadow = '';
     sc.style.borderRadius = '';
-    sc.style.justifyContent = 'flex-end';
+    sc.style.justifyContent = 'space-between';
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
-        <div id="searchPillBandeja" onclick="toggleBuscadorBandeja()" style="display:flex; align-items:center; gap:10px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); border-radius:50px; box-shadow:0 4px 10px rgba(37,99,235,0.35); padding:0 18px; height:44px; cursor:pointer;">
-          <span style="color:white; font-size:14px; font-weight:700; white-space:nowrap;">Búsqueda</span>
-          <i class="fas fa-search" style="color:white; font-size:15px; flex-shrink:0;"></i>
-          <input type="text" id="inputBuscar" placeholder="Buscar por DNI o Nombre..." oninput="filtrarPacientes()" onclick="event.stopPropagation()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="width:0; opacity:0; padding:0; border:none; outline:none; background:white; border-radius:40px; height:32px; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease; color:#334155; font-size:14px;">
+        <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; background:#eef2f7; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); padding:4px;">
+          <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:15px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-search"></i>
+          </button>
         </div>
         <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="display:flex; align-items:center; gap:8px; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; border-radius:50px; padding:0 20px; height:44px; font-size:14px; font-weight:700; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
           <span>Actualizar</span> <i class="fas fa-sync-alt"></i>
