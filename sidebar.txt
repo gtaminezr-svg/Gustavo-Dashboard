@@ -1,0 +1,9 @@
+<div class="sidebar">
+  <button id="btnToggleSidebar" class="btn-sidebar-toggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i></button>
+  <div class="logo">LabSystem</div>
+  <div class="menu-item active" data-target="vista-pendientes">Pendientes</div>
+  <div class="menu-item" data-target="vista-proceso">En Proceso</div>
+  <div class="menu-item" data-target="vista-completados">Completados</div>
+  <div class="menu-item" data-target="vista-medicos">Médicos</div>
+</div>
