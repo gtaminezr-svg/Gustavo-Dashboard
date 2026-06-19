@@ -1422,7 +1422,7 @@ function mostrarVistaPanelCasos(){
     searchContainer.style.alignItems = 'center';
     searchContainer.style.background = 'white';
     searchContainer.style.boxShadow = '0 4px 14px rgba(15,23,42,0.08)';
-    searchContainer.style.padding = '10px 32px';
+    searchContainer.style.padding = '18px 32px';
     searchContainer.style.borderRadius = '0';
     searchContainer.style.margin = '-32px -32px 15px -32px';
     searchContainer.style.position = 'relative';
