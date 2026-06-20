@@ -1469,29 +1469,31 @@ function mostrarVistaPanelCasos(){
     searchContainer.style.justifyContent = '';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
-      <div id="barraTabsPanel" style="position:absolute; left:32px; top:50%; transform:translateY(-50%); display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
+      <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
+      <div id="barraTabsPanel" style="display:none; position:absolute; left:32px; top:50%; transform:translateY(-50%); align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
         <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
         <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
         <button data-tabp="seguro" onclick="seleccionarTabPanelCasos('seguro')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-shield-alt"></i> Pacientes por Seguro</button>
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
 
-      <div style="margin-left: auto; display:flex; align-items:center; gap:12px;">
+      <!-- Búsqueda a la izquierda (mismo diseño y lugar que las demás secciones) -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+        <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+        <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
 
-        <div id="panelToolbar" style="flex:0 0 auto; display:flex; align-items:center; background:linear-gradient(145deg,#ffffff,#e8ecf2); border-radius:50px; box-shadow:0 4px 12px rgba(15,23,42,0.06); padding:4px;">
-          <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-
-        <div style="width: 380px; padding-right: 5px;">
-          <div class="month-selector" id="barraMesesDinamicaPanel" style="background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:50px; box-shadow:0 4px 12px rgba(15,23,42,0.06); margin:0; position:relative;"></div>
-        </div>
+      <!-- Píldora de fecha (mes + año actual) a la derecha -->
+      <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+        <i class="fas fa-calendar-alt"></i>
+        <span id="textoFechaPanel">Mes Año</span>
+        <i class="fas fa-caret-down" style="opacity:0.85;"></i>
       </div>
     `;
 
-    generarBarraMesesPanel();
+    actualizarPildoraFechaPanel();
     renderizarPacientesJunio(); // Forzamos el renderizado al entrar
     setTimeout(function() { seleccionarTabPanelCasos('examenes'); }, 50);
 }
@@ -1503,13 +1505,13 @@ function cambiarMesVistaPanel(direccion) {
   mesInicioBarraPanel += direccion;
   if (mesInicioBarraPanel > 11) { mesInicioBarraPanel = 0; anioBarraPanel++; }
   else if (mesInicioBarraPanel < 0) { mesInicioBarraPanel = 11; anioBarraPanel--; }
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
 }
 
 function activarMesFiltroPanel(mesIndex, anio) {
   mesPanelSeleccionado = mesIndex;
   anioPanelSeleccionado = anio;
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
   renderizarPacientesJunio(); // Actualiza los gráficos y listas al instante
 }
 
@@ -1673,7 +1675,14 @@ function generarBarraMesesPanel() {
   });
 }
 
-function abrirSelectorFechaPanel() {  
+// Actualiza la píldora con el mes y año seleccionados del Panel de Casos
+function actualizarPildoraFechaPanel() {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const el = document.getElementById('textoFechaPanel');
+  if (el) el.textContent = meses[mesPanelSeleccionado] + ' ' + anioPanelSeleccionado;
+}
+
+function abrirSelectorFechaPanel() {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];  
   const anioActualSistema = new Date().getFullYear();  
   const anioLimite = anioActualSistema + 5;   
@@ -1723,7 +1732,7 @@ function abrirSelectorFechaPanel() {
       mesInicioBarraPanel = result.value.mes > 0 ? result.value.mes - 1 : 11;
       if(result.value.mes === 0) anioBarraPanel--;
 
-      generarBarraMesesPanel(); 
+      actualizarPildoraFechaPanel(); 
       renderizarPacientesJunio(); 
     }  
   });  
