@@ -17,6 +17,7 @@
   --accent-2:  #8EB69B;
   --accent-dk: #163832;
   --on-accent: #FFFFFF;
+  --on-accent-2: #163832;
   --text:      #051F20;
   --text-soft: #235347;
   /* Tarjetas (counter cards) */
@@ -35,6 +36,7 @@ body.dark{
   --accent-2:  #235347;
   --accent-dk: #163832;
   --on-accent: #051F20;
+  --on-accent-2: #FFFFFF;
   --text:      #DAF1DE;
   --text-soft: #8EB69B;
   --card-bg:    linear-gradient(145deg,#235347,#0B2B26);
@@ -220,6 +222,28 @@ nav {
 }
 body.dark .welcome-text{
   color:#ffffff;
+}
+
+/* Botones cápsula (Registro de Personal): se invierten según el modo */
+.btn-capsula{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:none;
+  cursor:pointer;
+  padding:11px 22px;
+  border-radius:40px;
+  font-size:14px;
+  font-weight:700;
+  white-space:nowrap;
+  background:var(--accent);
+  color:var(--on-accent);
+  transition:background .2s ease, color .2s ease, transform .15s ease;
+}
+.btn-capsula:hover{
+  background:var(--accent-2);
+  color:var(--on-accent-2);
+  transform:translateY(-1px);
 }
 
 /* ==========================================================================

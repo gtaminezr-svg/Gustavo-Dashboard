@@ -1780,7 +1780,6 @@ function abrirSelectorFechaPanel() {
   renderizarListaMedicosPersonal();
   renderizarEjecutivosBloque8();
   renderizarMedicoLectorMes();
-  setTimeout(function() { setTabActivo('medico'); }, 40);
       google.script.run
   .withSuccessHandler(function(conteo) {
     const el1 = document.getElementById('conteoMedicosGenerales');
@@ -4616,7 +4615,6 @@ function setTabActivo(tab) {
 }
 
 function seleccionarTabPersonal(tab) {
-  setTabActivo(tab);
   if (tab === 'medico') abrirModalMedico();
   else if (tab === 'ejecutivo') abrirModalEjecutivos();
   else if (tab === 'busqueda') toggleBuscadorMedico();
