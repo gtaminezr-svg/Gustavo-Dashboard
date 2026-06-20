@@ -2983,7 +2983,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const lista = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
 
   const width = canvas.width;   // Ahora es 600
-  const height = canvas.height; // Ahora es 260
+  const height = canvas.height; // Ahora es 340
 
   if (lista.length === 0) {
     ctx.clearRect(0, 0, width, height);
@@ -3218,10 +3218,10 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
   const porcentajeTexto = Math.round(porcentajeReal * 100);
 
   // 2. Coordenadas y diseño ampliados para maximizar el espacio
-  const cx = 140;
-  const cy = 135; 
-  const radio = 100; // Aumentado (antes 80) para expandir el arco
-  const grosor = 45; // Aumentado (antes 35) para hacerlo más grueso
+  const cx = 160;
+  const cy = 165;
+  const radio = 115; // Aumentado para aprovechar el canvas más grande
+  const grosor = 48; // Ligeramente más grueso
 
   let startTime = null;
   const duration = 1200;
@@ -3258,14 +3258,15 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
     ctx.fillStyle = '#2b1070';
-    ctx.font = '900 46px Verdana, sans-serif'; // Porcentaje mucho más grande
+    ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(currentPorcentaje + '%', cx, cy - 12);
-    
+    ctx.textBaseline = 'middle';
+    ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
+
     ctx.fillStyle = '#64748b';
-    ctx.font = '800 12px sans-serif'; // Letra inferior ligeramente más grande
-    ctx.fillText('COMPLETADOS', cx, cy + 18);
+    ctx.font = '700 13px sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('COMPLETADOS', cx, cy + 12);
 
     if (progress < 1) {
       animacionMedioAnilloId = requestAnimationFrame(animar);
