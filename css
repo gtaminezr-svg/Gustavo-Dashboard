@@ -10,7 +10,26 @@
 }
 
 :root{
-  --dashboard-bg:#eef1f6;
+  /* Paleta verde (modo claro) */
+  --bg:        #DAF1DE;
+  --surface:   #FFFFFF;
+  --accent:    #235347;
+  --accent-2:  #8EB69B;
+  --accent-dk: #163832;
+  --text:      #051F20;
+  --text-soft: #235347;
+  /* compatibilidad con reglas existentes */
+  --dashboard-bg: var(--bg);
+}
+body.dark{
+  /* Paleta verde (modo oscuro) */
+  --bg:        #051F20;
+  --surface:   #0B2B26;
+  --accent:    #8EB69B;
+  --accent-2:  #235347;
+  --accent-dk: #163832;
+  --text:      #DAF1DE;
+  --text-soft: #8EB69B;
 }
 
 body {
@@ -42,7 +61,7 @@ body {
   left:0;
   height:100vh;
   width:250px;
-  background:#ffffff;
+  background:var(--surface);
   display:flex;
   flex-direction:column;
   padding:16px 14px;
@@ -68,13 +87,13 @@ body {
   display:flex;
   align-items:center;
   gap:10px;
-  color:#1e293b;
+  color:var(--text);
   font-size:20px;
   font-weight:800;
   white-space:nowrap;
   overflow:hidden;
 }
-.logo i{ font-size:22px; width:26px; text-align:center; flex-shrink:0; color:#2563eb; }
+.logo i{ font-size:22px; width:26px; text-align:center; flex-shrink:0; color:var(--accent); }
 .rail-hamburger{
   width:38px; height:38px;
   flex-shrink:0;
@@ -117,10 +136,10 @@ nav {
 }
 
 .menu-item.active{
-  background:linear-gradient(90deg,#3b82f6,#2563eb);
+  background:linear-gradient(90deg,var(--accent),var(--accent-dk));
   color:#ffffff;
   font-weight:600;
-  box-shadow:0 8px 18px rgba(37,99,235,0.30);
+  box-shadow:0 8px 18px rgba(22,56,50,0.35);
 }
 .menu-item.active i{ color:#ffffff; }
 /* Flecha indicadora a la derecha del item activo */
@@ -199,7 +218,7 @@ nav {
 }
 
 .search-container {
-  background: white;
+  background: var(--surface);
   padding: 10px 32px;
   /* Barra totalmente recta: se une al sidebar y al borde superior, sin curvas */
   border-radius: 0;
@@ -267,7 +286,7 @@ nav {
 .border-left-pendiente { border-left: 5px solid #dc3545; }
 .border-left-proceso { border-left: 5px solid #ffc107; }
 .border-left-resultados { border-left: 5px solid #28a745; }
-.border-left-total { border-left: 5px solid #3b82f6; }
+.border-left-total { border-left: 5px solid #235347; }
 .border-left-vencer {border-left: 5px solid #f59e0b;}
 .border-left-warning{border-left:5px solid #166534;}
 .border-left-mes{border-left:5px solid #8b5cf6;}

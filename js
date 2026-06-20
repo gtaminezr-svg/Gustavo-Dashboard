@@ -55,6 +55,7 @@
   function toggleModoOscuro() {
     const t = document.querySelector('.theme-toggle');
     if (t) t.classList.toggle('dark');
+    document.body.classList.toggle('dark');
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
@@ -1448,7 +1449,7 @@ function mostrarVistaPanelCasos(){
     searchContainer.innerHTML = `
       <div id="barraTabsPanel" style="position:absolute; left:32px; top:50%; transform:translateY(-50%); display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:4px 4px 9px rgba(163,177,198,0.45), -4px -4px 9px #ffffff;">
         <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#1d4ed8; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
+        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
         <button data-tabp="seguro" onclick="seleccionarTabPanelCasos('seguro')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-shield-alt"></i> Pacientes por Seguro</button>
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
@@ -1540,7 +1541,7 @@ function seleccionarTabPanelCasos(tab) {
   const pill = document.getElementById('tabPanelPill');
   bar.querySelectorAll('button[data-tabp]').forEach(btn => {
     const activo = btn.getAttribute('data-tabp') === tab;
-    btn.style.color = activo ? '#1d4ed8' : '#64748b';
+    btn.style.color = activo ? '#235347' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1559,7 +1560,7 @@ function seleccionarTabCalendario(tab) {
   const pill = document.getElementById('tabCalendarioPill');
   bar.querySelectorAll('button[data-tabc]').forEach(btn => {
     const activo = btn.getAttribute('data-tabc') === tab;
-    btn.style.color = activo ? '#1d4ed8' : '#64748b';
+    btn.style.color = activo ? '#235347' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1617,14 +1618,14 @@ function generarBarraMesesPanel() {
     contenedor.style.position = 'relative';
     pill = document.createElement('div');
     pill.id = 'pillMesPanel';
-    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 12px rgba(37,99,235,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
+    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#235347,#163832); box-shadow:0 4px 12px rgba(35,83,71,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
     contenedor.appendChild(pill);
   }
 
   // Quitar los items viejos pero conservar la píldora
   Array.from(contenedor.querySelectorAll('.month-item')).forEach(n => n.remove());
 
-  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
+  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#235347,#163832); box-shadow:0 4px 10px rgba(35,83,71,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
   html += `<div class="month-item" style="flex: 0 0 40px;" onclick="cambiarMesVistaPanel(-1)"><i class="fas fa-chevron-left"></i></div>`;
 
   for (let i = 0; i < 3; i++) {
@@ -4572,7 +4573,7 @@ function setTabActivo(tab) {
   const pill = document.getElementById('tabPersonalPill');
   bar.querySelectorAll('button[data-tab]').forEach(btn => {
     const activo = btn.getAttribute('data-tab') === tab;
-    btn.style.color = activo ? '#1d4ed8' : '#64748b';
+    btn.style.color = activo ? '#235347' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -5033,7 +5034,7 @@ function renderModalEjecutivos(listas) {
       +     '<span style="font-family:monospace; font-size:14px; font-weight:700; color:#475569; letter-spacing:2px; text-align:right;">'
       +       '••••••'
       +     '</span>'
-      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#2563eb; font-size:13px; width:18px; text-align:center;"></i>'
+      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#235347; font-size:13px; width:18px; text-align:center;"></i>'
       +     '<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>'
       +   '</div>'
       + '</div>';

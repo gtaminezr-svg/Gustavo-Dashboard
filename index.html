@@ -52,7 +52,7 @@
               <span id="progresoCasosPct" style="font-size:12px; font-weight:800; color:#1e293b;">0%</span>
             </div>
             <div style="width:100%; height:8px; background:#e2e8f0; border-radius:50px; overflow:hidden;">
-              <div id="progresoCasosBarra" style="height:100%; width:0%; background:linear-gradient(90deg,#3b82f6,#1d4ed8); border-radius:50px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1);"></div>
+              <div id="progresoCasosBarra" style="height:100%; width:0%; background:linear-gradient(90deg,#235347,#163832); border-radius:50px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1);"></div>
             </div>
           </div>
         </div>
@@ -422,14 +422,14 @@
 
         <div id="barraTabsCalendario" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:4px 4px 9px rgba(163,177,198,0.45), -4px -4px 9px #ffffff;">
           <div id="tabCalendarioPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-          <button data-tabc="pendientes" onclick="seleccionarTabCalendario('pendientes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 22px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#1d4ed8; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-clock"></i> Casos Pendientes</button>
+          <button data-tabc="pendientes" onclick="seleccionarTabCalendario('pendientes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 22px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-clock"></i> Casos Pendientes</button>
           <button data-tabc="base" onclick="seleccionarTabCalendario('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 22px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-database"></i> Base Completa</button>
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
-          <div style="background:linear-gradient(90deg,#3b82f6,#1d4ed8); border:none; border-radius:50px; padding:10px 22px; font-size:13px; font-weight:700; color:rgba(255,255,255,0.85); box-shadow:0 4px 10px rgba(37,99,235,0.35);">
+          <div style="background:linear-gradient(90deg,#235347,#163832); border:none; border-radius:50px; padding:10px 22px; font-size:13px; font-weight:700; color:rgba(255,255,255,0.85); box-shadow:0 4px 10px rgba(35,83,71,0.35);">
             Total Programados <span id="calTotalProgramados" style="color:#ffffff; font-size:16px; font-weight:900; margin-left:6px;">0</span>
           </div>
-          <div style="background:linear-gradient(90deg,#3b82f6,#1d4ed8); border:none; border-radius:50px; padding:10px 22px; font-size:13px; font-weight:700; color:rgba(255,255,255,0.85); box-shadow:0 4px 10px rgba(37,99,235,0.35);">
+          <div style="background:linear-gradient(90deg,#235347,#163832); border:none; border-radius:50px; padding:10px 22px; font-size:13px; font-weight:700; color:rgba(255,255,255,0.85); box-shadow:0 4px 10px rgba(35,83,71,0.35);">
             Total de Casos <span id="calTotalCasos" style="color:#ffffff; font-size:16px; font-weight:900; margin-left:6px;">0</span>
           </div>
         </div>
@@ -539,7 +539,7 @@
   <h2 style="color:#2b1070; font-size:20px; font-weight:800; margin:0;">Registro de Personal</h2>
   <div id="barraTabsPersonal" style="position:relative; display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:4px 4px 9px rgba(163,177,198,0.45), -4px -4px 9px #ffffff;">
     <div id="tabPersonalPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-    <button data-tab="medico" onclick="seleccionarTabPersonal('medico')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:11px 26px; border-radius:40px; font-size:14px; font-weight:700; background:transparent; color:#1d4ed8; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-user-md"></i> + Add Médico</button>
+    <button data-tab="medico" onclick="seleccionarTabPersonal('medico')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:11px 26px; border-radius:40px; font-size:14px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-user-md"></i> + Add Médico</button>
     <button data-tab="ejecutivo" onclick="seleccionarTabPersonal('ejecutivo')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:11px 26px; border-radius:40px; font-size:14px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-user-tie"></i> Ejecutivos</button>
     <button data-tab="busqueda" onclick="seleccionarTabPersonal('busqueda')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:11px 26px; border-radius:40px; font-size:14px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-search"></i> Búsqueda</button>
     <input type="text" id="inputBuscarMedicoPersonal" placeholder="Buscar médico..." oninput="filtrarMedicosPersonal(this.value)" onblur="setTimeout(cerrarBuscadorMedico, 150)" data-abierto="false" style="position:relative; z-index:1; align-self:stretch; border:none; outline:none; font-size:14px; color:#334155; background:#ffffff; border-radius:40px; width:0; opacity:0; padding:0; margin-left:0; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease; box-shadow:inset 0 1px 3px rgba(15,23,42,0.10);">
