@@ -1487,9 +1487,16 @@ function mostrarVistaPanelCasos(){
 
       <!-- Grupo derecho: Descargar Base + píldora de fecha -->
       <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px;">
-        <button id="btnDescargarBase" onclick="descargarBasePanel()" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
-          Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
-        </button>
+        <div style="position:relative; flex:0 0 auto;">
+          <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
+            Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+          </button>
+          <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Top Exámenes</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Base del Mes</div>
+          </div>
+        </div>
 
         <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
           <i class="fas fa-calendar-alt"></i>
@@ -1688,9 +1695,34 @@ function actualizarPildoraFechaPanel() {
   if (el) el.textContent = meses[mesPanelSeleccionado] + ' ' + anioPanelSeleccionado;
 }
 
-// Botón "Descargar Base" (Panel de Casos): función pendiente
-function descargarBasePanel() {
-  // TODO: aquí irá la lógica de descarga de la base.
+// Botón "Descargar Base" (Panel de Casos): despliega el menú con efecto cortina
+function descargarBasePanel(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  if (menu.dataset.abierto === 'true') {
+    cerrarMenuDescargarBase();
+  } else {
+    menu.style.maxHeight = '240px';
+    menu.style.opacity = '1';
+    menu.dataset.abierto = 'true';
+    setTimeout(function(){ document.addEventListener('click', cerrarMenuDescargarBaseFuera); }, 0);
+  }
+}
+function cerrarMenuDescargarBase() {
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  menu.style.maxHeight = '0';
+  menu.style.opacity = '0';
+  menu.dataset.abierto = 'false';
+  document.removeEventListener('click', cerrarMenuDescargarBaseFuera);
+}
+function cerrarMenuDescargarBaseFuera(e) {
+  const btn = document.getElementById('btnDescargarBase');
+  const menu = document.getElementById('menuDescargarBase');
+  if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+    cerrarMenuDescargarBase();
+  }
 }
 
 function abrirSelectorFechaPanel() {
