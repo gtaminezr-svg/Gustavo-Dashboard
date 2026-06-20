@@ -246,40 +246,6 @@ body.dark .welcome-text{
   transform:translateY(-1px);
 }
 
-/* Modo oscuro: modal "Ficha de Registro Clínico" (Pendientes) */
-body.dark #modalClinico .modal-content{
-  background:#0B2B26;
-  color:#ffffff;
-}
-body.dark #modalClinico .modal-title,
-body.dark #modalClinico label,
-body.dark #modalClinico h2,
-body.dark #modalClinico h3{
-  color:#ffffff;
-}
-body.dark #modalClinico input,
-body.dark #modalClinico select,
-body.dark #modalClinico textarea{
-  background:#8EB69B;
-  color:#163832;
-  border:1px solid #8EB69B;
-}
-body.dark #modalClinico input::placeholder,
-body.dark #modalClinico textarea::placeholder{
-  color:#2f4f43;
-}
-body.dark #modalClinico .btn-primary,
-body.dark #modalClinico .btn-secondary{
-  background:#8EB69B;
-  color:#163832;
-  border:none;
-}
-body.dark #modalClinico .btn-primary:hover,
-body.dark #modalClinico .btn-secondary:hover{
-  background:#7aa888;
-  color:#0B2B26;
-}
-
 /* ==========================================================================
    CONTENIDO PRINCIPAL Y COMPONENTES
    ========================================================================== */
