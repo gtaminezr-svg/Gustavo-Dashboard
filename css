@@ -18,6 +18,11 @@
   --accent-dk: #163832;
   --text:      #051F20;
   --text-soft: #235347;
+  /* Tarjetas (counter cards) */
+  --card-bg:    #FFFFFF;
+  --card-text:  #051F20;
+  --card-soft:  #5b6b66;
+  --card-arrow: #cbd5e1;
   /* compatibilidad con reglas existentes */
   --dashboard-bg: var(--bg);
 }
@@ -30,6 +35,10 @@ body.dark{
   --accent-dk: #163832;
   --text:      #DAF1DE;
   --text-soft: #8EB69B;
+  --card-bg:    linear-gradient(145deg,#235347,#0B2B26);
+  --card-text:  #FFFFFF;
+  --card-soft:  rgba(218,241,222,0.85);
+  --card-arrow: rgba(255,255,255,0.35);
 }
 
 body {
@@ -276,11 +285,23 @@ nav {
 }
 
 .counter-card {
-  background: white;
-  padding: 16px 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  position: relative;
+  background: var(--card-bg);
+  padding: 20px 24px;
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
   min-width: 250px;
+}
+.counter-card::after{
+  content:"\2197";
+  position:absolute;
+  top:16px; right:18px;
+  width:30px; height:30px;
+  border:1.5px solid var(--card-arrow);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+  color:var(--card-text);
 }
 
 .border-left-pendiente { border-left: 5px solid #dc3545; }
@@ -294,12 +315,12 @@ nav {
 .counter-number {
   font-size: 32px;
   font-weight: 700;
-  color: #2d1b69;
+  color: var(--card-text);
 }
 
 .counter-label {
   font-size: 14px;
-  color: #6c757d;
+  color: var(--card-soft);
   margin-top: 4px;
 }
 
