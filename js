@@ -1485,11 +1485,17 @@ function mostrarVistaPanelCasos(){
         </button>
       </div>
 
-      <!-- Píldora de fecha (mes + año actual) a la derecha -->
-      <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
-        <i class="fas fa-calendar-alt"></i>
-        <span id="textoFechaPanel">Mes Año</span>
-        <i class="fas fa-caret-down" style="opacity:0.85;"></i>
+      <!-- Grupo derecho: Descargar Base + píldora de fecha -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px;">
+        <button id="btnDescargarBase" onclick="descargarBasePanel()" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
+          Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+        </button>
+
+        <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fas fa-calendar-alt"></i>
+          <span id="textoFechaPanel">Mes Año</span>
+          <i class="fas fa-caret-down" style="opacity:0.85;"></i>
+        </div>
       </div>
     `;
 
@@ -1680,6 +1686,11 @@ function actualizarPildoraFechaPanel() {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const el = document.getElementById('textoFechaPanel');
   if (el) el.textContent = meses[mesPanelSeleccionado] + ' ' + anioPanelSeleccionado;
+}
+
+// Botón "Descargar Base" (Panel de Casos): función pendiente
+function descargarBasePanel() {
+  // TODO: aquí irá la lógica de descarga de la base.
 }
 
 function abrirSelectorFechaPanel() {
