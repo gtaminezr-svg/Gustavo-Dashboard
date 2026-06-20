@@ -267,16 +267,15 @@ body.dark .welcome-text{
 .search-container {
   background: var(--surface);
   height: 64px;
-  padding: 0 32px;
+  padding: 0 24px;
   box-sizing: border-box;
-  /* Barra totalmente recta: se une al sidebar y al borde superior, sin curvas */
-  border-radius: 0;
+  /* Barra flotante: separada del sidebar y del borde superior, con esquinas redondeadas */
+  border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Rompe el padding del main-content para pegarse al sidebar (izq), al tope (arriba) y al borde derecho */
-  margin: -32px -32px 24px -32px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  margin: 0 0 24px 0;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.08);
 }
 
 .search-box {
