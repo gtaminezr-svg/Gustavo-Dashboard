@@ -44,6 +44,24 @@ function getUsuarioActual() {
   };
 }
 
+// Función de diagnóstico: ejecútala desde el editor y revisa "Registro de ejecución"
+function probarUsuario() {
+  Logger.log("Resultado final: " + JSON.stringify(getUsuarioActual()));
+
+  try {
+    Logger.log("Correo: " + Session.getActiveUser().getEmail());
+  } catch (e) {
+    Logger.log("Error correo: " + e);
+  }
+
+  try {
+    var me = People.People.get("people/me", { personFields: "names" });
+    Logger.log("People OK -> names: " + JSON.stringify(me.names));
+  } catch (e) {
+    Logger.log("People ERROR: " + e);
+  }
+}
+
 ////////////// Obtener Listas Desplegables Dinámicas //////////////
 function obtenerListasDesplegables() {
   try {
