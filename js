@@ -1395,7 +1395,7 @@
     searchContainer.style.boxShadow = '';
     searchContainer.style.borderRadius = '';
     searchContainer.style.position = 'relative';
-    searchContainer.style.justifyContent = 'flex-end';
+    searchContainer.style.justifyContent = 'flex-start';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
       <div style="display:flex; align-items:center; gap:10px;">
