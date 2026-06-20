@@ -429,20 +429,20 @@
       sc.innerHTML = `
         <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; background:#eef2f7; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); padding:4px;">
           <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:15px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; color:#334155; display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-search"></i>
           </button>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
           <span style="font-size:14px; font-weight:600; color:#475569; white-space:nowrap; margin-right:4px;">Bienvenido xxx</span>
-          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
+          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(145deg,#ffffff,#e8ecf2); color:#334155; display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
           </button>
-          <button title="Notificaciones" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-bell"></i>
+          <button title="Notificaciones" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(145deg,#ffffff,#e8ecf2); color:#334155; display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="far fa-bell"></i>
           </button>
-          <button title="Perfil" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-user"></i>
+          <button title="Perfil" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(145deg,#ffffff,#e8ecf2); color:#334155; display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="far fa-user"></i>
           </button>
         </div>
       `;
