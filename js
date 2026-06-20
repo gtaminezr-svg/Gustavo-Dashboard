@@ -1460,11 +1460,11 @@ function mostrarVistaPanelCasos(){
       const searchContainer = document.getElementById('searchContainer');
     searchContainer.style.display = 'flex';
     searchContainer.style.alignItems = 'center';
-    searchContainer.style.background = 'var(--surface)';
-    searchContainer.style.boxShadow = '0 4px 14px rgba(15,23,42,0.08)';
-    searchContainer.style.padding = '0 32px';
-    searchContainer.style.borderRadius = '0';
-    searchContainer.style.margin = '-32px -32px 15px -32px';
+    searchContainer.style.background = '';
+    searchContainer.style.boxShadow = '';
+    searchContainer.style.padding = '';
+    searchContainer.style.borderRadius = '';
+    searchContainer.style.margin = '';
     searchContainer.style.position = 'relative';
     searchContainer.style.justifyContent = '';
     searchContainer.style.gap = '';
