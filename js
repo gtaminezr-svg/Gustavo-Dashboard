@@ -1395,15 +1395,15 @@
     searchContainer.style.boxShadow = '';
     searchContainer.style.borderRadius = '';
     searchContainer.style.position = 'relative';
-    searchContainer.style.justifyContent = 'flex-start';
+    searchContainer.style.justifyContent = 'space-between';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
       <div style="display:flex; align-items:center; gap:10px;">
-        <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:44px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <div id="medicoIndicador" style="flex:0 0 auto; height:44px; min-width:44px; border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
-          <i class="fas fa-user-md"></i>
-        </div>
-        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+        <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; color:#334155; display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+      </div>
+      <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:4px 4px 9px rgba(163,177,198,0.55), -4px -4px 9px #ffffff; color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
+        <i class="fas fa-user-md"></i>
       </div>
     `;
     resetearPanelEstadisticas();
