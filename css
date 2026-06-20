@@ -16,6 +16,7 @@
   --accent:    #235347;
   --accent-2:  #8EB69B;
   --accent-dk: #163832;
+  --on-accent: #FFFFFF;
   --text:      #051F20;
   --text-soft: #235347;
   /* Tarjetas (counter cards) */
@@ -33,6 +34,7 @@ body.dark{
   --accent:    #8EB69B;
   --accent-2:  #235347;
   --accent-dk: #163832;
+  --on-accent: #051F20;
   --text:      #DAF1DE;
   --text-soft: #8EB69B;
   --card-bg:    linear-gradient(145deg,#235347,#0B2B26);
