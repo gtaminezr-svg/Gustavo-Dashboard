@@ -242,7 +242,9 @@ body.dark .welcome-text{
 
 .search-container {
   background: var(--surface);
-  padding: 10px 32px;
+  height: 64px;
+  padding: 0 32px;
+  box-sizing: border-box;
   /* Barra totalmente recta: se une al sidebar y al borde superior, sin curvas */
   border-radius: 0;
   display: flex;
