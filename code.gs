@@ -27,7 +27,8 @@ function getUsuarioActual() {
   try {
     var me = People.People.get("people/me", { personFields: "names" });
     if (me && me.names && me.names.length) {
-      nombre = me.names[0].displayName || "";
+      var n = me.names[0];
+      nombre = n.displayName || ((n.givenName || "") + " " + (n.familyName || "")).trim();
     }
   } catch (e) {}
 

@@ -212,14 +212,13 @@ nav {
 
 /* Saludo "Bienvenido ..." en la barra superior */
 .welcome-text{
-  font-size:14px;
+  font-size:17px;
   font-weight:600;
   color:#475569;
   white-space:nowrap;
   margin-right:4px;
 }
 body.dark .welcome-text{
-  font-size:17px;
   color:#ffffff;
 }
 
