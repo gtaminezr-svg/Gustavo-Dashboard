@@ -458,19 +458,19 @@
       sc.innerHTML = `
         <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
           <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-search"></i>
           </button>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
           <span id="welcomeText" class="welcome-text">Bienvenido</span>
-          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
           </button>
-          <button title="Notificaciones" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <button title="Notificaciones" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="far fa-bell"></i>
           </button>
-          <button title="Perfil" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <button title="Perfil" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="far fa-user"></i>
           </button>
         </div>
@@ -1430,9 +1430,9 @@
     searchContainer.innerHTML = `
       <div style="display:flex; align-items:center; gap:6px;">
         <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
       </div>
-      <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
+      <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
         <i class="fas fa-user-md"></i>
       </div>
     `;
@@ -1472,7 +1472,7 @@ function mostrarVistaPanelCasos(){
       <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
       <div id="barraTabsPanel" style="display:none; position:absolute; left:32px; top:50%; transform:translateY(-50%); align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
         <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
+        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#004EE0; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
         <button data-tabp="seguro" onclick="seleccionarTabPanelCasos('seguro')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-shield-alt"></i> Pacientes por Seguro</button>
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
@@ -1480,7 +1480,7 @@ function mostrarVistaPanelCasos(){
       <!-- Búsqueda a la izquierda (mismo diseño y lugar que las demás secciones) -->
       <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
         <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(35,83,71,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+        <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
           <i class="fas fa-search"></i>
         </button>
       </div>
@@ -1498,7 +1498,7 @@ function mostrarVistaPanelCasos(){
           </div>
         </div>
 
-        <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
           <i class="fas fa-calendar-alt"></i>
           <span id="textoFechaPanel">Mes Año</span>
           <i class="fas fa-caret-down" style="opacity:0.85;"></i>
@@ -1578,7 +1578,7 @@ function seleccionarTabPanelCasos(tab) {
   const pill = document.getElementById('tabPanelPill');
   bar.querySelectorAll('button[data-tabp]').forEach(btn => {
     const activo = btn.getAttribute('data-tabp') === tab;
-    btn.style.color = activo ? '#235347' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1597,7 +1597,7 @@ function seleccionarTabCalendario(tab) {
   const pill = document.getElementById('tabCalendarioPill');
   bar.querySelectorAll('button[data-tabc]').forEach(btn => {
     const activo = btn.getAttribute('data-tabc') === tab;
-    btn.style.color = activo ? '#235347' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1655,14 +1655,14 @@ function generarBarraMesesPanel() {
     contenedor.style.position = 'relative';
     pill = document.createElement('div');
     pill.id = 'pillMesPanel';
-    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#235347,#163832); box-shadow:0 4px 12px rgba(35,83,71,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
+    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 12px rgba(0,78,224,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
     contenedor.appendChild(pill);
   }
 
   // Quitar los items viejos pero conservar la píldora
   Array.from(contenedor.querySelectorAll('.month-item')).forEach(n => n.remove());
 
-  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#235347,#163832); box-shadow:0 4px 10px rgba(35,83,71,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
+  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 10px rgba(0,78,224,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
   html += `<div class="month-item" style="flex: 0 0 40px;" onclick="cambiarMesVistaPanel(-1)"><i class="fas fa-chevron-left"></i></div>`;
 
   for (let i = 0; i < 3; i++) {
@@ -3238,19 +3238,19 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo completo del arco (Faltantes) -> Color #aec3b0
+    // Fondo completo del arco (Faltantes) -> Color #99CAFF
     ctx.beginPath();
     ctx.arc(cx, cy, radio, Math.PI, 2 * Math.PI);
-    ctx.strokeStyle = '#aec3b0';
+    ctx.strokeStyle = '#99CAFF';
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados) -> Color #375534
+    // Progreso superpuesto (Completados) -> Color #004EE0
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = '#375534';
+      ctx.strokeStyle = '#004EE0';
       ctx.lineWidth = grosor;
       ctx.stroke();
     }
@@ -3320,7 +3320,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
   }
 
   // 3. Paleta de colores clínicos solicitada
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
+  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
   
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   
@@ -3475,7 +3475,7 @@ function verDetallesExamenesTop() {
   }
 
   // 4. Paleta de colores
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
+  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
 
   // 5. Construir la lista HTML detallada
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
@@ -4647,7 +4647,7 @@ function setTabActivo(tab) {
   const pill = document.getElementById('tabPersonalPill');
   bar.querySelectorAll('button[data-tab]').forEach(btn => {
     const activo = btn.getAttribute('data-tab') === tab;
-    btn.style.color = activo ? '#235347' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -5107,7 +5107,7 @@ function renderModalEjecutivos(listas) {
       +     '<span style="font-family:monospace; font-size:14px; font-weight:700; color:#475569; letter-spacing:2px; text-align:right;">'
       +       '••••••'
       +     '</span>'
-      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#235347; font-size:13px; width:18px; text-align:center;"></i>'
+      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#004EE0; font-size:13px; width:18px; text-align:center;"></i>'
       +     '<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>'
       +   '</div>'
       + '</div>';
