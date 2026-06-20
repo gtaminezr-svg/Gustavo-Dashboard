@@ -210,6 +210,19 @@ nav {
 .theme-toggle.dark .theme-moon{ color:#3b82f6; }
 .sidebar.collapsed .theme-toggle{ display:none; }
 
+/* Saludo "Bienvenido ..." en la barra superior */
+.welcome-text{
+  font-size:14px;
+  font-weight:600;
+  color:#475569;
+  white-space:nowrap;
+  margin-right:4px;
+}
+body.dark .welcome-text{
+  font-size:17px;
+  color:#ffffff;
+}
+
 /* ==========================================================================
    CONTENIDO PRINCIPAL Y COMPONENTES
    ========================================================================== */

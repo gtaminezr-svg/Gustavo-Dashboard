@@ -27,9 +27,30 @@
   window.onload = function() {
     cargarListasDesplegables();
     generarBarraMesesDinamica();
+    cargarNombreUsuario();
 
     // (La barra lateral se contrae/expande solo con el botón hamburguesa)
   };
+
+  // Saludo personalizado: obtiene el nombre del usuario (admin) desde el backend
+  function cargarNombreUsuario() {
+    try {
+      google.script.run
+        .withSuccessHandler(function(u){
+          if (u && u.nombre) { window.__nombreUsuario = u.nombre; }
+          aplicarSaludo();
+        })
+        .withFailureHandler(function(){ /* sin conexión: deja el saludo por defecto */ })
+        .getUsuarioActual();
+    } catch (e) {}
+  }
+
+  function aplicarSaludo() {
+    const el = document.getElementById('welcomeText');
+    if (el && window.__nombreUsuario) {
+      el.textContent = 'Bienvenido ' + window.__nombreUsuario;
+    }
+  }
 
   function cerrarSesion() {
     Swal.fire({
@@ -442,7 +463,7 @@
           </button>
         </div>
         <div style="display:flex; align-items:center; gap:12px;">
-          <span style="font-size:14px; font-weight:600; color:#475569; white-space:nowrap; margin-right:4px;">Bienvenido xxx</span>
+          <span id="welcomeText" class="welcome-text">Bienvenido</span>
           <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(35,83,71,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
           </button>
@@ -457,6 +478,7 @@
     }
 
     const _sp = document.getElementById('searchPillBandeja'); if (_sp) _sp.style.visibility = 'visible';
+    aplicarSaludo();
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';

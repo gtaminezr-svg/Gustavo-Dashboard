@@ -14,6 +14,35 @@ function include(nombreArchivo){
     .getContent();
 }
 
+////////////// Usuario actual (saludo personalizado) //////////////
+const ADMIN_EMAIL = "gtaminezr@gmail.com";
+
+function getUsuarioActual() {
+  var email = "";
+  try { email = (Session.getActiveUser().getEmail() || "").toLowerCase(); } catch (e) {}
+
+  var nombre = "";
+
+  // 1) Nombre real desde la cuenta de Google (requiere habilitar la "People API")
+  try {
+    var me = People.People.get("people/me", { personFields: "names" });
+    if (me && me.names && me.names.length) {
+      nombre = me.names[0].displayName || "";
+    }
+  } catch (e) {}
+
+  // 2) Fallback: usar la parte antes del @ del correo
+  if (!nombre && email) {
+    nombre = email.split("@")[0];
+  }
+
+  return {
+    email: email,
+    nombre: nombre || "Usuario",
+    esAdmin: (email === ADMIN_EMAIL)
+  };
+}
+
 ////////////// Obtener Listas Desplegables Dinámicas //////////////
 function obtenerListasDesplegables() {
   try {
