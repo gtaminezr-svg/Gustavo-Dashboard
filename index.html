@@ -37,6 +37,12 @@
 
       <!-- BLOQUE INFERIOR: Cerrar Sesión + progreso -->
       <div class="sidebar-footer">
+        <!-- Interruptor de modo claro / oscuro (solo UI por ahora) -->
+        <div class="theme-toggle" title="Modo claro / oscuro" onclick="toggleModoOscuro()">
+          <span class="theme-toggle-thumb"></span>
+          <span class="theme-ico theme-sun"><i class="fas fa-sun"></i></span>
+          <span class="theme-ico theme-moon"><i class="fas fa-moon"></i></span>
+        </div>
         <div class="menu-item logout" id="menu-CerrarSesion" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
 
         <!-- Barra de progreso de casos cerrados -->

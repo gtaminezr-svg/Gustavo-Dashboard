@@ -50,6 +50,13 @@
     });
   }
 
+  // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
+  // el modo oscuro real se aplicará cuando definamos la paleta de colores)
+  function toggleModoOscuro() {
+    const t = document.querySelector('.theme-toggle');
+    if (t) t.classList.toggle('dark');
+  }
+
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
   function toggleNamesPanel() {
     const sidebar = document.getElementById('sidebar');
