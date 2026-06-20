@@ -1460,7 +1460,7 @@ function mostrarVistaPanelCasos(){
       const searchContainer = document.getElementById('searchContainer');
     searchContainer.style.display = 'flex';
     searchContainer.style.alignItems = 'center';
-    searchContainer.style.background = 'white';
+    searchContainer.style.background = 'var(--surface)';
     searchContainer.style.boxShadow = '0 4px 14px rgba(15,23,42,0.08)';
     searchContainer.style.padding = '10px 32px';
     searchContainer.style.borderRadius = '0';

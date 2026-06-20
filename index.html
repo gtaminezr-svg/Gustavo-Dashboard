@@ -415,9 +415,9 @@
       <div id="vistaBaseDashboard" style="display:none; padding: 0; height: calc(100vh - 64px); overflow: visible; box-sizing: border-box; width: 100%; flex-direction: column;">
 
       <!-- Encabezado del Calendario -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:-32px -32px 12px -32px; flex-shrink:0; background:white; border-radius:0; padding:10px 32px; box-shadow:0 4px 14px rgba(15,23,42,0.08); position:relative;">
-        <div style="font-size:20px; font-weight:800; color:#1e293b;">
-          <i class="fas fa-calendar-alt" style="color:#2b1070; margin-right:8px;"></i>Mi Calendario
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:-32px -32px 12px -32px; flex-shrink:0; background:var(--surface); border-radius:0; padding:10px 32px; box-shadow:0 4px 14px rgba(15,23,42,0.08); position:relative;">
+        <div style="font-size:20px; font-weight:800; color:var(--text);">
+          <i class="fas fa-calendar-alt" style="color:var(--accent); margin-right:8px;"></i>Mi Calendario
         </div>
 
         <div id="barraTabsCalendario" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
@@ -535,8 +535,8 @@
       <div id="vistaRegistroPersonal" style="display:none; height:calc(100vh - 72px); box-sizing:border-box; padding-bottom:16px; flex-direction:column; gap:10px;">
 
   <!-- Fila 1: Título + Barra de acciones -->
-  <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0; margin:-32px -32px 0 -32px; background:white; border-radius:0; padding:10px 32px; box-shadow:0 4px 14px rgba(15,23,42,0.08);">
-  <h2 style="color:#2b1070; font-size:20px; font-weight:800; margin:0;">Registro de Personal</h2>
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0; margin:-32px -32px 0 -32px; background:var(--surface); border-radius:0; padding:10px 32px; box-shadow:0 4px 14px rgba(15,23,42,0.08);">
+  <h2 style="color:var(--text); font-size:20px; font-weight:800; margin:0;">Registro de Personal</h2>
   <div id="barraTabsPersonal" style="position:relative; display:flex; align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
     <div id="tabPersonalPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
     <button data-tab="medico" onclick="seleccionarTabPersonal('medico')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:11px 26px; border-radius:40px; font-size:14px; font-weight:700; background:transparent; color:#235347; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-user-md"></i> + Add Médico</button>
