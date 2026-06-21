@@ -407,7 +407,7 @@ body.dark .welcome-text{
 .table-card {
   background: white;
   border-radius: 20px;
-  padding: 28px;
+  padding: 20px;
   border: 1px solid #eef2f7;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
 }
@@ -469,6 +469,9 @@ body.dark .welcome-text{
   border-bottom: 1px solid #f5f7fa;
   font-size: 14px;
   vertical-align: middle;
+}
+.custom-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .patient-name-click {
@@ -1530,7 +1533,6 @@ body.dark .table-card {
   background: #12141C;
   border: 1px solid rgba(255,255,255,0.07);
   box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-  padding: 20px !important;
 }
 
 body.dark .table-title {
