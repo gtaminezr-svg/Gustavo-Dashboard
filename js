@@ -457,7 +457,7 @@
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
         <div class="saludo-bloque">
-          <div class="saludo-icon"><i class="fas fa-search"></i></div>
+          <div class="saludo-icon"><i class="far fa-user"></i></div>
           <div class="saludo-texts">
             <span class="welcome-text">Bienvenido</span>
             <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
@@ -475,9 +475,6 @@
           </button>
           <button title="Notificaciones" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="far fa-bell"></i>
-          </button>
-          <button title="Perfil" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="far fa-user"></i>
           </button>
         </div>
       `;
