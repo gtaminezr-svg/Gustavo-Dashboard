@@ -1589,5 +1589,32 @@ body.dark .table-card .specialty-badge-box.bg-pediatria {
   border-color: #db5e5e;
 }
 
+/* Badges de seguros: fondo sólido en modo oscuro */
+body.dark .table-card .insurance-badge-box.bg-seguro-rojo {
+  background: #b91c1c;
+  color: #ffffff;
+  border-color: #b91c1c;
+}
+body.dark .table-card .insurance-badge-box.bg-seguro-anaranjado {
+  background: #ea580c;
+  color: #ffffff;
+  border-color: #ea580c;
+}
+body.dark .table-card .insurance-badge-box.bg-seguro-verde {
+  background: #166534;
+  color: #ffffff;
+  border-color: #166534;
+}
+body.dark .table-card .insurance-badge-box.bg-seguro-dorado {
+  background: #a16207;
+  color: #ffffff;
+  border-color: #a16207;
+}
+body.dark .table-card .insurance-badge-box.bg-eps {
+  background: #475569;
+  color: #ffffff;
+  border-color: #475569;
+}
+
 
 </style>
