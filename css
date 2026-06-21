@@ -1561,6 +1561,48 @@ body.dark .btn-icon-action:hover {
   border-color: rgba(123,167,245,0.35) !important;
 }
 
+/* Barra de búsqueda desplegable — modo oscuro */
+body.dark .search-bar-input {
+  background: #1C2033 !important;
+  color: #C9D1E9 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+}
+body.dark .search-bar-input::placeholder {
+  color: #5B6585 !important;
+}
+
+/* Punto rojo de notificación en campana */
+.bell-dot {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid white;
+  pointer-events: none;
+}
+body.dark .bell-dot {
+  border-color: #12141C;
+}
+
+/* Animación de sacudida de la campana */
+@keyframes bell-shake {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(18deg); }
+  25%  { transform: rotate(-16deg); }
+  40%  { transform: rotate(12deg); }
+  55%  { transform: rotate(-10deg); }
+  70%  { transform: rotate(6deg); }
+  85%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
+.bell-shake {
+  animation: bell-shake 0.7s ease;
+  transform-origin: top center;
+}
+
 /* ================================================================
    DARK MODE — CUADRO "BANDEJA DE PACIENTES" (solo este cuadro)
    ================================================================ */
