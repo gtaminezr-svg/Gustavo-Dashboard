@@ -1577,5 +1577,17 @@ body.dark .table-card .btn-table-view:hover {
   border-color: rgba(123,167,245,0.35);
 }
 
+/* Badges de especialidad: fondo sólido en modo oscuro */
+body.dark .table-card .specialty-badge-box.bg-general {
+  background: #0d9488;
+  color: #ffffff;
+  border-color: #0d9488;
+}
+body.dark .table-card .specialty-badge-box.bg-pediatria {
+  background: #db5e5e;
+  color: #ffffff;
+  border-color: #db5e5e;
+}
+
 
 </style>
