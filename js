@@ -1104,38 +1104,56 @@
       const medicoLectorTexto = esDesestimado ? 'Sin registro' : (p.medicoLector || 'No asignado');
       const especialidadTexto = esDesestimado ? 'Sin registro' : obtenerEspecialidadMedico(p.medicoLector);
       document.getElementById('btnEliminarPaciente').onclick = function () {
+        const esDark = document.body.classList.contains('dark');
+        const popupBg     = esDark ? 'linear-gradient(160deg,#0D1428 0%,#0A0F1E 50%,#070C18 100%)' : '#ffffff';
+        const tituloColor = esDark ? '#7BA7F5' : '#2b1070';
+        const labelColor  = esDark ? '#5B6585' : '#475569';
+        const fieldBg     = esDark ? '#1C2033' : '#f8fafc';
+        const fieldBorder = esDark ? 'rgba(255,255,255,0.10)' : '#cbd5e1';
+        const chipBg      = esDark ? '#252B45' : '#f1f5f9';
+        const chipColor   = esDark ? '#C9D1E9' : '#334155';
+        const btnColor    = esDark ? 'linear-gradient(135deg,#3B5FD9,#5B3DB8)' : '#2b1070';
+
+        const chipStyle = `background:${chipBg}; color:${chipColor}; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;`;
+        const fieldStyle = `background:${fieldBg}; border:1px solid ${fieldBorder}; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;`;
+
+        const fechaCierreHtml = p.fechaCierre
+          ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;">
+               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span>
+               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}</span>
+             </div>`
+          : `<span style="${chipStyle}">Sin fecha registrada</span>`;
+
         Swal.fire({
           target: document.getElementById('modalClinico'),
           width: 470,
-          confirmButtonColor: '#2b1070',
+          background: popupBg,
+          confirmButtonColor: esDark ? '#3B5FD9' : '#2b1070',
           html: `
-            <div style="font-size:20px; font-weight:700; color:#2b1070; margin-bottom:27px; text-align:center;">Información de Lectura</div>
-            <div style="border:none; box-shadow:none; padding:8px 0; border-radius:20px; padding:14px; text-align:left;">
+            <div style="font-size:20px; font-weight:700; color:${tituloColor}; margin-bottom:27px; text-align:center;">Información de Lectura</div>
+            <div style="padding:14px; text-align:left;">
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Médico Lector</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Médico Lector</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Especialidad</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${especialidadTexto}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Especialidad</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}">${especialidadTexto}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Ejecutivo de Cierre</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <!-- AQUÍ ESTÁ LA CORRECCIÓN CLAVE -->
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${p.ejecutivoCierre || 'No asignado'}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Ejecutivo de Cierre</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}">${p.ejecutivoCierre || 'No asignado'}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Fecha de Cierre</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                  ${p.fechaCierre ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;"><span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span><span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false})}</span></div>` : `<span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">Sin fecha registrada</span>`}
-                  </div>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Fecha de Cierre</div>
+                  <div style="${fieldStyle}">${fechaCierreHtml}</div>
                 </div>
               </div>
             </div>
