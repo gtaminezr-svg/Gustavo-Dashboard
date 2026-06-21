@@ -456,6 +456,7 @@
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
+        <span id="welcomeText" class="welcome-text">Bienvenido</span>
         <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
           <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
             <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
@@ -463,7 +464,6 @@
               <i class="fas fa-search"></i>
             </button>
           </div>
-          <span id="welcomeText" class="welcome-text">Bienvenido</span>
           <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
           </button>
