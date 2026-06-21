@@ -277,11 +277,11 @@ body.dark .welcome-text{
 
 .search-container {
   background: var(--surface);
-  height: 64px;
+  height: 80px;
   padding: 0 24px;
   box-sizing: border-box;
-  /* Barra flotante: separada del sidebar y del borde superior, con esquinas redondeadas */
-  border-radius: 16px;
+  /* Barra flotante: separada del sidebar y del borde superior, con esquinas ligeramente redondeadas */
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
