@@ -1509,6 +1509,15 @@ body.dark .border-left-total   { border-left-color: #4F8EF7; }
 body.dark .border-left-mes     { border-left-color: #8b5cf6; }
 
 /* ================================================================
+   DARK MODE — FONDO GENERAL DEL DASHBOARD
+   ================================================================ */
+
+body.dark,
+body.dark .main-content {
+  background: #0D1235 !important;
+}
+
+/* ================================================================
    DARK MODE — CUADRO "BANDEJA DE PACIENTES" (solo este cuadro)
    ================================================================ */
 
