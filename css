@@ -1596,7 +1596,34 @@ body.dark .rail-hamburger:hover {
 /* ================================================================
    DARK MODE — BLOQUES DE ESTADÍSTICAS Y PANEL DE CASOS
    ================================================================ */
-body.dark .stats-card-demo,
+
+/* Píldora del médico en Estadísticas */
+body.dark #medicoIndicador {
+  background: linear-gradient(90deg, #004EE0, #042E7B) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 18px rgba(0,78,224,0.35) !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+/* Stats cards = igual que counter-cards */
+body.dark .stats-card-demo {
+  background: #161929 !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.40) !important;
+  border-radius: 20px !important;
+}
+body.dark .stats-card-demo:hover {
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55) !important;
+  transform: translateY(-2px);
+}
+/* Número principal (solicitados) → blanco como counter-number */
+body.dark #statMedicoSolicitados { color: #FFFFFF !important; }
+/* Labels de stats-card-demo → igual que counter-label */
+body.dark .stats-card-demo [style*="color:#64748b"],
+body.dark .stats-card-demo [style*="color: #64748b"] { color: #6B7490 !important; }
+
 body.dark .dash-block {
   background: #161929 !important;
   border: 1px solid rgba(255,255,255,0.07) !important;
