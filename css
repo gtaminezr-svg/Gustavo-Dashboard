@@ -1468,6 +1468,32 @@ body .swal2-container {
 }
 
 /* ================================================================
+   DARK MODE — COUNTER CARDS (los 5 cards de estadística superiores)
+   ================================================================ */
+
+body.dark .counter-card {
+  background: #161929;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.40);
+}
+body.dark .counter-card:hover {
+  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  transform: translateY(-2px);
+}
+body.dark .counter-number {
+  color: #FFFFFF;
+}
+body.dark .counter-label {
+  color: #6B7490;
+}
+
+/* Mantener los acentos de color del borde izquierdo en oscuro */
+body.dark .border-left-vencer  { border-left-color: #f59e0b; }
+body.dark .border-left-warning { border-left-color: #166534; }
+body.dark .border-left-total   { border-left-color: #004EE0; }
+body.dark .border-left-mes     { border-left-color: #8b5cf6; }
+
+/* ================================================================
    DARK MODE — CUADRO "BANDEJA DE PACIENTES" (solo este cuadro)
    ================================================================ */
 
