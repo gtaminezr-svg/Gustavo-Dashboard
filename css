@@ -1549,6 +1549,49 @@ body.dark .search-container {
   box-shadow: none !important;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+
+/* Encabezados de Calendario y Registro Personal */
+body.dark .section-header-bar {
+  background: #12141C !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Sidebar */
+body.dark .sidebar {
+  background: #12141C !important;
+  box-shadow: none !important;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Item activo: rectangular con esquinas redondeadas, azul */
+body.dark .menu-item.active {
+  background: #3B5FD9 !important;
+  color: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+body.dark .menu-item.active i { color: #ffffff !important; }
+body.dark .menu-item.active::after { color: #ffffff !important; }
+
+/* Hover en items no activos */
+body.dark .menu-item:hover {
+  background: rgba(255,255,255,0.07) !important;
+  color: #ffffff !important;
+}
+
+/* Botón hamburguesa igual que la campanita */
+body.dark .rail-hamburger {
+  background: rgba(255,255,255,0.06) !important;
+  color: #C9D1E9 !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  box-shadow: none !important;
+}
+body.dark .rail-hamburger:hover {
+  background: rgba(123,167,245,0.18) !important;
+  color: #7BA7F5 !important;
+  border-color: rgba(123,167,245,0.35) !important;
+}
 body.dark .btn-icon-action {
   background: rgba(255,255,255,0.06) !important;
   color: #C9D1E9 !important;
