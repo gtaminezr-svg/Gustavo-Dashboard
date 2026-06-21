@@ -1749,10 +1749,12 @@ body.dark .ts-wrapper .ts-control {
   border-radius: 8px !important;
   color: #C9D1E9 !important;
   box-shadow: none !important;
+  outline: none !important;
 }
 body.dark .ts-wrapper.focus .ts-control {
   border-color: #4F8EF7 !important;
-  box-shadow: 0 0 0 3px rgba(79,142,247,0.15) !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 body.dark .ts-wrapper .ts-control input {
   color: #C9D1E9 !important;
