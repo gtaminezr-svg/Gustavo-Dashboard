@@ -2175,7 +2175,8 @@ function abrirSelectorFechaPanel() {
     const canvas = document.getElementById('donutMedico');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+    const esDark = document.body.classList.contains('dark');
+
     // Cancelar animación anterior si el usuario hace clic muy rápido
     if (animacionDonutId) {
       cancelAnimationFrame(animacionDonutId);
@@ -2192,10 +2193,10 @@ function abrirSelectorFechaPanel() {
       ctx.clearRect(0, 0, 260, 260);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#e2e8f0';
+      ctx.strokeStyle = esDark ? '#2D3451' : '#e2e8f0';
       ctx.lineWidth = grosor;
       ctx.stroke();
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = esDark ? '#5B6585' : '#94a3b8';
       ctx.font = 'bold 16px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2203,12 +2204,12 @@ function abrirSelectorFechaPanel() {
       return;
     }
 
-    const colorSolicitados = '#2b1070';
+    const colorSolicitados = esDark ? '#4A6FE3' : '#2b1070';
     const colorLeidos = '#10b981';
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
     const colorProgreso = esBaseSolicitados ? colorLeidos : colorSolicitados;
-    
+
     const total = solicitados + leidos;
     const parteMenor = esBaseSolicitados ? leidos : solicitados;
     const anguloFinalObjetivo = (parteMenor / total) * 2 * Math.PI;
@@ -2228,7 +2229,7 @@ function abrirSelectorFechaPanel() {
       if (!startTime) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       let progress = Math.min(timeElapsed / duration, 1);
-      
+
       // Aplicar el rebote al progreso
       const easeProgress = easeOutBack(progress);
 
@@ -2237,7 +2238,7 @@ function abrirSelectorFechaPanel() {
       // 1. Dibujar el anillo de fondo (Base)
       ctx.beginPath();
       ctx.arc(cx, cy, radio, 0, 2 * Math.PI);
-      ctx.strokeStyle = colorBase; 
+      ctx.strokeStyle = colorBase;
       ctx.lineWidth = grosor;
       ctx.stroke();
 
@@ -2246,21 +2247,21 @@ function abrirSelectorFechaPanel() {
         ctx.beginPath();
         const anguloActual = easeProgress * anguloFinalObjetivo;
         ctx.arc(cx, cy, radio, -Math.PI / 2, -Math.PI / 2 + anguloActual);
-        ctx.strokeStyle = colorProgreso; 
+        ctx.strokeStyle = colorProgreso;
         ctx.lineWidth = grosor;
         ctx.stroke();
       }
 
       // 3. Dibujar textos centrales (tamaños ajustados al nuevo anillo)
-      ctx.fillStyle = '#2b1070';
+      ctx.fillStyle = esDark ? '#C9D1E9' : '#2b1070';
       ctx.font = 'bold 38px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(solicitados, cx, cy - 12); 
-      
+      ctx.fillText(solicitados, cx, cy - 12);
+
       ctx.fillStyle = '#10b981';
       ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(leidos + ' leídos', cx, cy + 22); 
+      ctx.fillText(leidos + ' leídos', cx, cy + 22);
 
       // Si no ha terminado, solicitar el siguiente fotograma
       if (progress < 1) {

@@ -1661,6 +1661,9 @@ body.dark .dash-block tbody tr:last-child td { border-bottom: none !important; }
 /* Enlace de descarga dentro de bloques */
 body.dark .dash-block a[style*="color:#2b1070"] { color: #7BA7F5 !important; }
 
+/* Leyenda del donut — "Solicitados" en modo oscuro */
+body.dark .dash-block span[style*="color:#2b1070"] { color: #4A6FE3 !important; }
+
 body.dark .btn-icon-action {
   background: rgba(255,255,255,0.06) !important;
   color: #C9D1E9 !important;
