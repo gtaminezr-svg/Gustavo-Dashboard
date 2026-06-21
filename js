@@ -27,20 +27,30 @@
   window.onload = function() {
     cargarListasDesplegables();
     generarBarraMesesDinamica();
+    cargarNombreUsuario();
 
-    // Ocultar la columna de nombres al hacer clic fuera del sidebar
-    document.addEventListener('click', function(e) {
-      const sidebar = document.querySelector('.sidebar');
-      const panel = document.getElementById('namesPanel');
-      if (!sidebar || !panel) return;
-      if (panel.classList.contains('collapsed')) return;
-      if (!sidebar.contains(e.target)) {
-        panel.classList.add('collapsed');
-        const main = document.querySelector('.main-content');
-        if (main) main.classList.add('rail-only');
-      }
-    });
+    // (La barra lateral se contrae/expande solo con el botón hamburguesa)
   };
+
+  // Saludo personalizado: obtiene el nombre del usuario (admin) desde el backend
+  function cargarNombreUsuario() {
+    try {
+      google.script.run
+        .withSuccessHandler(function(u){
+          if (u && u.nombre) { window.__nombreUsuario = u.nombre; }
+          aplicarSaludo();
+        })
+        .withFailureHandler(function(){ /* sin conexión: deja el saludo por defecto */ })
+        .getUsuarioActual();
+    } catch (e) {}
+  }
+
+  function aplicarSaludo() {
+    if (!window.__nombreUsuario) return;
+    document.querySelectorAll('.welcome-text').forEach(function(el){
+      el.textContent = 'Bienvenido ' + window.__nombreUsuario;
+    });
+  }
 
   function cerrarSesion() {
     Swal.fire({
@@ -61,24 +71,31 @@
     });
   }
 
-  // Hamburguesa: muestra/oculta la columna de nombres
+  // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
+  // el modo oscuro real se aplicará cuando definamos la paleta de colores)
+  function toggleModoOscuro() {
+    const t = document.querySelector('.theme-toggle');
+    if (t) t.classList.toggle('dark');
+    document.body.classList.toggle('dark');
+  }
+
+  // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
   function toggleNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.toggle('collapsed');
+    if (sidebar) sidebar.classList.toggle('collapsed');
     if (main) main.classList.toggle('rail-only');
   }
 
   function abrirNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.remove('collapsed');
+    if (sidebar) sidebar.classList.remove('collapsed');
     if (main) main.classList.remove('rail-only');
   }
 
   // Navegación desde la barra de iconos o desde los nombres: despliega el panel y dirige a la sección
   function irASeccion(key) {
-    abrirNamesPanel();
     switch (key) {
       case 'Pendiente': cambiarBandeja('Pendiente'); break;
       case 'EnProceso': cambiarBandeja('En Proceso'); break;
@@ -89,9 +106,9 @@
       case 'Calendario': mostrarVistaBaseDashboard(); break;
       case 'RegistroPersonal': mostrarVistaRegistroPersonal(); break;
     }
-    // Sincronizar el icono activo en la barra de iconos
-    document.querySelectorAll('.rail-icon[data-sec]').forEach(b => b.classList.remove('active'));
-    const rb = document.querySelector('.rail-icon[data-sec="' + key + '"]');
+    // Sincronizar la sección activa (icono + nombre en una sola píldora)
+    document.querySelectorAll('.menu-item[data-sec]').forEach(b => b.classList.remove('active'));
+    const rb = document.querySelector('.menu-item[data-sec="' + key + '"]');
     if (rb) rb.classList.add('active');
   }
 
@@ -435,22 +452,36 @@
     sc.style.background = '';
     sc.style.boxShadow = '';
     sc.style.borderRadius = '';
-    sc.style.justifyContent = 'flex-end';
+    sc.style.justifyContent = 'space-between';
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
-        <div id="searchPillBandeja" onclick="toggleBuscadorBandeja()" style="display:flex; align-items:center; gap:10px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); border-radius:50px; box-shadow:0 4px 10px rgba(37,99,235,0.35); padding:0 18px; height:44px; cursor:pointer;">
-          <span style="color:white; font-size:14px; font-weight:700; white-space:nowrap;">Búsqueda</span>
-          <i class="fas fa-search" style="color:white; font-size:15px; flex-shrink:0;"></i>
-          <input type="text" id="inputBuscar" placeholder="Buscar por DNI o Nombre..." oninput="filtrarPacientes()" onclick="event.stopPropagation()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="width:0; opacity:0; padding:0; border:none; outline:none; background:white; border-radius:40px; height:32px; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease; color:#334155; font-size:14px;">
+        <div class="saludo-bloque">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
         </div>
-        <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="display:flex; align-items:center; gap:8px; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; border-radius:50px; padding:0 20px; height:44px; font-size:14px; font-weight:700; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
-          <span>Actualizar</span> <i class="fas fa-sync-alt"></i>
-        </button>
+        <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+          <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+            <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+            <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button title="Notificaciones" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="far fa-bell"></i>
+          </button>
+          <button title="Perfil" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="far fa-user"></i>
+          </button>
+        </div>
       `;
     }
 
     const _sp = document.getElementById('searchPillBandeja'); if (_sp) _sp.style.visibility = 'visible';
+    aplicarSaludo();
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
@@ -1397,17 +1428,24 @@
     searchContainer.style.boxShadow = '';
     searchContainer.style.borderRadius = '';
     searchContainer.style.position = 'relative';
-    searchContainer.style.justifyContent = 'flex-end';
+    searchContainer.style.justifyContent = 'space-between';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
-      <div style="display:flex; align-items:center; gap:10px;">
-        <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:44px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <div id="medicoIndicador" style="flex:0 0 auto; height:44px; min-width:44px; border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
+      <div class="saludo-bloque">
+        <span class="welcome-text">Bienvenido</span>
+        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
+          <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
           <i class="fas fa-user-md"></i>
         </div>
-        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
       </div>
     `;
+    aplicarSaludo();
     resetearPanelEstadisticas();
   }
 
@@ -1432,38 +1470,57 @@ function mostrarVistaPanelCasos(){
       const searchContainer = document.getElementById('searchContainer');
     searchContainer.style.display = 'flex';
     searchContainer.style.alignItems = 'center';
-    searchContainer.style.background = 'white';
-    searchContainer.style.boxShadow = '0 4px 14px rgba(15,23,42,0.08)';
-    searchContainer.style.padding = '10px 32px';
-    searchContainer.style.borderRadius = '0';
-    searchContainer.style.margin = '-32px -32px 15px -32px';
+    searchContainer.style.background = '';
+    searchContainer.style.boxShadow = '';
+    searchContainer.style.padding = '';
+    searchContainer.style.borderRadius = '';
+    searchContainer.style.margin = '';
     searchContainer.style.position = 'relative';
     searchContainer.style.justifyContent = '';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
-      <div id="barraTabsPanel" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; align-items:stretch; background:#eef2f7; border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 6px 16px rgba(15,23,42,0.10);">
-        <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 12px rgba(37,99,235,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#ffffff; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
+      <div class="saludo-bloque">
+        <span class="welcome-text">Bienvenido</span>
+        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+      </div>
+
+      <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
+      <div id="barraTabsPanel" style="display:none; position:absolute; left:32px; top:50%; transform:translateY(-50%); align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
+        <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
+        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#004EE0; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
         <button data-tabp="seguro" onclick="seleccionarTabPanelCasos('seguro')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-shield-alt"></i> Pacientes por Seguro</button>
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
 
-      <div style="margin-left: auto; display:flex; align-items:center; gap:12px;">
-
-        <div id="panelToolbar" style="flex:0 0 auto; display:flex; align-items:center; background:#eef2f7; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); padding:4px;">
+      <!-- Grupo derecho: Búsqueda + Descargar Base + píldora de fecha (izquierda vacía) -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
           <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:15px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+          <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-search"></i>
           </button>
         </div>
+        <div style="position:relative; flex:0 0 auto;">
+          <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
+            Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+          </button>
+          <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Top Exámenes</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Base del Mes</div>
+          </div>
+        </div>
 
-        <div style="width: 380px; padding-right: 5px;">
-          <div class="month-selector" id="barraMesesDinamicaPanel" style="background:#eef2f7; border:none; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); margin:0; position:relative;"></div>
+        <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fas fa-calendar-alt"></i>
+          <span id="textoFechaPanel">Mes Año</span>
+          <i class="fas fa-caret-down" style="opacity:0.85;"></i>
         </div>
       </div>
     `;
 
-    generarBarraMesesPanel();
+    aplicarSaludo();
+    actualizarPildoraFechaPanel();
     renderizarPacientesJunio(); // Forzamos el renderizado al entrar
     setTimeout(function() { seleccionarTabPanelCasos('examenes'); }, 50);
 }
@@ -1475,13 +1532,13 @@ function cambiarMesVistaPanel(direccion) {
   mesInicioBarraPanel += direccion;
   if (mesInicioBarraPanel > 11) { mesInicioBarraPanel = 0; anioBarraPanel++; }
   else if (mesInicioBarraPanel < 0) { mesInicioBarraPanel = 11; anioBarraPanel--; }
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
 }
 
 function activarMesFiltroPanel(mesIndex, anio) {
   mesPanelSeleccionado = mesIndex;
   anioPanelSeleccionado = anio;
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
   renderizarPacientesJunio(); // Actualiza los gráficos y listas al instante
 }
 
@@ -1535,7 +1592,7 @@ function seleccionarTabPanelCasos(tab) {
   const pill = document.getElementById('tabPanelPill');
   bar.querySelectorAll('button[data-tabp]').forEach(btn => {
     const activo = btn.getAttribute('data-tabp') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1554,7 +1611,7 @@ function seleccionarTabCalendario(tab) {
   const pill = document.getElementById('tabCalendarioPill');
   bar.querySelectorAll('button[data-tabc]').forEach(btn => {
     const activo = btn.getAttribute('data-tabc') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1612,14 +1669,14 @@ function generarBarraMesesPanel() {
     contenedor.style.position = 'relative';
     pill = document.createElement('div');
     pill.id = 'pillMesPanel';
-    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 12px rgba(37,99,235,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
+    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 12px rgba(0,78,224,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
     contenedor.appendChild(pill);
   }
 
   // Quitar los items viejos pero conservar la píldora
   Array.from(contenedor.querySelectorAll('.month-item')).forEach(n => n.remove());
 
-  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
+  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 10px rgba(0,78,224,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
   html += `<div class="month-item" style="flex: 0 0 40px;" onclick="cambiarMesVistaPanel(-1)"><i class="fas fa-chevron-left"></i></div>`;
 
   for (let i = 0; i < 3; i++) {
@@ -1645,7 +1702,44 @@ function generarBarraMesesPanel() {
   });
 }
 
-function abrirSelectorFechaPanel() {  
+// Actualiza la píldora con el mes y año seleccionados del Panel de Casos
+function actualizarPildoraFechaPanel() {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const el = document.getElementById('textoFechaPanel');
+  if (el) el.textContent = meses[mesPanelSeleccionado] + ' ' + anioPanelSeleccionado;
+}
+
+// Botón "Descargar Base" (Panel de Casos): despliega el menú con efecto cortina
+function descargarBasePanel(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  if (menu.dataset.abierto === 'true') {
+    cerrarMenuDescargarBase();
+  } else {
+    menu.style.maxHeight = '240px';
+    menu.style.opacity = '1';
+    menu.dataset.abierto = 'true';
+    setTimeout(function(){ document.addEventListener('click', cerrarMenuDescargarBaseFuera); }, 0);
+  }
+}
+function cerrarMenuDescargarBase() {
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  menu.style.maxHeight = '0';
+  menu.style.opacity = '0';
+  menu.dataset.abierto = 'false';
+  document.removeEventListener('click', cerrarMenuDescargarBaseFuera);
+}
+function cerrarMenuDescargarBaseFuera(e) {
+  const btn = document.getElementById('btnDescargarBase');
+  const menu = document.getElementById('menuDescargarBase');
+  if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+    cerrarMenuDescargarBase();
+  }
+}
+
+function abrirSelectorFechaPanel() {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];  
   const anioActualSistema = new Date().getFullYear();  
   const anioLimite = anioActualSistema + 5;   
@@ -1695,7 +1789,7 @@ function abrirSelectorFechaPanel() {
       mesInicioBarraPanel = result.value.mes > 0 ? result.value.mes - 1 : 11;
       if(result.value.mes === 0) anioBarraPanel--;
 
-      generarBarraMesesPanel(); 
+      actualizarPildoraFechaPanel(); 
       renderizarPacientesJunio(); 
     }  
   });  
@@ -1743,7 +1837,6 @@ function abrirSelectorFechaPanel() {
   renderizarListaMedicosPersonal();
   renderizarEjecutivosBloque8();
   renderizarMedicoLectorMes();
-  setTimeout(function() { setTabActivo('medico'); }, 40);
       google.script.run
   .withSuccessHandler(function(conteo) {
     const el1 = document.getElementById('conteoMedicosGenerales');
@@ -2904,7 +2997,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const lista = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
 
   const width = canvas.width;   // Ahora es 600
-  const height = canvas.height; // Ahora es 260
+  const height = canvas.height; // Ahora es 340
 
   if (lista.length === 0) {
     ctx.clearRect(0, 0, width, height);
@@ -3139,10 +3232,10 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
   const porcentajeTexto = Math.round(porcentajeReal * 100);
 
   // 2. Coordenadas y diseño ampliados para maximizar el espacio
-  const cx = 140;
-  const cy = 135; 
-  const radio = 100; // Aumentado (antes 80) para expandir el arco
-  const grosor = 45; // Aumentado (antes 35) para hacerlo más grueso
+  const cx = 160;
+  const cy = 165;
+  const radio = 115; // Aumentado para aprovechar el canvas más grande
+  const grosor = 48; // Ligeramente más grueso
 
   let startTime = null;
   const duration = 1200;
@@ -3159,19 +3252,19 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo completo del arco (Faltantes) -> Color #aec3b0
+    // Fondo completo del arco (Faltantes) -> Color #99CAFF
     ctx.beginPath();
     ctx.arc(cx, cy, radio, Math.PI, 2 * Math.PI);
-    ctx.strokeStyle = '#aec3b0';
+    ctx.strokeStyle = '#99CAFF';
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados) -> Color #375534
+    // Progreso superpuesto (Completados) -> Color #004EE0
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = '#375534';
+      ctx.strokeStyle = '#004EE0';
       ctx.lineWidth = grosor;
       ctx.stroke();
     }
@@ -3179,14 +3272,15 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
     ctx.fillStyle = '#2b1070';
-    ctx.font = '900 46px Verdana, sans-serif'; // Porcentaje mucho más grande
+    ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(currentPorcentaje + '%', cx, cy - 12);
-    
+    ctx.textBaseline = 'middle';
+    ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
+
     ctx.fillStyle = '#64748b';
-    ctx.font = '800 12px sans-serif'; // Letra inferior ligeramente más grande
-    ctx.fillText('COMPLETADOS', cx, cy + 18);
+    ctx.font = '700 13px sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('COMPLETADOS', cx, cy + 12);
 
     if (progress < 1) {
       animacionMedioAnilloId = requestAnimationFrame(animar);
@@ -3240,7 +3334,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
   }
 
   // 3. Paleta de colores clínicos solicitada
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
+  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
   
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   
@@ -3395,7 +3489,7 @@ function verDetallesExamenesTop() {
   }
 
   // 4. Paleta de colores
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
+  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
 
   // 5. Construir la lista HTML detallada
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
@@ -4567,7 +4661,7 @@ function setTabActivo(tab) {
   const pill = document.getElementById('tabPersonalPill');
   bar.querySelectorAll('button[data-tab]').forEach(btn => {
     const activo = btn.getAttribute('data-tab') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -4579,7 +4673,6 @@ function setTabActivo(tab) {
 }
 
 function seleccionarTabPersonal(tab) {
-  setTabActivo(tab);
   if (tab === 'medico') abrirModalMedico();
   else if (tab === 'ejecutivo') abrirModalEjecutivos();
   else if (tab === 'busqueda') toggleBuscadorMedico();
@@ -5028,7 +5121,7 @@ function renderModalEjecutivos(listas) {
       +     '<span style="font-family:monospace; font-size:14px; font-weight:700; color:#475569; letter-spacing:2px; text-align:right;">'
       +       '••••••'
       +     '</span>'
-      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#2563eb; font-size:13px; width:18px; text-align:center;"></i>'
+      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#004EE0; font-size:13px; width:18px; text-align:center;"></i>'
       +     '<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>'
       +   '</div>'
       + '</div>';
