@@ -1530,6 +1530,7 @@ body.dark .table-card {
   background: #12141C;
   border: 1px solid rgba(255,255,255,0.07);
   box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  padding: 20px !important;
 }
 
 body.dark .table-title {
@@ -1563,6 +1564,9 @@ body.dark .table-card .custom-table td {
   border-bottom: 1px solid rgba(255,255,255,0.05);
   color: #C9D1E9;
   font-size: 14px;
+}
+body.dark .table-card .custom-table tbody tr:last-child td {
+  border-bottom: none;
 }
 body.dark .table-card .custom-table tbody tr:hover td {
   background: rgba(255,255,255,0.04);
