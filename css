@@ -29,20 +29,20 @@
   --dashboard-bg: var(--bg);
 }
 body.dark{
-  /* Paleta azul (modo oscuro) */
-  --bg:        #021B4D;
-  --surface:   #042E7B;
-  --accent:    #99CAFF;
-  --accent-2:  #004EE0;
-  --accent-dk: #042E7B;
-  --on-accent: #042E7B;
-  --on-accent-2: #FFFFFF;
-  --text:      #E3F2FF;
-  --text-soft: #99CAFF;
-  --card-bg:    linear-gradient(145deg,#004EE0,#042E7B);
-  --card-text:  #FFFFFF;
-  --card-soft:  rgba(227,242,255,0.85);
-  --card-arrow: rgba(255,255,255,0.35);
+  /* Deep Slate (modo oscuro) */
+  --bg:        #0F172A;
+  --surface:   #1E293B;
+  --accent:    #3B82F6;
+  --accent-2:  #60A5FA;
+  --accent-dk: #1E40AF;
+  --on-accent: #FFFFFF;
+  --on-accent-2: #F1F5F9;
+  --text:      #F1F5F9;
+  --text-soft: #94A3B8;
+  --card-bg:   #1E293B;
+  --card-text: #F1F5F9;
+  --card-soft: #94A3B8;
+  --card-arrow: #334155;
 }
 
 body {
@@ -1471,87 +1471,87 @@ body .swal2-container {
 }
 
 /* ================================================================
-   DARK MODE — CUADROS BLANCOS → AZUL OSCURO, TEXTO BLANCO
+   DARK MODE — CUADROS BLANCOS → DEEP SLATE, TEXTO CLARO
    ================================================================ */
 
 body.dark .table-card {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9;
 }
-body.dark .table-title { color: #99CAFF; }
+body.dark .table-title { color: #60A5FA; }
 body.dark .custom-table th {
-  background: #021B4D !important;
-  color: #99CAFF;
-  border-color: #0a3d99;
+  background: #263548 !important;
+  color: #60A5FA;
+  border-color: #334155;
 }
 body.dark .custom-table td {
-  border-color: #0a3d99;
-  color: #E3F2FF;
+  border-color: #334155;
+  color: #F1F5F9;
 }
-body.dark .row-main-text { color: #E3F2FF !important; }
-body.dark .row-sub-text { color: #99CAFF !important; }
-body.dark .patient-name-click { color: #99CAFF !important; }
-body.dark .pagination-container { border-color: #0a3d99; }
-body.dark .pagination-info { color: #99CAFF; }
+body.dark .row-main-text { color: #F1F5F9 !important; }
+body.dark .row-sub-text { color: #94A3B8 !important; }
+body.dark .patient-name-click { color: #60A5FA !important; }
+body.dark .pagination-container { border-color: #334155; }
+body.dark .pagination-info { color: #94A3B8; }
 
 /* Thead inline del main table */
-body.dark .table-card thead { background: #021B4D !important; }
+body.dark .table-card thead { background: #263548 !important; }
 body.dark .table-card .search-container { background: var(--surface); }
 
 /* Modal */
 body.dark .modal-content {
-  background: #042E7B !important;
-  color: #E3F2FF;
+  background: #1E293B !important;
+  color: #F1F5F9;
 }
-body.dark .modal-title { color: #99CAFF; }
-body.dark .modal-header-inline { border-color: #0a3d99; }
-body.dark .form-group label { color: #99CAFF; }
+body.dark .modal-title { color: #60A5FA; }
+body.dark .modal-header-inline { border-color: #334155; }
+body.dark .form-group label { color: #94A3B8; }
 body.dark .form-group input,
 body.dark .form-group select,
 body.dark .form-group textarea {
-  background: #021B4D !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #263548 !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark .form-group input:focus,
 body.dark .form-group select:focus,
-body.dark .form-group textarea:focus { border-color: #99CAFF !important; }
+body.dark .form-group textarea:focus { border-color: #60A5FA !important; }
 body.dark .btn-secondary {
-  background: #021B4D !important;
-  color: #99CAFF !important;
-  border-color: #0a3d99 !important;
+  background: #263548 !important;
+  color: #60A5FA !important;
+  border-color: #334155 !important;
 }
 
 /* Cards de estadísticas */
 body.dark .stats-card,
 body.dark .stats-card-demo {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
-body.dark .stats-number { color: #99CAFF; }
-body.dark .stats-label { color: #E3F2FF; }
-body.dark .stats-icon { background: #021B4D !important; color: #99CAFF; }
-body.dark .stats-chart-card { background: #042E7B !important; border-color: #0a3d99 !important; }
-body.dark .stats-chart-header { color: #99CAFF; }
+body.dark .stats-number { color: #60A5FA; }
+body.dark .stats-label { color: #F1F5F9; }
+body.dark .stats-icon { background: #263548 !important; color: #60A5FA; }
+body.dark .stats-chart-card { background: #1E293B !important; border-color: #334155 !important; }
+body.dark .stats-chart-header { color: #60A5FA; }
 body.dark .stats-box-large,
 body.dark .stats-box-donut,
 body.dark .stats-box-calendar,
 body.dark .stats-box-traffic {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
-body.dark .chart-label { color: #99CAFF; }
-body.dark .chart-value { color: #99CAFF; }
-body.dark .chart-bar-bg { background: #021B4D; }
-body.dark .legend-item { color: #E3F2FF; }
+body.dark .chart-label { color: #94A3B8; }
+body.dark .chart-value { color: #60A5FA; }
+body.dark .chart-bar-bg { background: #263548; }
+body.dark .legend-item { color: #F1F5F9; }
 
 /* Search box */
-body.dark .search-box { background: #021B4D !important; }
-body.dark .search-box input { color: #E3F2FF !important; }
-body.dark .search-icon { color: #99CAFF; }
+body.dark .search-box { background: #263548 !important; }
+body.dark .search-box input { color: #F1F5F9 !important; }
+body.dark .search-icon { color: #94A3B8; }
 
 /* ================================================================
    DARK MODE — TARJETAS INLINE (Panel de Casos, Estadísticas, etc.)
@@ -1560,82 +1560,82 @@ body.dark .search-icon { color: #99CAFF; }
 /* Estadísticas - panel del médico */
 body.dark #panelMedico div[style*="background:white"],
 body.dark #panelMedico div[style*="background: white"] {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark #panelMedico div[style*="background: #f1f5f9"],
 body.dark #panelMedico div[style*="background:#f1f5f9"] {
-  background: #021B4D !important;
+  background: #263548 !important;
 }
 body.dark #panelMedico thead[style*="background: #f1f5f9"],
 body.dark #panelMedico thead[style*="background:#f1f5f9"] {
-  background: #021B4D !important;
+  background: #263548 !important;
 }
-body.dark #panelMedico th { color: #99CAFF !important; }
-body.dark #panelMedico td { color: #E3F2FF !important; border-color: #0a3d99 !important; }
+body.dark #panelMedico th { color: #60A5FA !important; }
+body.dark #panelMedico td { color: #F1F5F9 !important; border-color: #334155 !important; }
 
 /* Panel de Casos */
 body.dark #vistaPanelCasos div[style*="background: white"],
 body.dark #vistaPanelCasos div[style*="background:white"] {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark #vistaPanelCasos div[style*="background: #f8fafc"],
 body.dark #vistaPanelCasos div[style*="background:#f8fafc"] {
-  background: #021B4D !important;
-  color: #99CAFF !important;
+  background: #263548 !important;
+  color: #94A3B8 !important;
 }
 
 /* Filas de pacientes */
 body.dark .tira-paciente {
-  background: #042E7B !important;
-  border-bottom-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-bottom-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark .tira-paciente:hover {
-  background: #063a99 !important;
-  box-shadow: inset 4px 0 0 #99CAFF !important;
+  background: #263548 !important;
+  box-shadow: inset 4px 0 0 #60A5FA !important;
 }
 body.dark .dropdown-acciones {
-  background: #021B4D !important;
-  border-color: #0a3d99 !important;
+  background: #263548 !important;
+  border-color: #334155 !important;
 }
-body.dark .dropdown-item { color: #E3F2FF !important; }
-body.dark .dropdown-item:hover { background: #042E7B !important; color: #99CAFF !important; }
+body.dark .dropdown-item { color: #F1F5F9 !important; }
+body.dark .dropdown-item:hover { background: #1E293B !important; color: #60A5FA !important; }
 body.dark .dropdown-item.item-danger:hover { background: #3b0000 !important; color: #fca5a5 !important; }
 
 /* Calendario */
 body.dark #vistaBaseDashboard div[style*="background: white"],
 body.dark #vistaBaseDashboard div[style*="background:white"] {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark #vistaBaseDashboard div[style*="background: #f8fafc"] {
-  background: #021B4D !important;
+  background: #263548 !important;
 }
 
 /* Registro de Personal */
 body.dark #vistaRegistroPersonal div[style*="background:white"],
 body.dark #vistaRegistroPersonal div[style*="background: white"] {
-  background: #042E7B !important;
-  border-color: #0a3d99 !important;
-  color: #E3F2FF !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
 }
 body.dark #vistaRegistroPersonal div[style*="background:#f8fafc"],
 body.dark #vistaRegistroPersonal div[style*="background: #f8fafc"] {
-  background: #021B4D !important;
-  color: #99CAFF !important;
+  background: #263548 !important;
+  color: #94A3B8 !important;
 }
-body.dark #bloque7 { background: #042E7B !important; color: #E3F2FF !important; }
+body.dark #bloque7 { background: #1E293B !important; color: #F1F5F9 !important; }
 
 /* Tabla top médicos (Registro de Exámenes) */
-body.dark #barrasTopMedicos th { color: #99CAFF !important; }
-body.dark #barrasTopMedicos td { color: #E3F2FF !important; }
-body.dark #barrasTopMedicos td:last-child { color: #99CAFF !important; }
-body.dark #barrasTopMedicos tr { border-bottom-color: #0a3d99 !important; }
+body.dark #barrasTopMedicos th { color: #60A5FA !important; }
+body.dark #barrasTopMedicos td { color: #F1F5F9 !important; }
+body.dark #barrasTopMedicos td:last-child { color: #60A5FA !important; }
+body.dark #barrasTopMedicos tr { border-bottom-color: #334155 !important; }
 
 /* ================================================================
    DARK MODE — BOTONES E ICONOS (invertidos = fondo sólido)
@@ -1671,9 +1671,9 @@ body.dark .btn-nav:not(:disabled):hover {
   transform: translateY(-1px);
 }
 body.dark .btn-nav:disabled {
-  background: #021B4D !important;
-  color: #0a3d99 !important;
-  border-color: #021B4D !important;
+  background: #1E293B !important;
+  color: #334155 !important;
+  border-color: #1E293B !important;
   opacity: 0.5;
 }
 
@@ -1684,18 +1684,18 @@ body.dark .btn-nav:disabled {
    ================================================================ */
 
 body.dark .month-selector {
-  background: #021B4D !important;
-  border-color: #0a3d99 !important;
+  background: #1E293B !important;
+  border-color: #334155 !important;
 }
-body.dark .month-item { color: #99CAFF; }
+body.dark .month-item { color: #60A5FA; }
 body.dark .month-item:hover:not(.active) {
-  background: #042E7B !important;
-  color: #E3F2FF !important;
+  background: #263548 !important;
+  color: #F1F5F9 !important;
 }
 body.dark #barraMesesDinamica .month-item.active {
-  background: #99CAFF !important;
-  color: #042E7B !important;
-  box-shadow: 0 2px 6px rgba(153, 202, 255, 0.35) !important;
+  background: #60A5FA !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 6px rgba(96, 165, 250, 0.35) !important;
 }
 
 </style>

@@ -2175,7 +2175,7 @@ function abrirSelectorFechaPanel() {
     }
 
     const isDark = document.body.classList.contains('dark');
-    const colorSolicitados = isDark ? '#99CAFF' : '#2b1070';
+    const colorSolicitados = isDark ? '#60A5FA' : '#2b1070';
     const colorLeidos = '#10b981';
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
@@ -2224,7 +2224,7 @@ function abrirSelectorFechaPanel() {
       }
 
       // 3. Dibujar textos centrales (tamaños ajustados al nuevo anillo)
-      ctx.fillStyle = isDark ? '#E3F2FF' : '#2b1070';
+      ctx.fillStyle = isDark ? '#F1F5F9' : '#2b1070';
       ctx.font = 'bold 38px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2850,7 +2850,7 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     ctx.stroke();
     
     const isDarkEmpty = document.body.classList.contains('dark');
-    ctx.fillStyle = isDarkEmpty ? '#E3F2FF' : '#1e293b';
+    ctx.fillStyle = isDarkEmpty ? '#F1F5F9' : '#1e293b';
     ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -2945,7 +2945,7 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
 
     // 3. TEXTO DEL MES EN EL CENTRO
     const isDark = document.body.classList.contains('dark');
-    ctx.fillStyle = isDark ? '#E3F2FF' : '#1e293b';
+    ctx.fillStyle = isDark ? '#F1F5F9' : '#1e293b';
     ctx.font = 'bold 26px sans-serif'; // Letra grande y limpia
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -3069,7 +3069,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       const widthVisible = Math.max(barW, 4);
 
       // 1. Dibujar NOMBRE
-      ctx.fillStyle = isDark ? '#99CAFF' : '#475569';
+      ctx.fillStyle = isDark ? '#94A3B8' : '#475569';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
@@ -3111,7 +3111,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(leftArea, startY - 8);
     ctx.lineTo(leftArea, startY + (barHeight * barCount) + 8);
-    ctx.strokeStyle = isDark ? '#99CAFF' : '#bae6fd';
+    ctx.strokeStyle = isDark ? '#60A5FA' : '#bae6fd';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3276,32 +3276,32 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const isDark = document.body.classList.contains('dark');
-    // Fondo completo del arco (Faltantes): claro=#99CAFF, oscuro=#004EE0
+    // Fondo completo del arco (Faltantes): claro=#99CAFF, oscuro=#1E40AF
     ctx.beginPath();
     ctx.arc(cx, cy, radio, Math.PI, 2 * Math.PI);
-    ctx.strokeStyle = isDark ? '#004EE0' : '#99CAFF';
+    ctx.strokeStyle = isDark ? '#1E40AF' : '#99CAFF';
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados): claro=#004EE0, oscuro=#99CAFF
+    // Progreso superpuesto (Completados): claro=#004EE0, oscuro=#60A5FA
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = isDark ? '#99CAFF' : '#004EE0';
+      ctx.strokeStyle = isDark ? '#60A5FA' : '#004EE0';
       ctx.lineWidth = grosor;
       ctx.stroke();
     }
 
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
-    ctx.fillStyle = isDark ? '#E3F2FF' : '#2b1070';
+    ctx.fillStyle = isDark ? '#F1F5F9' : '#2b1070';
     ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
 
-    ctx.fillStyle = isDark ? '#99CAFF' : '#64748b';
+    ctx.fillStyle = isDark ? '#94A3B8' : '#64748b';
     ctx.font = '700 13px sans-serif';
     ctx.textBaseline = 'top';
     ctx.fillText('COMPLETADOS', cx, cy + 12);
@@ -3360,7 +3360,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
   // 3. Paleta de colores: azul oscuro en claro, azul claro en oscuro
   const isDark = document.body.classList.contains('dark');
   const colores = isDark
-    ? ['#E3F2FF', '#99CAFF', '#1883FF', '#004EE0', '#042E7B']
+    ? ['#F1F5F9', '#60A5FA', '#3B82F6', '#1E40AF', '#0F172A']
     : ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
   
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
@@ -3394,7 +3394,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(startX, height - bottomArea);
     ctx.lineTo(width - 20, height - bottomArea);
-    ctx.strokeStyle = isDark ? '#0a3d99' : '#e2e8f0';
+    ctx.strokeStyle = isDark ? '#334155' : '#e2e8f0';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3441,7 +3441,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       }
 
       // Dibujar el nombre del examen abajo
-      ctx.fillStyle = isDark ? '#99CAFF' : '#475569';
+      ctx.fillStyle = isDark ? '#94A3B8' : '#475569';
       ctx.font = '800 12px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
