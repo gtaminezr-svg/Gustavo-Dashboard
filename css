@@ -1657,5 +1657,86 @@ body.dark .table-card .insurance-badge-box.bg-eps {
   border-color: #475569;
 }
 
+/* ================================================================
+   DARK MODE — MODAL (+Nuevo Registro / Ficha Clínica)
+   ================================================================ */
+
+body.dark .modal-overlay {
+  background: rgba(5, 8, 18, 0.75);
+}
+
+body.dark .modal-content {
+  background: #12141C;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.60);
+}
+
+body.dark .modal-header-inline {
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+
+body.dark .modal-title {
+  color: #FFFFFF;
+}
+
+body.dark .form-group label {
+  color: #6B7490;
+}
+
+/* Inputs, selects y textareas: fondo gris-azulado como en la imagen */
+body.dark .form-group input,
+body.dark .form-group select,
+body.dark .form-group textarea {
+  background: #1C2033 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  color: #C9D1E9 !important;
+  border-radius: 8px;
+}
+body.dark .form-group input::placeholder,
+body.dark .form-group textarea::placeholder {
+  color: #3D4566;
+}
+body.dark .form-group input:focus,
+body.dark .form-group select:focus,
+body.dark .form-group textarea:focus {
+  border-color: #4F8EF7 !important;
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.15) !important;
+  background: #1E2438 !important;
+}
+
+/* Botón cancelar/secundario */
+body.dark .btn-secondary {
+  background: rgba(255,255,255,0.06) !important;
+  color: #C9D1E9 !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+body.dark .btn-secondary:hover {
+  background: rgba(255,255,255,0.12) !important;
+  color: #FFFFFF !important;
+}
+
+/* Botón Editar Ficha */
+body.dark .btn-inline-edit {
+  background: rgba(79,142,247,0.15);
+  color: #7BA7F5;
+  border: 1px solid rgba(79,142,247,0.30);
+}
+body.dark .btn-inline-edit:hover {
+  background: rgba(79,142,247,0.25);
+  color: #FFFFFF;
+}
+
+/* Botón Guardar (btn-primary dentro del modal) */
+body.dark .modal-content .btn-primary {
+  background: linear-gradient(135deg, #3B5FD9, #5B3DB8);
+  border: none;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(59,95,217,0.40);
+}
+body.dark .modal-content .btn-primary:hover {
+  background: linear-gradient(135deg, #4A70E8, #6B4DC8);
+  box-shadow: 0 6px 18px rgba(59,95,217,0.55);
+}
+
 
 </style>
