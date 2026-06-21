@@ -29,20 +29,20 @@
   --dashboard-bg: var(--bg);
 }
 body.dark{
-  /* Midnight Navy — elegante (referencia dashboards premium) */
-  --bg:        #0A0E1A;
-  --surface:   #111A2E;
-  --accent:    #4F8EF7;
-  --accent-2:  #8B5CF6;
-  --accent-dk: #1E3A8A;
-  --on-accent: #FFFFFF;
-  --on-accent-2: #F1F5F9;
-  --text:      #F1F5F9;
-  --text-soft: #94A3C4;
-  --card-bg:   linear-gradient(145deg,#1C2A4A 0%,#141D33 100%);
-  --card-text: #FFFFFF;
-  --card-soft: #94A3C4;
-  --card-arrow: #3B4A66;
+  /* Paleta azul (modo oscuro) */
+  --bg:        #021B4D;
+  --surface:   #042E7B;
+  --accent:    #99CAFF;
+  --accent-2:  #004EE0;
+  --accent-dk: #042E7B;
+  --on-accent: #042E7B;
+  --on-accent-2: #FFFFFF;
+  --text:      #E3F2FF;
+  --text-soft: #99CAFF;
+  --card-bg:    linear-gradient(145deg,#004EE0,#042E7B);
+  --card-text:  #FFFFFF;
+  --card-soft:  rgba(227,242,255,0.85);
+  --card-arrow: rgba(255,255,255,0.35);
 }
 
 body {
@@ -110,13 +110,13 @@ body {
 .rail-hamburger{
   width:38px; height:38px;
   flex-shrink:0;
-  border:1.5px solid var(--accent); border-radius:12px;
-  background:transparent; color:var(--accent);
+  border:none; border-radius:12px;
+  background:#f1f5f9; color:#475569;
   cursor:pointer; font-size:15px;
   display:flex; align-items:center; justify-content:center;
   transition:.2s;
 }
-.rail-hamburger:hover{ background:var(--accent); color:var(--on-accent); }
+.rail-hamburger:hover{ background:#e2e8f0; }
 
 /* Menú */
 nav {
@@ -313,9 +313,9 @@ body.dark .welcome-text{
 }
 
 .btn-refresh {
-  background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
+  background: white;
+  color: #2d1b69;
+  border: 1px solid #e2e8f0;
   padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
@@ -323,9 +323,8 @@ body.dark .welcome-text{
 }
 
 .btn-refresh:hover {
-  background: var(--accent);
-  color: var(--on-accent);
-  border-color: var(--accent);
+  background: #f1f3f9;
+  border-color: #2d1b69;
 }
 
 .cards-row-container {
@@ -407,20 +406,19 @@ body.dark .welcome-text{
 }
 
 .btn-primary {
-  background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
+  background: #2d1b69;
+  color: white;
+  border: none;
   padding: 12px 20px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
 .btn-primary:hover {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: #1e114a;
 }
 
 .table-responsive {
@@ -474,9 +472,9 @@ body.dark .welcome-text{
 }
 
 .btn-table-view {
-  background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
+  background: #f1f5f9;
+  color: #2d1b69;
+  border: 1px solid #cbd5e1;
   padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
@@ -489,9 +487,9 @@ body.dark .welcome-text{
 }
 
 .btn-table-view:hover {
-  background: var(--accent);
-  color: var(--on-accent);
-  border-color: var(--accent);
+  background: #2d1b69;
+  color: white;
+  border-color: #2d1b69;
 }
 
 .badge {
@@ -532,12 +530,12 @@ body.dark .welcome-text{
 
 .btn-nav {
   padding: 8px 16px;
-  border: 1.5px solid var(--accent);
-  background: transparent;
+  border: 1px solid #e2e8f0;
+  background: white;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
-  color: var(--accent);
+  color: #334155;
 
   transition:
     background-color 0.2s ease,
@@ -548,17 +546,16 @@ body.dark .welcome-text{
 
 /* EFECTO HOVER */
 .btn-nav:not(:disabled):hover {
-  background: var(--accent);
-  color: var(--on-accent);
-  border-color: var(--accent);
+  background: #2d1b69;
+  color: white;
+  border-color: #2d1b69;
   transform: translateY(-1px);
 }
 
 /* BOTONES DESACTIVADOS */
 .btn-nav:disabled {
-  background: transparent;
+  background: #f8fafc;
   color: #cbd5e1;
-  border-color: #e2e8f0;
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -614,9 +611,9 @@ body.dark .welcome-text{
 }
 
 .btn-inline-edit {
-  background: transparent;
-  color: var(--accent);
-  border: 1.5px solid var(--accent);
+  background: #fff;
+  color: #2d1b69;
+  border: 1px solid #2d1b69;
   padding: 8px 14px;
   border-radius: 8px;
   font-weight: 600;
@@ -626,8 +623,8 @@ body.dark .welcome-text{
 }
 
 .btn-inline-edit:hover {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: #2d1b69;
+  color: white;
 }
 
 .form-grid {
@@ -1470,271 +1467,5 @@ body .swal2-container {
   }
 }
 
-/* ================================================================
-   DARK MODE — MIDNIGHT NAVY ELEGANTE
-   Fondo con degradado profundo + cards con glow suave y bordes finos
-   ================================================================ */
-
-/* Fondo general con degradado radial (luz arriba-centro, oscuro a los bordes) */
-body.dark {
-  background: radial-gradient(130% 100% at 50% -15%, #1A2747 0%, #0C1222 45%, #070B14 100%) fixed !important;
-  color: #F1F5F9;
-}
-
-/* Sidebar y topbar con tono navy translúcido */
-body.dark .sidebar {
-  background: linear-gradient(180deg, #131D33 0%, #0E1626 100%) !important;
-  border-right: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 0 40px rgba(0,0,0,0.4);
-}
-
-/* ----- CARD ELEGANTE (degradado + borde fino + glow) ----- */
-body.dark .table-card,
-body.dark .stats-chart-card,
-body.dark .stats-box-large,
-body.dark .stats-box-donut,
-body.dark .stats-box-calendar,
-body.dark .stats-box-traffic,
-body.dark .modal-content {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-
-body.dark .table-title { color: #FFFFFF; font-weight: 700; }
-body.dark .custom-table th {
-  background: rgba(255,255,255,0.03) !important;
-  color: #94A3C4;
-  border-color: rgba(255,255,255,0.06);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-size: 12px;
-}
-body.dark .custom-table td {
-  border-color: rgba(255,255,255,0.06);
-  color: #E6ECF7;
-}
-body.dark .custom-table tbody tr:hover { background: rgba(79,142,247,0.08) !important; }
-body.dark .row-main-text { color: #FFFFFF !important; }
-body.dark .row-sub-text { color: #94A3C4 !important; }
-body.dark .patient-name-click { color: #5B9DF9 !important; }
-body.dark .pagination-container { border-color: rgba(255,255,255,0.06); }
-body.dark .pagination-info { color: #94A3C4; }
-
-/* Thead inline del main table */
-body.dark .table-card thead { background: rgba(255,255,255,0.03) !important; }
-body.dark .table-card .search-container { background: transparent; }
-
-/* Modal */
-body.dark .modal-content { box-shadow: 0 24px 60px rgba(0,0,0,0.55) !important; }
-body.dark .modal-title { color: #FFFFFF; }
-body.dark .modal-header-inline { border-color: rgba(255,255,255,0.08); }
-body.dark .form-group label { color: #94A3C4; }
-body.dark .form-group input,
-body.dark .form-group select,
-body.dark .form-group textarea {
-  background: rgba(10,16,30,0.6) !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-  border-radius: 10px !important;
-  color: #F1F5F9 !important;
-}
-body.dark .form-group input:focus,
-body.dark .form-group select:focus,
-body.dark .form-group textarea:focus {
-  border-color: #4F8EF7 !important;
-  box-shadow: 0 0 0 3px rgba(79,142,247,0.18) !important;
-}
-body.dark .btn-secondary {
-  background: rgba(255,255,255,0.06) !important;
-  color: #C7D3EC !important;
-  border: 1px solid rgba(255,255,255,0.12) !important;
-}
-body.dark .btn-secondary:hover { background: rgba(255,255,255,0.12) !important; }
-
-/* ----- Cards de estadísticas (las pequeñas con números grandes) ----- */
-body.dark .stats-card,
-body.dark .stats-card-demo {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-body.dark .stats-number { color: #FFFFFF; font-weight: 800; }
-body.dark .stats-label { color: #94A3C4; }
-body.dark .stats-icon {
-  background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(139,92,246,0.25)) !important;
-  color: #8FB8FF;
-  box-shadow: 0 4px 14px rgba(79,142,247,0.20);
-}
-body.dark .stats-chart-header { color: #FFFFFF; }
-body.dark .chart-label { color: #94A3C4; }
-body.dark .chart-value { color: #FFFFFF; }
-body.dark .chart-bar-bg { background: rgba(255,255,255,0.06); }
-body.dark .legend-item { color: #C7D3EC; }
-
-/* Search box */
-body.dark .search-box {
-  background: rgba(10,16,30,0.6) !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-}
-body.dark .search-box input { color: #F1F5F9 !important; }
-body.dark .search-icon { color: #94A3C4; }
-
-/* ================================================================
-   DARK MODE — TARJETAS INLINE (Panel de Casos, Estadísticas, etc.)
-   ================================================================ */
-
-/* Estadísticas - panel del médico */
-body.dark #panelMedico div[style*="background:white"],
-body.dark #panelMedico div[style*="background: white"] {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-body.dark #panelMedico div[style*="background: #f1f5f9"],
-body.dark #panelMedico div[style*="background:#f1f5f9"] {
-  background: rgba(255,255,255,0.04) !important;
-}
-body.dark #panelMedico thead[style*="background: #f1f5f9"],
-body.dark #panelMedico thead[style*="background:#f1f5f9"] {
-  background: rgba(255,255,255,0.04) !important;
-}
-body.dark #panelMedico th { color: #94A3C4 !important; }
-body.dark #panelMedico td { color: #E6ECF7 !important; border-color: rgba(255,255,255,0.06) !important; }
-
-/* Panel de Casos */
-body.dark #vistaPanelCasos div[style*="background: white"],
-body.dark #vistaPanelCasos div[style*="background:white"] {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-body.dark #vistaPanelCasos div[style*="background: #f8fafc"],
-body.dark #vistaPanelCasos div[style*="background:#f8fafc"] {
-  background: rgba(255,255,255,0.04) !important;
-  color: #94A3C4 !important;
-}
-
-/* Filas de pacientes */
-body.dark .tira-paciente {
-  background: rgba(255,255,255,0.02) !important;
-  border-bottom-color: rgba(255,255,255,0.06) !important;
-  color: #E6ECF7 !important;
-}
-body.dark .tira-paciente:hover {
-  background: rgba(79,142,247,0.10) !important;
-  box-shadow: inset 4px 0 0 #4F8EF7 !important;
-}
-body.dark .dropdown-acciones {
-  background: #16213A !important;
-  border: 1px solid rgba(255,255,255,0.10) !important;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
-}
-body.dark .dropdown-item { color: #E6ECF7 !important; }
-body.dark .dropdown-item:hover { background: rgba(79,142,247,0.12) !important; color: #FFFFFF !important; }
-body.dark .dropdown-item.item-danger:hover { background: rgba(220,38,38,0.18) !important; color: #fca5a5 !important; }
-
-/* Calendario */
-body.dark #vistaBaseDashboard div[style*="background: white"],
-body.dark #vistaBaseDashboard div[style*="background:white"] {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-body.dark #vistaBaseDashboard div[style*="background: #f8fafc"] {
-  background: rgba(255,255,255,0.04) !important;
-}
-
-/* Registro de Personal */
-body.dark #vistaRegistroPersonal div[style*="background:white"],
-body.dark #vistaRegistroPersonal div[style*="background: white"] {
-  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 18px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-  color: #F1F5F9 !important;
-}
-body.dark #vistaRegistroPersonal div[style*="background:#f8fafc"],
-body.dark #vistaRegistroPersonal div[style*="background: #f8fafc"] {
-  background: rgba(255,255,255,0.04) !important;
-  color: #94A3C4 !important;
-}
-body.dark #bloque7 { background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important; color: #F1F5F9 !important; }
-
-/* Tabla top médicos (Registro de Exámenes) */
-body.dark #barrasTopMedicos th { color: #94A3C4 !important; }
-body.dark #barrasTopMedicos td { color: #E6ECF7 !important; }
-body.dark #barrasTopMedicos td:last-child { color: #5B9DF9 !important; font-weight: 700; }
-body.dark #barrasTopMedicos tr { border-bottom-color: rgba(255,255,255,0.06) !important; }
-
-/* ================================================================
-   DARK MODE — BOTONES E ICONOS (degradado azul→violeta con glow)
-   ================================================================ */
-
-body.dark .btn-table-view,
-body.dark .btn-refresh,
-body.dark .btn-inline-edit,
-body.dark .rail-hamburger,
-body.dark .btn-primary {
-  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
-  color: #FFFFFF !important;
-  border: 1px solid transparent !important;
-  box-shadow: 0 6px 18px rgba(79,142,247,0.35) !important;
-}
-body.dark .btn-table-view:hover,
-body.dark .btn-refresh:hover,
-body.dark .btn-inline-edit:hover,
-body.dark .rail-hamburger:hover,
-body.dark .btn-primary:hover {
-  background: linear-gradient(135deg, #5B9DF9 0%, #8B5CF6 100%) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(110,108,248,0.45) !important;
-  transform: translateY(-1px);
-}
-body.dark .btn-nav:not(:disabled) {
-  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
-  color: #FFFFFF !important;
-  border: 1px solid transparent !important;
-  box-shadow: 0 6px 18px rgba(79,142,247,0.35) !important;
-}
-body.dark .btn-nav:not(:disabled):hover {
-  background: linear-gradient(135deg, #5B9DF9 0%, #8B5CF6 100%) !important;
-  color: #FFFFFF !important;
-  transform: translateY(-1px);
-}
-body.dark .btn-nav:disabled {
-  background: rgba(255,255,255,0.05) !important;
-  color: rgba(255,255,255,0.25) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-  opacity: 1;
-}
-
-/* ================================================================
-   DARK MODE — BARRA DE MESES (Registro de Exámenes Top 6)
-   ================================================================ */
-
-body.dark .month-selector {
-  background: rgba(10,16,30,0.5) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
-}
-body.dark .month-item { color: #94A3C4; }
-body.dark .month-item:hover:not(.active) {
-  background: rgba(255,255,255,0.06) !important;
-  color: #FFFFFF !important;
-}
-body.dark #barraMesesDinamica .month-item.active {
-  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(79,142,247,0.40) !important;
-}
 
 </style>
