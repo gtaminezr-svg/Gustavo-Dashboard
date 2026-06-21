@@ -1592,6 +1592,48 @@ body.dark .rail-hamburger:hover {
   color: #7BA7F5 !important;
   border-color: rgba(123,167,245,0.35) !important;
 }
+
+/* ================================================================
+   DARK MODE — BLOQUES DE ESTADÍSTICAS Y PANEL DE CASOS
+   ================================================================ */
+body.dark .stats-card-demo,
+body.dark .dash-block {
+  background: #161929 !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.40) !important;
+}
+
+/* Labels / títulos de sección (gris muted) */
+body.dark .stats-card-demo [style*="color:#64748b"],
+body.dark .stats-card-demo [style*="color: #64748b"],
+body.dark .dash-block [style*="color:#64748b"],
+body.dark .dash-block [style*="color: #64748b"] { color: #5B6585 !important; }
+
+body.dark .stats-card-demo [style*="color:#94a3b8"],
+body.dark .stats-card-demo [style*="color: #94a3b8"],
+body.dark .dash-block [style*="color:#94a3b8"],
+body.dark .dash-block [style*="color: #94a3b8"] { color: #5B6585 !important; }
+
+/* Números principales oscuros → azul claro */
+body.dark #statMedicoSolicitados,
+body.dark #totalPacientesMesPanel,
+body.dark .dash-block [style*="color:#2b1070"],
+body.dark .stats-card-demo [style*="color:#2b1070"] { color: #7BA7F5 !important; }
+
+/* Texto informativo dentro de bloques */
+body.dark .dash-block [style*="color:#1e293b"],
+body.dark .dash-block [style*="color: #1e293b"] { color: #C9D1E9 !important; }
+
+/* Thead de tabla interna del bloque */
+body.dark .dash-block thead[style*="background: #f1f5f9"],
+body.dark .dash-block thead[style*="background:#f1f5f9"] { background: #1C2033 !important; }
+body.dark .dash-block thead th { color: #5B6585 !important; border-bottom: 1px solid rgba(255,255,255,0.07) !important; }
+body.dark .dash-block tbody tr td { color: #C9D1E9 !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+body.dark .dash-block tbody tr:last-child td { border-bottom: none !important; }
+
+/* Enlace de descarga dentro de bloques */
+body.dark .dash-block a[style*="color:#2b1070"] { color: #7BA7F5 !important; }
+
 body.dark .btn-icon-action {
   background: rgba(255,255,255,0.06) !important;
   color: #C9D1E9 !important;
