@@ -1467,5 +1467,115 @@ body .swal2-container {
   }
 }
 
+/* ================================================================
+   DARK MODE — CUADRO "BANDEJA DE PACIENTES" (solo este cuadro)
+   ================================================================ */
+
+body.dark .table-card {
+  background: #12141C;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
+
+body.dark .table-title {
+  color: #FFFFFF;
+}
+
+/* Scrollbar oscuro dentro del cuadro */
+body.dark .table-responsive::-webkit-scrollbar-track { background: #12141C; }
+body.dark .table-responsive::-webkit-scrollbar-thumb { background: #2D3451; border-radius: 4px; }
+body.dark .table-responsive::-webkit-scrollbar-thumb:hover { background: #3D4666; }
+
+/* Encabezado de columnas */
+body.dark .table-card .custom-table th {
+  background: #12141C !important;
+  color: #5B6585;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* Thead sticky (inline style="background:white" → override) */
+body.dark .table-card thead[style*="background: white"],
+body.dark .table-card thead[style*="background:white"] {
+  background: #12141C !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.07) !important;
+}
+
+/* Filas */
+body.dark .table-card .custom-table td {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: #C9D1E9;
+  font-size: 14px;
+}
+body.dark .table-card .custom-table tbody tr:hover td {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Nombre clickeable */
+body.dark .table-card .patient-name-click {
+  color: #7BA7F5;
+}
+body.dark .table-card .patient-name-click:hover {
+  color: #FFFFFF;
+}
+
+/* Fecha (inline color:#475569) */
+body.dark .table-card .custom-table td[style*="color: #475569"],
+body.dark .table-card .custom-table td span[style*="color: #475569"] {
+  color: #5B6585 !important;
+}
+
+/* Botón + Nuevo Registro */
+body.dark .table-card .btn-primary {
+  background: linear-gradient(135deg, #3B5FD9, #5B3DB8);
+  border: none;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(59,95,217,0.40);
+}
+body.dark .table-card .btn-primary:hover {
+  background: linear-gradient(135deg, #4A70E8, #6B4DC8);
+  box-shadow: 0 6px 18px rgba(59,95,217,0.55);
+}
+
+/* Botones Anterior / Siguiente */
+body.dark .table-card .btn-nav:not(:disabled) {
+  background: rgba(255,255,255,0.06);
+  color: #C9D1E9;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+body.dark .table-card .btn-nav:not(:disabled):hover {
+  background: rgba(255,255,255,0.12);
+  color: #FFFFFF;
+  border-color: rgba(255,255,255,0.22);
+}
+body.dark .table-card .btn-nav:disabled {
+  background: transparent;
+  color: #2D3451;
+  border-color: rgba(255,255,255,0.06);
+  opacity: 1;
+}
+
+/* Paginación */
+body.dark .table-card .pagination-container {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+body.dark .table-card .pagination-info {
+  color: #5B6585;
+}
+
+/* Botón "Ver detalle" en filas */
+body.dark .table-card .btn-table-view {
+  background: rgba(255,255,255,0.06);
+  color: #C9D1E9;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+body.dark .table-card .btn-table-view:hover {
+  background: rgba(123,167,245,0.18);
+  color: #7BA7F5;
+  border-color: rgba(123,167,245,0.35);
+}
+
 
 </style>
