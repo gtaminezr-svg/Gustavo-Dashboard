@@ -2045,5 +2045,18 @@ body.dark #listaSegurosTop [style*="background:#e2e8f0"] {
   background: #2D3451 !important;
 }
 
+/* Tarjetas del carrusel "Pacientes Registrados" → azul claro en dark mode */
+body.dark .carrusel-card {
+  background: #2563EB !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35) !important;
+}
+body.dark .carrusel-card [style*="color:#94a3b8"] {
+  color: rgba(255,255,255,0.65) !important;
+}
+body.dark .carrusel-card [style*="color:#1e293b"] {
+  color: #FFFFFF !important;
+}
+
 
 </style>

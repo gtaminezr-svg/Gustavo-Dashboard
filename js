@@ -2435,7 +2435,7 @@ function abrirSelectorFechaPanel() {
     // Construimos todas las tarjetas, la transición ocurre al mover las clases CSS
     pacientesCarrusel.forEach((p, i) => {
       html += `
-        <div id="carrusel-item-${i}" style="position:absolute; top:0; left:0; width:100%; height:95px; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:12px 15px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -2px 10px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:6px; transform-origin: top center;">
+        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:95px; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:12px 15px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -2px 10px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:6px; transform-origin: top center;">
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Nombre:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;" title="${p.nombre || '—'}">${p.nombre || '—'}</span>
