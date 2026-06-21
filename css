@@ -2032,5 +2032,10 @@ body.dark .modal-content .specialty-badge-box.bg-pediatria {
   background: #db5e5e; color: #ffffff; border-color: #db5e5e;
 }
 
+/* Título "Pacientes por Seguro" → blanco en dark mode */
+body.dark .dash-block [style*="text-transform:uppercase"][style*="color:#64748b"] {
+  color: #FFFFFF !important;
+}
+
 
 </style>
