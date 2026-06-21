@@ -2112,10 +2112,6 @@ function abrirSelectorFechaPanel() {
       let delayActual = 0;
       let cantidadAnterior = -1;
 
-      const esDarkSeg = document.body.classList.contains('dark');
-      const segNombreColor = esDarkSeg ? '#FFFFFF' : '#334155';
-      const segBarTrack = esDarkSeg ? '#2D3451' : '#e2e8f0';
-
       top5Seguros.forEach((item, index) => {
         const nombre = item[0];
         const cant = item[1];
@@ -2151,11 +2147,11 @@ function abrirSelectorFechaPanel() {
 
         listaHTML += `
           <div style="display:flex; flex-direction:column; gap:3px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700; color:${segNombreColor};">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700; color:#334155;">
               <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:85px;" title="${nombre}">${nombre}</span>
               <span style="color:${colorHex}; font-size:10px;">${porcentaje}%</span>
             </div>
-            <div style="width:100%; height:6px; background:${segBarTrack}; border-radius:3px; overflow:hidden;">
+            <div style="width:100%; height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden;">
               <div style="width:${porcentaje}%; height:100%; background-color:${colorHex}; border-radius:3px;"></div>
             </div>
           </div>

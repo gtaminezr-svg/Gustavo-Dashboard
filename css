@@ -2037,5 +2037,13 @@ body.dark .dash-block [style*="text-transform:uppercase"][style*="color:#64748b"
   color: #FFFFFF !important;
 }
 
+/* Lista de seguros: nombres e barra de fondo → dark mode */
+body.dark #listaSegurosTop [style*="color:#334155"] {
+  color: #FFFFFF !important;
+}
+body.dark #listaSegurosTop [style*="background:#e2e8f0"] {
+  background: #2D3451 !important;
+}
+
 
 </style>
