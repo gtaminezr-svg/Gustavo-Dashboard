@@ -337,37 +337,55 @@ body.dark .welcome-text{
 .counter-card {
   position: relative;
   background: var(--card-bg);
-  padding: 26px 28px;
+  padding: 22px 24px 24px;
   border-radius: 20px;
   border: 1px solid #eef2f7;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
   min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   transition: box-shadow .2s ease, transform .2s ease;
 }
 .counter-card:hover{
   box-shadow: 0 10px 26px rgba(15,23,42,0.09);
   transform: translateY(-2px);
 }
-.counter-card::after{
-  content:"\2197";
-  position:absolute;
-  top:18px; right:20px;
-  width:30px; height:30px;
-  border:1.5px solid var(--card-arrow);
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:13px;
-  color:var(--card-soft);
-  opacity:.7;
+
+/* Fila superior: círculo + etiqueta */
+.card-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.border-left-pendiente { border-left: 4px solid #dc3545; }
-.border-left-proceso { border-left: 4px solid #ffc107; }
+/* Círculo semáforo */
+.card-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #cbd5e1;
+  transition: background .3s ease;
+}
+
+/* Colores del círculo según tipo de card */
+.border-left-pendiente .card-dot   { background: #dc3545; }
+.border-left-proceso .card-dot     { background: #ffc107; }
+.border-left-resultados .card-dot  { background: #28a745; }
+.border-left-total .card-dot       { background: #004EE0; }
+.border-left-vencer .card-dot      { background: #cbd5e1; }
+.border-left-warning .card-dot     { background: #cbd5e1; }
+.border-left-mes .card-dot         { background: #8b5cf6; }
+
+/* Borde izquierdo queda solo como acento fino */
+.border-left-pendiente  { border-left: 4px solid #dc3545; }
+.border-left-proceso    { border-left: 4px solid #ffc107; }
 .border-left-resultados { border-left: 4px solid #28a745; }
-.border-left-total { border-left: 4px solid #004EE0; }
-.border-left-vencer {border-left: 4px solid #f59e0b;}
-.border-left-warning{border-left:4px solid #166534;}
-.border-left-mes{border-left:4px solid #8b5cf6;}
+.border-left-total      { border-left: 4px solid #004EE0; }
+.border-left-vencer     { border-left: 4px solid #f59e0b; }
+.border-left-warning    { border-left: 4px solid #166534; }
+.border-left-mes        { border-left: 4px solid #8b5cf6; }
 
 .counter-number {
   font-size: 34px;
@@ -380,7 +398,6 @@ body.dark .welcome-text{
   font-size: 13px;
   font-weight: 500;
   color: var(--card-soft);
-  margin-top: 6px;
 }
 
 .table-card {
@@ -995,31 +1012,15 @@ body .swal2-container {
 .sidebar.collapsed #progresoCasosWrap{ display:none; }
 
 /* CARD VENCIDOS ACTIVO */
-.card-vencidos-activo{
-  background:#dc3545 !important;
-  color:white !important;
-  transition:all .3s ease;
+/* SEMÁFORO: solo el círculo cambia, el card no se pinta completo */
+.card-vencidos-activo .card-dot {
+  background: #dc3545 !important;
+  box-shadow: 0 0 0 4px rgba(220,53,69,0.20);
 }
 
-.card-vencidos-activo .counter-number,
-.card-vencidos-activo .counter-label{
-  color:white !important;
-}
-
-/* CARD POR VENCER ACTIVO */
-.card-por-vencer-activo{
-
-  background:#facc15 !important;
-
-  border-left:
-    6px solid #14532d !important;
-
-  transition:all .3s ease;
-}
-
-.card-por-vencer-activo .counter-number,
-.card-por-vencer-activo .counter-label{
-  color:#1e1b4b !important;
+.card-por-vencer-activo .card-dot {
+  background: #f59e0b !important;
+  box-shadow: 0 0 0 4px rgba(245,158,11,0.20);
 }
 
 
@@ -1486,11 +1487,21 @@ body.dark .counter-number {
 body.dark .counter-label {
   color: #6B7490;
 }
+/* Círculo en oscuro: color base neutro más visible */
+body.dark .card-dot {
+  background: #2D3451;
+}
+/* Colores del círculo por tipo en oscuro */
+body.dark .border-left-pendiente .card-dot   { background: #dc3545; }
+body.dark .border-left-proceso .card-dot     { background: #ffc107; }
+body.dark .border-left-resultados .card-dot  { background: #28a745; }
+body.dark .border-left-total .card-dot       { background: #4F8EF7; }
+body.dark .border-left-mes .card-dot         { background: #8b5cf6; }
 
-/* Mantener los acentos de color del borde izquierdo en oscuro */
+/* Mantener acentos de borde izquierdo en oscuro */
 body.dark .border-left-vencer  { border-left-color: #f59e0b; }
 body.dark .border-left-warning { border-left-color: #166534; }
-body.dark .border-left-total   { border-left-color: #004EE0; }
+body.dark .border-left-total   { border-left-color: #4F8EF7; }
 body.dark .border-left-mes     { border-left-color: #8b5cf6; }
 
 /* ================================================================
