@@ -215,12 +215,32 @@ nav {
 /* Saludo "Bienvenido ..." en la barra superior */
 .saludo-bloque{
   display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:14px;
+}
+.saludo-icon{
+  flex-shrink:0;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  background:var(--accent);
+  color:var(--on-accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:17px;
+  box-shadow:0 6px 14px rgba(0,78,224,0.28);
+  transition:background .3s, box-shadow .3s;
+}
+.saludo-texts{
+  display:flex;
   flex-direction:column;
   gap:2px;
-  line-height:1.15;
+  line-height:1.2;
 }
 .welcome-text{
-  font-size:22px;
+  font-size:16px;
   font-weight:800;
   color:var(--text);
   white-space:nowrap;
@@ -229,10 +249,16 @@ body.dark .welcome-text{
   color:#ffffff;
 }
 .saludo-sub{
-  font-size:12px;
+  font-size:11px;
   font-weight:600;
   color:#94a3b8;
   white-space:nowrap;
+}
+body.dark .saludo-icon{
+  background:rgba(255,255,255,0.06);
+  color:#C9D1E9;
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:none;
 }
 
 /* Botones cápsula (Registro de Personal): se invierten según el modo */

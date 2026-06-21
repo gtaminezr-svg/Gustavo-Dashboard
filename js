@@ -457,8 +457,11 @@
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
         <div class="saludo-bloque">
-          <span class="welcome-text">Bienvenido</span>
-          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+          <div class="saludo-icon"><i class="fas fa-search"></i></div>
+          <div class="saludo-texts">
+            <span class="welcome-text">Bienvenido</span>
+            <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+          </div>
         </div>
         <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
           <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
