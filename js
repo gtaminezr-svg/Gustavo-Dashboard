@@ -1471,8 +1471,11 @@
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
       <div class="saludo-bloque">
-        <span class="welcome-text">Bienvenido</span>
-        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        <div class="saludo-icon"><i class="far fa-user"></i></div>
+        <div class="saludo-texts">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        </div>
       </div>
       <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
         <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
@@ -1519,8 +1522,11 @@ function mostrarVistaPanelCasos(){
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
       <div class="saludo-bloque">
-        <span class="welcome-text">Bienvenido</span>
-        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        <div class="saludo-icon"><i class="far fa-user"></i></div>
+        <div class="saludo-texts">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        </div>
       </div>
 
       <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
