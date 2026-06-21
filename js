@@ -46,10 +46,10 @@
   }
 
   function aplicarSaludo() {
-    const el = document.getElementById('welcomeText');
-    if (el && window.__nombreUsuario) {
+    if (!window.__nombreUsuario) return;
+    document.querySelectorAll('.welcome-text').forEach(function(el){
       el.textContent = 'Bienvenido ' + window.__nombreUsuario;
-    }
+    });
   }
 
   function cerrarSesion() {
@@ -456,7 +456,10 @@
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
-        <span id="welcomeText" class="welcome-text">Bienvenido</span>
+        <div class="saludo-bloque">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        </div>
         <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
           <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
             <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
@@ -1428,6 +1431,10 @@
     searchContainer.style.justifyContent = 'space-between';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
+      <div class="saludo-bloque">
+        <span class="welcome-text">Bienvenido</span>
+        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+      </div>
       <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
         <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
           <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
@@ -1438,6 +1445,7 @@
         </div>
       </div>
     `;
+    aplicarSaludo();
     resetearPanelEstadisticas();
   }
 
@@ -1471,6 +1479,11 @@ function mostrarVistaPanelCasos(){
     searchContainer.style.justifyContent = '';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
+      <div class="saludo-bloque">
+        <span class="welcome-text">Bienvenido</span>
+        <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+      </div>
+
       <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
       <div id="barraTabsPanel" style="display:none; position:absolute; left:32px; top:50%; transform:translateY(-50%); align-items:stretch; background:linear-gradient(145deg,#ffffff,#e8ecf2); border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
         <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:#ffffff; box-shadow:3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
@@ -1506,6 +1519,7 @@ function mostrarVistaPanelCasos(){
       </div>
     `;
 
+    aplicarSaludo();
     actualizarPildoraFechaPanel();
     renderizarPacientesJunio(); // Forzamos el renderizado al entrar
     setTimeout(function() { seleccionarTabPanelCasos('examenes'); }, 50);

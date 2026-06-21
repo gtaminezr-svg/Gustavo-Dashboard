@@ -213,15 +213,26 @@ nav {
 .sidebar.collapsed .theme-toggle{ display:none; }
 
 /* Saludo "Bienvenido ..." en la barra superior */
+.saludo-bloque{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  line-height:1.15;
+}
 .welcome-text{
-  font-size:17px;
-  font-weight:600;
-  color:#475569;
+  font-size:22px;
+  font-weight:800;
+  color:var(--text);
   white-space:nowrap;
-  margin-right:4px;
 }
 body.dark .welcome-text{
   color:#ffffff;
+}
+.saludo-sub{
+  font-size:12px;
+  font-weight:600;
+  color:#94a3b8;
+  white-space:nowrap;
 }
 
 /* Botones cápsula (Registro de Personal): se invierten según el modo */
