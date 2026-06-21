@@ -1738,5 +1738,57 @@ body.dark .modal-content .btn-primary:hover {
   box-shadow: 0 6px 18px rgba(59,95,217,0.55);
 }
 
+/* ================================================================
+   DARK MODE — SELECTOR DE EXÁMENES (TomSelect + contenedor tags)
+   ================================================================ */
+
+/* Caja de búsqueda (input con "Buscar examen...") */
+body.dark .ts-wrapper .ts-control {
+  background: #1C2033 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 8px !important;
+  color: #C9D1E9 !important;
+  box-shadow: none !important;
+}
+body.dark .ts-wrapper.focus .ts-control {
+  border-color: #4F8EF7 !important;
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.15) !important;
+}
+body.dark .ts-wrapper .ts-control input {
+  color: #C9D1E9 !important;
+  background: transparent !important;
+}
+body.dark .ts-wrapper .ts-control input::placeholder {
+  color: #3D4566 !important;
+}
+
+/* Lista desplegable de exámenes */
+body.dark .ts-wrapper .ts-dropdown {
+  background: #1C2033 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.50) !important;
+  color: #C9D1E9 !important;
+}
+body.dark .ts-wrapper .ts-dropdown .ts-dropdown-content {
+  background: transparent !important;
+}
+body.dark .ts-wrapper .ts-dropdown .option {
+  color: #C9D1E9 !important;
+  background: transparent !important;
+}
+body.dark .ts-wrapper .ts-dropdown .option:hover,
+body.dark .ts-wrapper .ts-dropdown .option.active {
+  background: rgba(79,142,247,0.15) !important;
+  color: #FFFFFF !important;
+}
+
+/* Contenedor de badges de exámenes seleccionados */
+body.dark .exams-tags-container {
+  background: #1C2033 !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-style: dashed !important;
+}
+
 
 </style>
