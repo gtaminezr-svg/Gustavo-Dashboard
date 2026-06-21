@@ -77,6 +77,21 @@
     const t = document.querySelector('.theme-toggle');
     if (t) t.classList.toggle('dark');
     document.body.classList.toggle('dark');
+    // Redibujar gráficos canvas para aplicar nueva paleta
+    setTimeout(_redibujarGraficos, 0);
+  }
+
+  function _redibujarGraficos() {
+    if (window._lastPacientesPanel) {
+      if (typeof dibujarBarrasEjecutivosPanel === 'function') dibujarBarrasEjecutivosPanel(window._lastPacientesPanel);
+      if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(window._lastPacientesPanel);
+      if (typeof dibujarDonutSegurosPanelCasos === 'function') dibujarDonutSegurosPanelCasos(window._lastPacientesPanel);
+      if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(window._lastPacientesPanel);
+    }
+    if (window._lastDonutData) {
+      if (typeof dibujarDonutMedico === 'function') dibujarDonutMedico(window._lastDonutData.solicitados, window._lastDonutData.leidos);
+    }
+    if (typeof dibujarBarrasTopMedicos === 'function') dibujarBarrasTopMedicos();
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
@@ -2120,6 +2135,7 @@ function abrirSelectorFechaPanel() {
       contenedorLista.innerHTML = '<span style="color:#cbd5e1; font-size:12px; font-weight:600; text-align:center;">Sin datos</span>';
     }
 
+    window._lastDonutData = { solicitados, leidos };
     dibujarDonutMedico(solicitados, leidos);
     dibujarBarrasTopMedicos();
   }
@@ -2158,7 +2174,8 @@ function abrirSelectorFechaPanel() {
       return;
     }
 
-    const colorSolicitados = '#2b1070';
+    const isDark = document.body.classList.contains('dark');
+    const colorSolicitados = isDark ? '#99CAFF' : '#2b1070';
     const colorLeidos = '#10b981';
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
@@ -2207,7 +2224,7 @@ function abrirSelectorFechaPanel() {
       }
 
       // 3. Dibujar textos centrales (tamaños ajustados al nuevo anillo)
-      ctx.fillStyle = '#2b1070';
+      ctx.fillStyle = isDark ? '#E3F2FF' : '#2b1070';
       ctx.font = 'bold 38px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2762,6 +2779,9 @@ function renderizarPacientesJunio() {
 
   contenedor.innerHTML = html;
 
+  // Guardamos los datos para redibujar al cambiar el modo claro/oscuro
+  window._lastPacientesPanel = pacientesJunio;
+
   if (typeof dibujarDonutSegurosPanelCasos === 'function') {
     dibujarDonutSegurosPanelCasos(pacientesJunio);
   }
@@ -2829,12 +2849,13 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     ctx.lineWidth = grosorBase;
     ctx.stroke();
     
-    ctx.fillStyle = '#1e293b';
+    const isDarkEmpty = document.body.classList.contains('dark');
+    ctx.fillStyle = isDarkEmpty ? '#E3F2FF' : '#1e293b';
     ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(textoCentroMes, cx, cy);
-    
+
     leyenda.innerHTML = '';
     return;
   }
@@ -2923,7 +2944,8 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     });
 
     // 3. TEXTO DEL MES EN EL CENTRO
-    ctx.fillStyle = '#1e293b';
+    const isDark = document.body.classList.contains('dark');
+    ctx.fillStyle = isDark ? '#E3F2FF' : '#1e293b';
     ctx.font = 'bold 26px sans-serif'; // Letra grande y limpia
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -3035,18 +3057,19 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
     ctx.clearRect(0, 0, width, height);
 
+    const isDark = document.body.classList.contains('dark');
     lista.forEach((item, index) => {
-      const nombreCompleto = item[0] === 'Sin asignar' ? 'S/A' : item[0]; 
-      const nombre = nombreCompleto.split(' ')[0]; 
+      const nombreCompleto = item[0] === 'Sin asignar' ? 'S/A' : item[0];
+      const nombre = nombreCompleto.split(' ')[0];
       const valor = item[1];
       const color = getColorEjecutivo(nombre);
-      
+
       const barW = (valor / maxVal) * chartWidth * easeProgress;
-      const y = startY + index * barHeight; 
-      const widthVisible = Math.max(barW, 4); 
+      const y = startY + index * barHeight;
+      const widthVisible = Math.max(barW, 4);
 
       // 1. Dibujar NOMBRE
-      ctx.fillStyle = '#475569'; 
+      ctx.fillStyle = isDark ? '#99CAFF' : '#475569';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
@@ -3088,7 +3111,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(leftArea, startY - 8);
     ctx.lineTo(leftArea, startY + (barHeight * barCount) + 8);
-    ctx.strokeStyle = '#bae6fd';
+    ctx.strokeStyle = isDark ? '#99CAFF' : '#bae6fd';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3252,32 +3275,33 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo completo del arco (Faltantes) -> Color #99CAFF
+    const isDark = document.body.classList.contains('dark');
+    // Fondo completo del arco (Faltantes): claro=#99CAFF, oscuro=#004EE0
     ctx.beginPath();
     ctx.arc(cx, cy, radio, Math.PI, 2 * Math.PI);
-    ctx.strokeStyle = '#99CAFF';
+    ctx.strokeStyle = isDark ? '#004EE0' : '#99CAFF';
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados) -> Color #004EE0
+    // Progreso superpuesto (Completados): claro=#004EE0, oscuro=#99CAFF
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = '#004EE0';
+      ctx.strokeStyle = isDark ? '#99CAFF' : '#004EE0';
       ctx.lineWidth = grosor;
       ctx.stroke();
     }
 
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
-    ctx.fillStyle = '#2b1070';
+    ctx.fillStyle = isDark ? '#E3F2FF' : '#2b1070';
     ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
 
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = isDark ? '#99CAFF' : '#64748b';
     ctx.font = '700 13px sans-serif';
     ctx.textBaseline = 'top';
     ctx.fillText('COMPLETADOS', cx, cy + 12);
@@ -3333,8 +3357,11 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     return;
   }
 
-  // 3. Paleta de colores clínicos solicitada
-  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
+  // 3. Paleta de colores: azul oscuro en claro, azul claro en oscuro
+  const isDark = document.body.classList.contains('dark');
+  const colores = isDark
+    ? ['#E3F2FF', '#99CAFF', '#1883FF', '#004EE0', '#042E7B']
+    : ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
   
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   
@@ -3367,7 +3394,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(startX, height - bottomArea);
     ctx.lineTo(width - 20, height - bottomArea);
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = isDark ? '#0a3d99' : '#e2e8f0';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3414,7 +3441,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       }
 
       // Dibujar el nombre del examen abajo
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = isDark ? '#99CAFF' : '#475569';
       ctx.font = '800 12px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';

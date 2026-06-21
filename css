@@ -110,13 +110,13 @@ body {
 .rail-hamburger{
   width:38px; height:38px;
   flex-shrink:0;
-  border:none; border-radius:12px;
-  background:#f1f5f9; color:#475569;
+  border:1.5px solid var(--accent); border-radius:12px;
+  background:transparent; color:var(--accent);
   cursor:pointer; font-size:15px;
   display:flex; align-items:center; justify-content:center;
   transition:.2s;
 }
-.rail-hamburger:hover{ background:#e2e8f0; }
+.rail-hamburger:hover{ background:var(--accent); color:var(--on-accent); }
 
 /* Menú */
 nav {
@@ -313,9 +313,9 @@ body.dark .welcome-text{
 }
 
 .btn-refresh {
-  background: white;
-  color: #2d1b69;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
   padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
@@ -323,8 +323,9 @@ body.dark .welcome-text{
 }
 
 .btn-refresh:hover {
-  background: #f1f3f9;
-  border-color: #2d1b69;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 
 .cards-row-container {
@@ -406,19 +407,20 @@ body.dark .welcome-text{
 }
 
 .btn-primary {
-  background: #2d1b69;
-  color: white;
-  border: none;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
   padding: 12px 20px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-primary:hover {
-  background: #1e114a;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .table-responsive {
@@ -472,9 +474,9 @@ body.dark .welcome-text{
 }
 
 .btn-table-view {
-  background: #f1f5f9;
-  color: #2d1b69;
-  border: 1px solid #cbd5e1;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
   padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
@@ -487,9 +489,9 @@ body.dark .welcome-text{
 }
 
 .btn-table-view:hover {
-  background: #2d1b69;
-  color: white;
-  border-color: #2d1b69;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 
 .badge {
@@ -530,12 +532,12 @@ body.dark .welcome-text{
 
 .btn-nav {
   padding: 8px 16px;
-  border: 1px solid #e2e8f0;
-  background: white;
+  border: 1.5px solid var(--accent);
+  background: transparent;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
-  color: #334155;
+  color: var(--accent);
 
   transition:
     background-color 0.2s ease,
@@ -546,16 +548,17 @@ body.dark .welcome-text{
 
 /* EFECTO HOVER */
 .btn-nav:not(:disabled):hover {
-  background: #2d1b69;
-  color: white;
-  border-color: #2d1b69;
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
 /* BOTONES DESACTIVADOS */
 .btn-nav:disabled {
-  background: #f8fafc;
+  background: transparent;
   color: #cbd5e1;
+  border-color: #e2e8f0;
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -611,9 +614,9 @@ body.dark .welcome-text{
 }
 
 .btn-inline-edit {
-  background: #fff;
-  color: #2d1b69;
-  border: 1px solid #2d1b69;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
   padding: 8px 14px;
   border-radius: 8px;
   font-weight: 600;
@@ -623,8 +626,8 @@ body.dark .welcome-text{
 }
 
 .btn-inline-edit:hover {
-  background: #2d1b69;
-  color: white;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .form-grid {
@@ -1467,5 +1470,232 @@ body .swal2-container {
   }
 }
 
+/* ================================================================
+   DARK MODE — CUADROS BLANCOS → AZUL OSCURO, TEXTO BLANCO
+   ================================================================ */
+
+body.dark .table-card {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF;
+}
+body.dark .table-title { color: #99CAFF; }
+body.dark .custom-table th {
+  background: #021B4D !important;
+  color: #99CAFF;
+  border-color: #0a3d99;
+}
+body.dark .custom-table td {
+  border-color: #0a3d99;
+  color: #E3F2FF;
+}
+body.dark .row-main-text { color: #E3F2FF !important; }
+body.dark .row-sub-text { color: #99CAFF !important; }
+body.dark .patient-name-click { color: #99CAFF !important; }
+body.dark .pagination-container { border-color: #0a3d99; }
+body.dark .pagination-info { color: #99CAFF; }
+
+/* Thead inline del main table */
+body.dark .table-card thead { background: #021B4D !important; }
+body.dark .table-card .search-container { background: var(--surface); }
+
+/* Modal */
+body.dark .modal-content {
+  background: #042E7B !important;
+  color: #E3F2FF;
+}
+body.dark .modal-title { color: #99CAFF; }
+body.dark .modal-header-inline { border-color: #0a3d99; }
+body.dark .form-group label { color: #99CAFF; }
+body.dark .form-group input,
+body.dark .form-group select,
+body.dark .form-group textarea {
+  background: #021B4D !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark .form-group input:focus,
+body.dark .form-group select:focus,
+body.dark .form-group textarea:focus { border-color: #99CAFF !important; }
+body.dark .btn-secondary {
+  background: #021B4D !important;
+  color: #99CAFF !important;
+  border-color: #0a3d99 !important;
+}
+
+/* Cards de estadísticas */
+body.dark .stats-card,
+body.dark .stats-card-demo {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark .stats-number { color: #99CAFF; }
+body.dark .stats-label { color: #E3F2FF; }
+body.dark .stats-icon { background: #021B4D !important; color: #99CAFF; }
+body.dark .stats-chart-card { background: #042E7B !important; border-color: #0a3d99 !important; }
+body.dark .stats-chart-header { color: #99CAFF; }
+body.dark .stats-box-large,
+body.dark .stats-box-donut,
+body.dark .stats-box-calendar,
+body.dark .stats-box-traffic {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark .chart-label { color: #99CAFF; }
+body.dark .chart-value { color: #99CAFF; }
+body.dark .chart-bar-bg { background: #021B4D; }
+body.dark .legend-item { color: #E3F2FF; }
+
+/* Search box */
+body.dark .search-box { background: #021B4D !important; }
+body.dark .search-box input { color: #E3F2FF !important; }
+body.dark .search-icon { color: #99CAFF; }
+
+/* ================================================================
+   DARK MODE — TARJETAS INLINE (Panel de Casos, Estadísticas, etc.)
+   ================================================================ */
+
+/* Estadísticas - panel del médico */
+body.dark #panelMedico div[style*="background:white"],
+body.dark #panelMedico div[style*="background: white"] {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark #panelMedico div[style*="background: #f1f5f9"],
+body.dark #panelMedico div[style*="background:#f1f5f9"] {
+  background: #021B4D !important;
+}
+body.dark #panelMedico thead[style*="background: #f1f5f9"],
+body.dark #panelMedico thead[style*="background:#f1f5f9"] {
+  background: #021B4D !important;
+}
+body.dark #panelMedico th { color: #99CAFF !important; }
+body.dark #panelMedico td { color: #E3F2FF !important; border-color: #0a3d99 !important; }
+
+/* Panel de Casos */
+body.dark #vistaPanelCasos div[style*="background: white"],
+body.dark #vistaPanelCasos div[style*="background:white"] {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark #vistaPanelCasos div[style*="background: #f8fafc"],
+body.dark #vistaPanelCasos div[style*="background:#f8fafc"] {
+  background: #021B4D !important;
+  color: #99CAFF !important;
+}
+
+/* Filas de pacientes */
+body.dark .tira-paciente {
+  background: #042E7B !important;
+  border-bottom-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark .tira-paciente:hover {
+  background: #063a99 !important;
+  box-shadow: inset 4px 0 0 #99CAFF !important;
+}
+body.dark .dropdown-acciones {
+  background: #021B4D !important;
+  border-color: #0a3d99 !important;
+}
+body.dark .dropdown-item { color: #E3F2FF !important; }
+body.dark .dropdown-item:hover { background: #042E7B !important; color: #99CAFF !important; }
+body.dark .dropdown-item.item-danger:hover { background: #3b0000 !important; color: #fca5a5 !important; }
+
+/* Calendario */
+body.dark #vistaBaseDashboard div[style*="background: white"],
+body.dark #vistaBaseDashboard div[style*="background:white"] {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark #vistaBaseDashboard div[style*="background: #f8fafc"] {
+  background: #021B4D !important;
+}
+
+/* Registro de Personal */
+body.dark #vistaRegistroPersonal div[style*="background:white"],
+body.dark #vistaRegistroPersonal div[style*="background: white"] {
+  background: #042E7B !important;
+  border-color: #0a3d99 !important;
+  color: #E3F2FF !important;
+}
+body.dark #vistaRegistroPersonal div[style*="background:#f8fafc"],
+body.dark #vistaRegistroPersonal div[style*="background: #f8fafc"] {
+  background: #021B4D !important;
+  color: #99CAFF !important;
+}
+body.dark #bloque7 { background: #042E7B !important; color: #E3F2FF !important; }
+
+/* Tabla top médicos (Registro de Exámenes) */
+body.dark #barrasTopMedicos th { color: #99CAFF !important; }
+body.dark #barrasTopMedicos td { color: #E3F2FF !important; }
+body.dark #barrasTopMedicos td:last-child { color: #99CAFF !important; }
+body.dark #barrasTopMedicos tr { border-bottom-color: #0a3d99 !important; }
+
+/* ================================================================
+   DARK MODE — BOTONES E ICONOS (invertidos = fondo sólido)
+   ================================================================ */
+
+body.dark .btn-table-view,
+body.dark .btn-refresh,
+body.dark .btn-inline-edit,
+body.dark .rail-hamburger,
+body.dark .btn-primary {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border-color: var(--accent) !important;
+}
+body.dark .btn-table-view:hover,
+body.dark .btn-refresh:hover,
+body.dark .btn-inline-edit:hover,
+body.dark .rail-hamburger:hover,
+body.dark .btn-primary:hover {
+  background: transparent !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+body.dark .btn-nav:not(:disabled) {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border-color: var(--accent) !important;
+}
+body.dark .btn-nav:not(:disabled):hover {
+  background: transparent !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+}
+body.dark .btn-nav:disabled {
+  background: #021B4D !important;
+  color: #0a3d99 !important;
+  border-color: #021B4D !important;
+  opacity: 0.5;
+}
+
+/* ================================================================
+   DARK MODE — BARRA DE MESES (Registro de Exámenes Top 6)
+   En modo claro: ítem activo = azul oscuro + letras blancas (ya definido)
+   En modo oscuro: al contrario = azul claro + letras oscuras
+   ================================================================ */
+
+body.dark .month-selector {
+  background: #021B4D !important;
+  border-color: #0a3d99 !important;
+}
+body.dark .month-item { color: #99CAFF; }
+body.dark .month-item:hover:not(.active) {
+  background: #042E7B !important;
+  color: #E3F2FF !important;
+}
+body.dark #barraMesesDinamica .month-item.active {
+  background: #99CAFF !important;
+  color: #042E7B !important;
+  box-shadow: 0 2px 6px rgba(153, 202, 255, 0.35) !important;
+}
 
 </style>
