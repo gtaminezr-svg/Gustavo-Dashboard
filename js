@@ -2204,7 +2204,7 @@ function abrirSelectorFechaPanel() {
       return;
     }
 
-    const colorSolicitados = esDark ? '#4A6FE3' : '#2b1070';
+    const colorSolicitados = esDark ? '#4A6FE3' : '#1e3a8a';
     const colorLeidos = '#10b981';
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
@@ -2253,7 +2253,7 @@ function abrirSelectorFechaPanel() {
       }
 
       // 3. Dibujar textos centrales (tamaños ajustados al nuevo anillo)
-      ctx.fillStyle = esDark ? '#FFFFFF' : '#2b1070';
+      ctx.fillStyle = esDark ? '#FFFFFF' : '#1e3a8a';
       ctx.font = 'bold 38px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
