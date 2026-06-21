@@ -456,13 +456,13 @@
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
-        <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
-          <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-        <div style="display:flex; align-items:center; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+          <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+            <input type="text" id="inputBuscar" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+            <button onclick="toggleBuscadorBandeja()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
           <span id="welcomeText" class="welcome-text">Bienvenido</span>
           <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
@@ -1428,12 +1428,14 @@
     searchContainer.style.justifyContent = 'space-between';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
-      <div style="display:flex; align-items:center; gap:6px;">
-        <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
-      </div>
-      <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
-        <i class="fas fa-user-md"></i>
+      <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
+          <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:linear-gradient(145deg,#ffffff,#e8ecf2); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:#334155; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
+          <i class="fas fa-user-md"></i>
+        </div>
       </div>
     `;
     resetearPanelEstadisticas();
@@ -1477,16 +1479,14 @@ function mostrarVistaPanelCasos(){
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
 
-      <!-- Búsqueda a la izquierda (mismo diseño y lugar que las demás secciones) -->
-      <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
-        <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-
-      <!-- Grupo derecho: Descargar Base + píldora de fecha -->
-      <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px;">
+      <!-- Grupo derecho: Búsqueda + Descargar Base + píldora de fecha (izquierda vacía) -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+          <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
         <div style="position:relative; flex:0 0 auto;">
           <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
             Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
