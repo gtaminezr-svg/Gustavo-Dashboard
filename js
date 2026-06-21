@@ -3283,14 +3283,23 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados): claro=#004EE0, oscuro=#60A5FA
+    // Progreso superpuesto (Completados): claro=#004EE0, oscuro=degradado azul→violeta
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = isDark ? '#60A5FA' : '#004EE0';
+      if (isDark) {
+        const gradArco = ctx.createLinearGradient(cx - radio, cy, cx + radio, cy);
+        gradArco.addColorStop(0, '#4F8EF7');
+        gradArco.addColorStop(1, '#8B5CF6');
+        ctx.strokeStyle = gradArco;
+      } else {
+        ctx.strokeStyle = '#004EE0';
+      }
       ctx.lineWidth = grosor;
+      ctx.lineCap = 'round';
       ctx.stroke();
+      ctx.lineCap = 'butt';
     }
 
     // Texto en el centro
@@ -3408,17 +3417,26 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       
       const valor = item[1];
       const color = colores[index] || colores[colores.length-1];
-      
+      // En oscuro: degradado azul→violeta vertical (estilo dashboard premium)
+      const textColor = isDark ? '#E6ECF7' : color;
+
       // Calcular altura animada
       const barH = (valor / maxVal) * chartHeight * easeProgress;
       const x = startX + spacing + index * (barWidth + spacing);
       const y = height - bottomArea - barH;
-      
+
       // Pintar la barra vertical
       if (barH > 0) {
-          ctx.fillStyle = color;
+          if (isDark) {
+            const grad = ctx.createLinearGradient(0, y, 0, height - bottomArea);
+            grad.addColorStop(0, '#7C8CF8');
+            grad.addColorStop(1, '#3F6FE0');
+            ctx.fillStyle = grad;
+          } else {
+            ctx.fillStyle = color;
+          }
           const radius = Math.min(8, barWidth / 2, barH / 2);
-          
+
           ctx.beginPath();
           ctx.moveTo(x, height - bottomArea);
           ctx.lineTo(x, y + radius);
@@ -3432,7 +3450,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       // Dibujar la cantidad arriba de la barra (¡Corregido!)
       if (progress > 0.4) {
         ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-        ctx.fillStyle = color;
+        ctx.fillStyle = textColor;
         ctx.font = '900 22px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom'; // CORRECCIÓN: Evita que el número se hunda en la barra

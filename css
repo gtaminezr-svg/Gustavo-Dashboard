@@ -29,20 +29,20 @@
   --dashboard-bg: var(--bg);
 }
 body.dark{
-  /* Deep Slate (modo oscuro) */
-  --bg:        #0F172A;
-  --surface:   #1E293B;
-  --accent:    #3B82F6;
-  --accent-2:  #60A5FA;
-  --accent-dk: #1E40AF;
+  /* Midnight Navy — elegante (referencia dashboards premium) */
+  --bg:        #0A0E1A;
+  --surface:   #111A2E;
+  --accent:    #4F8EF7;
+  --accent-2:  #8B5CF6;
+  --accent-dk: #1E3A8A;
   --on-accent: #FFFFFF;
   --on-accent-2: #F1F5F9;
   --text:      #F1F5F9;
-  --text-soft: #94A3B8;
-  --card-bg:   #1E293B;
-  --card-text: #F1F5F9;
-  --card-soft: #94A3B8;
-  --card-arrow: #334155;
+  --text-soft: #94A3C4;
+  --card-bg:   linear-gradient(145deg,#1C2A4A 0%,#141D33 100%);
+  --card-text: #FFFFFF;
+  --card-soft: #94A3C4;
+  --card-arrow: #3B4A66;
 }
 
 body {
@@ -1471,87 +1471,117 @@ body .swal2-container {
 }
 
 /* ================================================================
-   DARK MODE — CUADROS BLANCOS → DEEP SLATE, TEXTO CLARO
+   DARK MODE — MIDNIGHT NAVY ELEGANTE
+   Fondo con degradado profundo + cards con glow suave y bordes finos
    ================================================================ */
 
-body.dark .table-card {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+/* Fondo general con degradado radial (luz arriba-centro, oscuro a los bordes) */
+body.dark {
+  background: radial-gradient(130% 100% at 50% -15%, #1A2747 0%, #0C1222 45%, #070B14 100%) fixed !important;
   color: #F1F5F9;
 }
-body.dark .table-title { color: #60A5FA; }
+
+/* Sidebar y topbar con tono navy translúcido */
+body.dark .sidebar {
+  background: linear-gradient(180deg, #131D33 0%, #0E1626 100%) !important;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+
+/* ----- CARD ELEGANTE (degradado + borde fino + glow) ----- */
+body.dark .table-card,
+body.dark .stats-chart-card,
+body.dark .stats-box-large,
+body.dark .stats-box-donut,
+body.dark .stats-box-calendar,
+body.dark .stats-box-traffic,
+body.dark .modal-content {
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark .table-title { color: #FFFFFF; font-weight: 700; }
 body.dark .custom-table th {
-  background: #263548 !important;
-  color: #60A5FA;
-  border-color: #334155;
+  background: rgba(255,255,255,0.03) !important;
+  color: #94A3C4;
+  border-color: rgba(255,255,255,0.06);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 12px;
 }
 body.dark .custom-table td {
-  border-color: #334155;
-  color: #F1F5F9;
+  border-color: rgba(255,255,255,0.06);
+  color: #E6ECF7;
 }
-body.dark .row-main-text { color: #F1F5F9 !important; }
-body.dark .row-sub-text { color: #94A3B8 !important; }
-body.dark .patient-name-click { color: #60A5FA !important; }
-body.dark .pagination-container { border-color: #334155; }
-body.dark .pagination-info { color: #94A3B8; }
+body.dark .custom-table tbody tr:hover { background: rgba(79,142,247,0.08) !important; }
+body.dark .row-main-text { color: #FFFFFF !important; }
+body.dark .row-sub-text { color: #94A3C4 !important; }
+body.dark .patient-name-click { color: #5B9DF9 !important; }
+body.dark .pagination-container { border-color: rgba(255,255,255,0.06); }
+body.dark .pagination-info { color: #94A3C4; }
 
 /* Thead inline del main table */
-body.dark .table-card thead { background: #263548 !important; }
-body.dark .table-card .search-container { background: var(--surface); }
+body.dark .table-card thead { background: rgba(255,255,255,0.03) !important; }
+body.dark .table-card .search-container { background: transparent; }
 
 /* Modal */
-body.dark .modal-content {
-  background: #1E293B !important;
-  color: #F1F5F9;
-}
-body.dark .modal-title { color: #60A5FA; }
-body.dark .modal-header-inline { border-color: #334155; }
-body.dark .form-group label { color: #94A3B8; }
+body.dark .modal-content { box-shadow: 0 24px 60px rgba(0,0,0,0.55) !important; }
+body.dark .modal-title { color: #FFFFFF; }
+body.dark .modal-header-inline { border-color: rgba(255,255,255,0.08); }
+body.dark .form-group label { color: #94A3C4; }
 body.dark .form-group input,
 body.dark .form-group select,
 body.dark .form-group textarea {
-  background: #263548 !important;
-  border-color: #334155 !important;
+  background: rgba(10,16,30,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  border-radius: 10px !important;
   color: #F1F5F9 !important;
 }
 body.dark .form-group input:focus,
 body.dark .form-group select:focus,
-body.dark .form-group textarea:focus { border-color: #60A5FA !important; }
-body.dark .btn-secondary {
-  background: #263548 !important;
-  color: #60A5FA !important;
-  border-color: #334155 !important;
+body.dark .form-group textarea:focus {
+  border-color: #4F8EF7 !important;
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.18) !important;
 }
+body.dark .btn-secondary {
+  background: rgba(255,255,255,0.06) !important;
+  color: #C7D3EC !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+body.dark .btn-secondary:hover { background: rgba(255,255,255,0.12) !important; }
 
-/* Cards de estadísticas */
+/* ----- Cards de estadísticas (las pequeñas con números grandes) ----- */
 body.dark .stats-card,
 body.dark .stats-card-demo {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   color: #F1F5F9 !important;
 }
-body.dark .stats-number { color: #60A5FA; }
-body.dark .stats-label { color: #F1F5F9; }
-body.dark .stats-icon { background: #263548 !important; color: #60A5FA; }
-body.dark .stats-chart-card { background: #1E293B !important; border-color: #334155 !important; }
-body.dark .stats-chart-header { color: #60A5FA; }
-body.dark .stats-box-large,
-body.dark .stats-box-donut,
-body.dark .stats-box-calendar,
-body.dark .stats-box-traffic {
-  background: #1E293B !important;
-  border-color: #334155 !important;
-  color: #F1F5F9 !important;
+body.dark .stats-number { color: #FFFFFF; font-weight: 800; }
+body.dark .stats-label { color: #94A3C4; }
+body.dark .stats-icon {
+  background: linear-gradient(135deg, rgba(79,142,247,0.25), rgba(139,92,246,0.25)) !important;
+  color: #8FB8FF;
+  box-shadow: 0 4px 14px rgba(79,142,247,0.20);
 }
-body.dark .chart-label { color: #94A3B8; }
-body.dark .chart-value { color: #60A5FA; }
-body.dark .chart-bar-bg { background: #263548; }
-body.dark .legend-item { color: #F1F5F9; }
+body.dark .stats-chart-header { color: #FFFFFF; }
+body.dark .chart-label { color: #94A3C4; }
+body.dark .chart-value { color: #FFFFFF; }
+body.dark .chart-bar-bg { background: rgba(255,255,255,0.06); }
+body.dark .legend-item { color: #C7D3EC; }
 
 /* Search box */
-body.dark .search-box { background: #263548 !important; }
+body.dark .search-box {
+  background: rgba(10,16,30,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+}
 body.dark .search-box input { color: #F1F5F9 !important; }
-body.dark .search-icon { color: #94A3B8; }
+body.dark .search-icon { color: #94A3C4; }
 
 /* ================================================================
    DARK MODE — TARJETAS INLINE (Panel de Casos, Estadísticas, etc.)
@@ -1560,85 +1590,94 @@ body.dark .search-icon { color: #94A3B8; }
 /* Estadísticas - panel del médico */
 body.dark #panelMedico div[style*="background:white"],
 body.dark #panelMedico div[style*="background: white"] {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   color: #F1F5F9 !important;
 }
 body.dark #panelMedico div[style*="background: #f1f5f9"],
 body.dark #panelMedico div[style*="background:#f1f5f9"] {
-  background: #263548 !important;
+  background: rgba(255,255,255,0.04) !important;
 }
 body.dark #panelMedico thead[style*="background: #f1f5f9"],
 body.dark #panelMedico thead[style*="background:#f1f5f9"] {
-  background: #263548 !important;
+  background: rgba(255,255,255,0.04) !important;
 }
-body.dark #panelMedico th { color: #60A5FA !important; }
-body.dark #panelMedico td { color: #F1F5F9 !important; border-color: #334155 !important; }
+body.dark #panelMedico th { color: #94A3C4 !important; }
+body.dark #panelMedico td { color: #E6ECF7 !important; border-color: rgba(255,255,255,0.06) !important; }
 
 /* Panel de Casos */
 body.dark #vistaPanelCasos div[style*="background: white"],
 body.dark #vistaPanelCasos div[style*="background:white"] {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   color: #F1F5F9 !important;
 }
 body.dark #vistaPanelCasos div[style*="background: #f8fafc"],
 body.dark #vistaPanelCasos div[style*="background:#f8fafc"] {
-  background: #263548 !important;
-  color: #94A3B8 !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: #94A3C4 !important;
 }
 
 /* Filas de pacientes */
 body.dark .tira-paciente {
-  background: #1E293B !important;
-  border-bottom-color: #334155 !important;
-  color: #F1F5F9 !important;
+  background: rgba(255,255,255,0.02) !important;
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+  color: #E6ECF7 !important;
 }
 body.dark .tira-paciente:hover {
-  background: #263548 !important;
-  box-shadow: inset 4px 0 0 #60A5FA !important;
+  background: rgba(79,142,247,0.10) !important;
+  box-shadow: inset 4px 0 0 #4F8EF7 !important;
 }
 body.dark .dropdown-acciones {
-  background: #263548 !important;
-  border-color: #334155 !important;
+  background: #16213A !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
 }
-body.dark .dropdown-item { color: #F1F5F9 !important; }
-body.dark .dropdown-item:hover { background: #1E293B !important; color: #60A5FA !important; }
-body.dark .dropdown-item.item-danger:hover { background: #3b0000 !important; color: #fca5a5 !important; }
+body.dark .dropdown-item { color: #E6ECF7 !important; }
+body.dark .dropdown-item:hover { background: rgba(79,142,247,0.12) !important; color: #FFFFFF !important; }
+body.dark .dropdown-item.item-danger:hover { background: rgba(220,38,38,0.18) !important; color: #fca5a5 !important; }
 
 /* Calendario */
 body.dark #vistaBaseDashboard div[style*="background: white"],
 body.dark #vistaBaseDashboard div[style*="background:white"] {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   color: #F1F5F9 !important;
 }
 body.dark #vistaBaseDashboard div[style*="background: #f8fafc"] {
-  background: #263548 !important;
+  background: rgba(255,255,255,0.04) !important;
 }
 
 /* Registro de Personal */
 body.dark #vistaRegistroPersonal div[style*="background:white"],
 body.dark #vistaRegistroPersonal div[style*="background: white"] {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.04) !important;
   color: #F1F5F9 !important;
 }
 body.dark #vistaRegistroPersonal div[style*="background:#f8fafc"],
 body.dark #vistaRegistroPersonal div[style*="background: #f8fafc"] {
-  background: #263548 !important;
-  color: #94A3B8 !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: #94A3C4 !important;
 }
-body.dark #bloque7 { background: #1E293B !important; color: #F1F5F9 !important; }
+body.dark #bloque7 { background: linear-gradient(145deg, #1C2A4A 0%, #141D33 100%) !important; color: #F1F5F9 !important; }
 
 /* Tabla top médicos (Registro de Exámenes) */
-body.dark #barrasTopMedicos th { color: #60A5FA !important; }
-body.dark #barrasTopMedicos td { color: #F1F5F9 !important; }
-body.dark #barrasTopMedicos td:last-child { color: #60A5FA !important; }
-body.dark #barrasTopMedicos tr { border-bottom-color: #334155 !important; }
+body.dark #barrasTopMedicos th { color: #94A3C4 !important; }
+body.dark #barrasTopMedicos td { color: #E6ECF7 !important; }
+body.dark #barrasTopMedicos td:last-child { color: #5B9DF9 !important; font-weight: 700; }
+body.dark #barrasTopMedicos tr { border-bottom-color: rgba(255,255,255,0.06) !important; }
 
 /* ================================================================
-   DARK MODE — BOTONES E ICONOS (invertidos = fondo sólido)
+   DARK MODE — BOTONES E ICONOS (degradado azul→violeta con glow)
    ================================================================ */
 
 body.dark .btn-table-view,
@@ -1646,56 +1685,56 @@ body.dark .btn-refresh,
 body.dark .btn-inline-edit,
 body.dark .rail-hamburger,
 body.dark .btn-primary {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-  border-color: var(--accent) !important;
+  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 6px 18px rgba(79,142,247,0.35) !important;
 }
 body.dark .btn-table-view:hover,
 body.dark .btn-refresh:hover,
 body.dark .btn-inline-edit:hover,
 body.dark .rail-hamburger:hover,
 body.dark .btn-primary:hover {
-  background: transparent !important;
-  color: var(--accent) !important;
-  border-color: var(--accent) !important;
+  background: linear-gradient(135deg, #5B9DF9 0%, #8B5CF6 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 24px rgba(110,108,248,0.45) !important;
+  transform: translateY(-1px);
 }
 body.dark .btn-nav:not(:disabled) {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-  border-color: var(--accent) !important;
+  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 6px 18px rgba(79,142,247,0.35) !important;
 }
 body.dark .btn-nav:not(:disabled):hover {
-  background: transparent !important;
-  color: var(--accent) !important;
-  border-color: var(--accent) !important;
+  background: linear-gradient(135deg, #5B9DF9 0%, #8B5CF6 100%) !important;
+  color: #FFFFFF !important;
   transform: translateY(-1px);
 }
 body.dark .btn-nav:disabled {
-  background: #1E293B !important;
-  color: #334155 !important;
-  border-color: #1E293B !important;
-  opacity: 0.5;
+  background: rgba(255,255,255,0.05) !important;
+  color: rgba(255,255,255,0.25) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  opacity: 1;
 }
 
 /* ================================================================
    DARK MODE — BARRA DE MESES (Registro de Exámenes Top 6)
-   En modo claro: ítem activo = azul oscuro + letras blancas (ya definido)
-   En modo oscuro: al contrario = azul claro + letras oscuras
    ================================================================ */
 
 body.dark .month-selector {
-  background: #1E293B !important;
-  border-color: #334155 !important;
+  background: rgba(10,16,30,0.5) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
 }
-body.dark .month-item { color: #60A5FA; }
+body.dark .month-item { color: #94A3C4; }
 body.dark .month-item:hover:not(.active) {
-  background: #263548 !important;
-  color: #F1F5F9 !important;
+  background: rgba(255,255,255,0.06) !important;
+  color: #FFFFFF !important;
 }
 body.dark #barraMesesDinamica .month-item.active {
-  background: #60A5FA !important;
-  color: #0F172A !important;
-  box-shadow: 0 2px 6px rgba(96, 165, 250, 0.35) !important;
+  background: linear-gradient(135deg, #4F8EF7 0%, #6E6CF8 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(79,142,247,0.40) !important;
 }
 
 </style>
