@@ -1516,6 +1516,11 @@ body.dark,
 body.dark .main-content {
   background: #0D1235 !important;
 }
+body.dark .search-container {
+  background: #0D1235 !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
 
 /* ================================================================
    DARK MODE — CUADRO "BANDEJA DE PACIENTES" (solo este cuadro)
