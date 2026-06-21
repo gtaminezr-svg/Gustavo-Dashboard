@@ -1669,6 +1669,7 @@ body.dark .modal-content {
   background: #12141C;
   border: 1px solid rgba(255,255,255,0.07);
   box-shadow: 0 24px 60px rgba(0,0,0,0.60);
+  background: linear-gradient(160deg, #0D1428 0%, #0A0F1E 50%, #070C18 100%) !important;
 }
 
 body.dark .modal-header-inline {
@@ -1790,6 +1791,32 @@ body.dark .exams-tags-container {
   background: #1C2033 !important;
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-style: dashed !important;
+}
+
+/* ================================================================
+   DARK MODE — BADGES DE SEGURO Y ESPECIALIDAD DENTRO DEL MODAL
+   ================================================================ */
+
+body.dark .modal-content .insurance-badge-box.bg-seguro-rojo {
+  background: #b91c1c; color: #ffffff; border-color: #b91c1c;
+}
+body.dark .modal-content .insurance-badge-box.bg-seguro-anaranjado {
+  background: #ea580c; color: #ffffff; border-color: #ea580c;
+}
+body.dark .modal-content .insurance-badge-box.bg-seguro-verde {
+  background: #166534; color: #ffffff; border-color: #166534;
+}
+body.dark .modal-content .insurance-badge-box.bg-seguro-dorado {
+  background: #a16207; color: #ffffff; border-color: #a16207;
+}
+body.dark .modal-content .insurance-badge-box.bg-eps {
+  background: #475569; color: #ffffff; border-color: #475569;
+}
+body.dark .modal-content .specialty-badge-box.bg-general {
+  background: #0d9488; color: #ffffff; border-color: #0d9488;
+}
+body.dark .modal-content .specialty-badge-box.bg-pediatria {
+  background: #db5e5e; color: #ffffff; border-color: #db5e5e;
 }
 
 
