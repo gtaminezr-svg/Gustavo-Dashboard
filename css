@@ -1564,12 +1564,12 @@ body.dark .sidebar {
   border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Item activo: rectangular con esquinas redondeadas, azul */
+/* Item activo: misma píldora azul que el modo claro */
 body.dark .menu-item.active {
-  background: #3B5FD9 !important;
+  background: linear-gradient(90deg, #004EE0, #042E7B) !important;
   color: #ffffff !important;
-  border-radius: 10px !important;
-  box-shadow: none !important;
+  border-radius: 30px !important;
+  box-shadow: 0 8px 18px rgba(0,78,224,0.35) !important;
 }
 body.dark .menu-item.active i { color: #ffffff !important; }
 body.dark .menu-item.active::after { color: #ffffff !important; }
