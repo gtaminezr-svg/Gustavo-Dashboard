@@ -3105,8 +3105,8 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
   const leftArea  = 110; // espacio para nombres
   const rightArea = 70;  // espacio para números
-  const topArea    = 10;
-  const bottomArea = 30;
+  const topArea    = 2;
+  const bottomArea = 42;
   const chartWidth = width - leftArea - rightArea;
   const available  = height - topArea - bottomArea;
 
