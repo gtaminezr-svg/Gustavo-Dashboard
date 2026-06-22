@@ -1545,14 +1545,14 @@ body.dark .main-content {
   background: #0D1235 !important;
 }
 body.dark .search-container {
-  background: #12141C !important;
+  background: linear-gradient(90deg, #1a3a6e, #0a1220) !important;
   box-shadow: none !important;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 /* Encabezados de Calendario y Registro Personal */
 body.dark .section-header-bar {
-  background: #12141C !important;
+  background: linear-gradient(90deg, #1a3a6e, #0a1220) !important;
   box-shadow: none !important;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
@@ -2158,14 +2158,7 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 1;"] {
   border: 1px solid rgba(255,255,255,0.07) !important;
   box-shadow: 0 8px 28px rgba(0,0,0,0.50) !important;
 }
-/* Barra de saludo "Bienvenido" como card con degradado */
-body.dark .saludo-bloque {
-  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.50);
-  border-radius: 16px;
-  padding: 12px 20px;
-}
+/* Ícono del saludo: un poco más visible sobre el degradado */
 body.dark .saludo-bloque .saludo-icon {
   background: rgba(255,255,255,0.12);
   border-color: rgba(255,255,255,0.18);
