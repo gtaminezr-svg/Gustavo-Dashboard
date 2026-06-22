@@ -3129,12 +3129,16 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const chartWidth = width - leftArea - rightArea;
   const available  = height - topArea - bottomArea;
 
-  // Barras pegadas entre sí, centradas verticalmente
-  const barHeight = 46;
-  const gap       = 0;
+  // Barras dinámicas: se adaptan al número de ejecutivos
+  const maxBarH = 54;
+  const minBarH = 16;
+  const gap     = 8;
+  const barHeight = Math.min(maxBarH, Math.max(minBarH, Math.floor((available - gap * (barCount - 1)) / barCount)));
   const barStep   = barHeight + gap;
   const totalGroupH = barCount * barStep - gap;
   const startY = topArea + Math.max(0, (available - totalGroupH) / 2);
+  const labelSize = barHeight >= 28 ? 15 : 12;
+  const numSize   = barHeight >= 28 ? 16 : 12;
 
   let startTime = null;
   const duration = 1000;
@@ -3161,14 +3165,14 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
       // 1. Dibujar NOMBRE
       ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
-      ctx.font = 'bold 15px sans-serif';
+      ctx.font = `bold ${labelSize}px sans-serif`;
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       ctx.fillText(nombre.toUpperCase(), leftArea - 15, y + barHeight / 2);
 
-      // 2. Pintar BARRA HORIZONTAL PEGADA
+      // 2. Pintar BARRA HORIZONTAL
       ctx.fillStyle = color;
-      
+
       const radius = Math.min(6, widthVisible / 2, barHeight / 2);
       ctx.beginPath();
       ctx.moveTo(leftArea, y);
@@ -3182,15 +3186,15 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       // 3. Dibujar CANTIDAD DE CASOS
       if (progress > 0.4) {
         ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-        
+
         if (widthVisible > 40) {
           ctx.fillStyle = 'white';
-          ctx.font = 'bold 16px sans-serif'; 
+          ctx.font = `bold ${numSize}px sans-serif`;
           ctx.textAlign = 'right';
           ctx.fillText(valor, leftArea + widthVisible - 12, y + barHeight / 2 + 1);
         } else {
           ctx.fillStyle = color;
-          ctx.font = 'bold 16px sans-serif';
+          ctx.font = `bold ${numSize}px sans-serif`;
           ctx.textAlign = 'left';
           ctx.fillText(valor, leftArea + widthVisible + 10, y + barHeight / 2 + 1);
         }
