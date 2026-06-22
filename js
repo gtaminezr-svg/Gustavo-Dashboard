@@ -2412,27 +2412,33 @@ function abrirSelectorFechaPanel() {
   function abrirSelectorFecha() {
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const anioActualSistema = new Date().getFullYear();
-    const anioLimite = anioActualSistema + 5; 
+    const anioLimite = anioActualSistema + 5;
     let opcionesAnio = '';
     for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioSeleccionado ? 'selected' : ''}>${i}</option>`;
-    
+
     let opcionesMes = '';
     for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;
+
+    const esDark = document.body.classList.contains('dark');
+    const cLabel  = esDark ? 'rgba(255,255,255,0.60)' : '#475569';
+    const cSelect = esDark ? 'background:#1C2033; color:#C9D1E9; border:1px solid rgba(255,255,255,0.12);' : 'background:#fff; color:#334155; border:1px solid #cbd5e1;';
+    const bgModal = esDark ? '#0f1e3d' : '#ffffff';
 
     Swal.fire({
       title: 'Ir a fecha',
       width: 280,
+      background: bgModal,
       html: `
         <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
           <div>
-            <label style="font-size:12px; font-weight:700; color:#475569;">Año</label>
-            <select id="popAnio" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">
+            <label style="font-size:12px; font-weight:700; color:${cLabel};">Año</label>
+            <select id="popAnio" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
               ${opcionesAnio}
             </select>
           </div>
           <div>
-            <label style="font-size:12px; font-weight:700; color:#475569;">Mes</label>
-            <select id="popMes" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">
+            <label style="font-size:12px; font-weight:700; color:${cLabel};">Mes</label>
+            <select id="popMes" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
               ${opcionesMes}
             </select>
           </div>

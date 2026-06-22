@@ -2420,5 +2420,30 @@ body.dark .swal2-footer {
   color: rgba(255,255,255,0.55) !important;
 }
 
+/* Título con HTML interno (divs/spans con color hardcodeado) */
+body.dark .swal2-title div,
+body.dark .swal2-title span {
+  color: #ffffff !important;
+}
+
+/* Labels dentro del cuerpo del popup */
+body.dark .swal2-html-container label {
+  color: rgba(255,255,255,0.70) !important;
+}
+
+/* Selects, inputs y textareas dentro del HTML del popup */
+body.dark .swal2-html-container select,
+body.dark .swal2-html-container textarea,
+body.dark .swal2-html-container input[type="text"],
+body.dark .swal2-html-container input[type="number"] {
+  background: #1C2033 !important;
+  color: #C9D1E9 !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+body.dark .swal2-html-container select option {
+  background: #1C2033;
+  color: #C9D1E9;
+}
+
 
 </style>
