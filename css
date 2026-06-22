@@ -2502,6 +2502,37 @@ body.dark .swal2-html-container input[type="number"] {
   color: #C9D1E9 !important;
   border: 1px solid rgba(255,255,255,0.12) !important;
 }
+/* ================================================================
+   BOTONES "VER DETALLES" — responden automáticamente al tema
+   ================================================================ */
+.btn-ver-detalles {
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+.btn-ver-detalles:hover {
+  background: #e2e8f0;
+  color: #2b1070;
+  border-color: #94a3b8;
+}
+body.dark .btn-ver-detalles {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.75);
+}
+body.dark .btn-ver-detalles:hover {
+  background: rgba(255,255,255,0.20);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.30);
+}
+
 body.dark .swal2-html-container select option {
   background: #1C2033;
   color: #C9D1E9;
