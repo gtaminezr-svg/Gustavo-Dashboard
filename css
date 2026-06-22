@@ -2224,8 +2224,104 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
   border: 1px solid rgba(255,255,255,0.07) !important;
   box-shadow: 0 8px 28px rgba(0,0,0,0.50) !important;
 }
-/* Ícono del saludo: un poco más visible sobre el degradado */
-body.dark .saludo-bloque .saludo-icon {
+/* ================================================================
+   PANEL DE CASOS — dark mode: mismo diseño que Estadísticas/bandejas
+   ================================================================ */
+
+/* Todos los bloques del panel */
+body.dark .panel-casos-block {
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.50) !important;
+}
+body.dark .panel-casos-block:hover {
+  box-shadow: 0 12px 36px rgba(0,0,0,0.65) !important;
+}
+
+/* Etiquetas (labels #94a3b8) → blanco tenue */
+body.dark .panel-casos-block [style*="color: #94a3b8"],
+body.dark .panel-casos-block [style*="color:#94a3b8"] {
+  color: rgba(255,255,255,0.65) !important;
+}
+
+/* Títulos oscuros (#2b1070) → blanco */
+body.dark .panel-casos-block [style*="color: #2b1070"],
+body.dark .panel-casos-block [style*="color:#2b1070"] {
+  color: #ffffff !important;
+}
+
+/* Textos de filas de lista (#64748b, #475569) */
+body.dark .panel-casos-block [style*="color: #64748b"],
+body.dark .panel-casos-block [style*="color:#64748b"],
+body.dark .panel-casos-block [style*="color: #475569"],
+body.dark .panel-casos-block [style*="color:#475569"] {
+  color: rgba(255,255,255,0.55) !important;
+}
+
+/* Encabezado de la lista (fondo #f8fafc) */
+body.dark .panel-casos-block [style*="background: #f8fafc"],
+body.dark .panel-casos-block [style*="background:#f8fafc"] {
+  background: rgba(10,18,32,0.75) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Filas de tira-paciente */
+body.dark .panel-casos-block .tira-paciente {
+  background: transparent !important;
+  border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+body.dark .panel-casos-block .tira-paciente:hover {
+  background: rgba(255,255,255,0.05) !important;
+}
+
+/* Botones "Ver Detalles" */
+body.dark .panel-casos-block button[style*="background: #f8fafc"],
+body.dark .panel-casos-block button[style*="background: #ffffff"],
+body.dark .panel-casos-block button[style*="background:#ffffff"] {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: rgba(255,255,255,0.75) !important;
+}
+
+/* Tarjetas stat superiores — número como marca de agua abajo-derecha */
+body.dark #totalPacientesMesPanel {
+  color: rgba(255,255,255,0.12) !important;
+  position: absolute !important;
+  bottom: -32px !important;
+  right: 4px !important;
+  font-size: 130px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  margin-top: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+body.dark #totalIngresosMesPanel {
+  color: rgba(255,255,255,0.12) !important;
+  position: absolute !important;
+  bottom: -16px !important;
+  right: 4px !important;
+  font-size: 90px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  margin-top: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+/* Seguro top: nombre en blanco grande */
+body.dark #seguroTopTexto span {
+  color: #ffffff !important;
+  font-size: 26px !important;
+}
+body.dark #labelSeguroTop {
+  color: rgba(255,255,255,0.65) !important;
+}
+body.dark #iconoSeguroTop {
+  color: rgba(255,255,255,0.12) !important;
+  opacity: 1 !important;
+}
+
+
   background: rgba(255,255,255,0.12);
   border-color: rgba(255,255,255,0.18);
 }
