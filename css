@@ -1793,9 +1793,9 @@ body.dark .bell-dot {
    ================================================================ */
 
 body.dark .table-card {
-  background: #12141C;
+  background: linear-gradient(145deg, #1a3a6e, #0a1220);
   border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.50);
 }
 
 body.dark .table-title {
@@ -1803,13 +1803,13 @@ body.dark .table-title {
 }
 
 /* Scrollbar oscuro dentro del cuadro */
-body.dark .table-responsive::-webkit-scrollbar-track { background: #12141C; }
-body.dark .table-responsive::-webkit-scrollbar-thumb { background: #2D3451; border-radius: 4px; }
-body.dark .table-responsive::-webkit-scrollbar-thumb:hover { background: #3D4666; }
+body.dark .table-responsive::-webkit-scrollbar-track { background: #0a1220; }
+body.dark .table-responsive::-webkit-scrollbar-thumb { background: #1a3a6e; border-radius: 4px; }
+body.dark .table-responsive::-webkit-scrollbar-thumb:hover { background: #2a4a8e; }
 
 /* Encabezado de columnas */
 body.dark .table-card .custom-table th {
-  background: #12141C !important;
+  background: rgba(10,18,32,0.85) !important;
   color: #5B6585;
   border-bottom: 1px solid rgba(255,255,255,0.07);
   font-size: 11px;
@@ -1820,7 +1820,7 @@ body.dark .table-card .custom-table th {
 /* Thead sticky (inline style="background:white" → override) */
 body.dark .table-card thead[style*="background: white"],
 body.dark .table-card thead[style*="background:white"] {
-  background: #12141C !important;
+  background: rgba(10,18,32,0.95) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,0.07) !important;
 }
 

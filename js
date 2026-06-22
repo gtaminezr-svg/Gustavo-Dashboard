@@ -544,6 +544,16 @@
     }
 
     document.getElementById('numeroContador').textContent = pacientesFiltrados.length;
+    const dotPendientes = document.getElementById('dotPendientes');
+    if (dotPendientes) {
+      if (nombreBandeja === 'Pendiente' && pacientesFiltrados.length === 0) {
+        dotPendientes.style.background = '#10b981';
+      } else if (nombreBandeja === 'Pendiente') {
+        dotPendientes.style.background = '#dc3545';
+      } else {
+        dotPendientes.style.background = '';
+      }
+    }
     const inputBuscarEl = document.getElementById('inputBuscar');
     if (inputBuscarEl) inputBuscarEl.value = "";
     
