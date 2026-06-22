@@ -79,9 +79,15 @@
     document.body.classList.toggle('dark');
 
     // Los gráficos en canvas conservan los píxeles dibujados con los colores del
-    // tema anterior (p. ej. el número del anillo en blanco). Hay que redibujarlos.
+    // tema anterior. Hay que redibujarlos para que tomen el nuevo tema.
     if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
       dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
+    }
+    if (typeof ultimosPacientesPanelCasos !== 'undefined' && ultimosPacientesPanelCasos) {
+      if (typeof dibujarDonutSegurosPanelCasos === 'function') dibujarDonutSegurosPanelCasos(ultimosPacientesPanelCasos);
+      if (typeof dibujarBarrasEjecutivosPanel === 'function') dibujarBarrasEjecutivosPanel(ultimosPacientesPanelCasos);
+      if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(ultimosPacientesPanelCasos);
+      if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
     }
   }
 
@@ -1507,8 +1513,9 @@
     resetearPanelEstadisticas();
   }
 
-let mesPanelSeleccionado = new Date().getMonth();  
+let mesPanelSeleccionado = new Date().getMonth();
 let anioPanelSeleccionado = new Date().getFullYear();
+let ultimosPacientesPanelCasos = null;
 // NUEVAS VARIABLES PARA QUE LA BARRA SE MUEVA INDEPENDIENTEMENTE
 let mesInicioBarraPanel = new Date().getMonth() > 0 ? new Date().getMonth() - 1 : 11;
 let anioBarraPanel = new Date().getMonth() > 0 ? new Date().getFullYear() : new Date().getFullYear() - 1;
@@ -2845,17 +2852,17 @@ function renderizarPacientesJunio() {
 
   contenedor.innerHTML = html;
 
+  ultimosPacientesPanelCasos = pacientesJunio;
+
   if (typeof dibujarDonutSegurosPanelCasos === 'function') {
     dibujarDonutSegurosPanelCasos(pacientesJunio);
   }
   if (typeof dibujarBarrasEjecutivosPanel === 'function') {
     dibujarBarrasEjecutivosPanel(pacientesJunio);
   }
-  // NUEVO: Llamada al gráfico de medio anillo
   if (typeof dibujarMedioAnilloProgreso === 'function') {
     dibujarMedioAnilloProgreso(pacientesJunio);
   }
-  // NUEVO: Llamada al gráfico de top exámenes
   if (typeof dibujarBarrasExamenesPanel === 'function') {
     dibujarBarrasExamenesPanel(pacientesJunio);
   }
@@ -2871,6 +2878,7 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
   const leyenda = document.getElementById('leyendaDonutSeguros');
   if (!canvas || !leyenda) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionDonutPanelCasosId) {
     cancelAnimationFrame(animacionDonutPanelCasosId);
@@ -2912,12 +2920,12 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     ctx.lineWidth = grosorBase;
     ctx.stroke();
     
-    ctx.fillStyle = '#1e293b';
+    ctx.fillStyle = esDark ? '#ffffff' : '#1e293b';
     ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(textoCentroMes, cx, cy);
-    
+
     leyenda.innerHTML = '';
     return;
   }
@@ -2939,10 +2947,13 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
   });
 
   // --- LEYENDA LIMPIA (Sin los porcentajes) ---
+  const leyendaColor = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
+  const leyendaBg    = esDark ? 'rgba(255,255,255,0.06)' : '#f8fafc';
+  const leyendaBorde = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
   let htmlLeyenda = '';
   segmentos.forEach(seg => {
     htmlLeyenda += `
-      <div style="display: flex; align-items: center; width: 100%; font-size: 11px; font-weight: 700; color: #475569; background: #f8fafc; padding: 8px 12px; border-radius: 8px; box-sizing: border-box; border: 1px solid #f1f5f9;">
+      <div style="display: flex; align-items: center; width: 100%; font-size: 11px; font-weight: 700; color: ${leyendaColor}; background: ${leyendaBg}; padding: 8px 12px; border-radius: 8px; box-sizing: border-box; border: 1px solid ${leyendaBorde};">
         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: ${seg.color}; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-right: 8px;"></span>
         <span style="text-transform: uppercase;">${seg.nombre}</span>
       </div>
@@ -3006,8 +3017,8 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     });
 
     // 3. TEXTO DEL MES EN EL CENTRO
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 26px sans-serif'; // Letra grande y limpia
+    ctx.fillStyle = esDark ? '#ffffff' : '#1e293b';
+    ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(textoCentroMes, cx, cy);
@@ -3051,6 +3062,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const canvas = document.getElementById('barrasEjecutivosPanel');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionBarrasEjecutivosId) {
     cancelAnimationFrame(animacionBarrasEjecutivosId);
@@ -3129,7 +3141,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       const widthVisible = Math.max(barW, 4); 
 
       // 1. Dibujar NOMBRE
-      ctx.fillStyle = '#475569'; 
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
       ctx.font = 'bold 15px sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
@@ -3171,7 +3183,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(leftArea, startY - 8);
     ctx.lineTo(leftArea, startY + (barHeight * barCount) + 8);
-    ctx.strokeStyle = '#bae6fd';
+    ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.20)' : '#bae6fd';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3290,6 +3302,7 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
   const canvas = document.getElementById('halfDonutProgreso');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionMedioAnilloId) {
     cancelAnimationFrame(animacionMedioAnilloId);
@@ -3354,13 +3367,13 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
 
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
-    ctx.fillStyle = '#2b1070';
+    ctx.fillStyle = esDark ? '#ffffff' : '#2b1070';
     ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
 
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = esDark ? 'rgba(255,255,255,0.65)' : '#64748b';
     ctx.font = '700 13px sans-serif';
     ctx.textBaseline = 'top';
     ctx.fillText('COMPLETADOS', cx, cy + 12);
@@ -3382,6 +3395,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
   const canvas = document.getElementById('barrasExamenesPanel');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionBarrasExamenesId) {
     cancelAnimationFrame(animacionBarrasExamenesId);
@@ -3450,7 +3464,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(startX, height - bottomArea);
     ctx.lineTo(width - 20, height - bottomArea);
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.15)' : '#e2e8f0';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3497,7 +3511,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       }
 
       // Dibujar el nombre del examen abajo
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.75)' : '#475569';
       ctx.font = '800 12px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
