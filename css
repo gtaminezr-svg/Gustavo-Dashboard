@@ -449,7 +449,7 @@ body.dark .saludo-icon{
 }
 
 .table-card {
-  background: white;
+  background: linear-gradient(145deg, #D8E0F1, #F0F3FA);
   border-radius: 20px;
   padding: 28px 36px;
   border: 1px solid #C0CAD6;
