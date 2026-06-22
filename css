@@ -2058,5 +2058,26 @@ body.dark .carrusel-card [style*="color:#1e293b"] {
   color: #FFFFFF !important;
 }
 
+/* Barra de meses "Registro de Exámenes Top 6" (Estadísticas) → dark mode */
+body.dark #barraMesesDinamica {
+  background: #004EE0 !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(0,78,224,0.45) !important;
+}
+body.dark #barraMesesDinamica .month-item {
+  color: #ffffff !important;
+  background: #042E7B !important;
+  border-radius: 50px;
+}
+body.dark #barraMesesDinamica .month-item.active {
+  background: #0a3d9e !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.35) !important;
+}
+body.dark #barraMesesDinamica .month-item:hover:not(.active) {
+  background: rgba(255,255,255,0.18) !important;
+  color: #ffffff !important;
+}
+
 
 </style>
