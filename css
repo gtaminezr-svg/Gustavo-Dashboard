@@ -2360,9 +2360,64 @@ body.dark #pildoraFechaPanel {
   color: rgba(255,255,255,0.90) !important;
 }
 
+/* ================================================================
+   DARK MODE — SWEETALERT2 (todas las alertas, popups y confirmaciones)
+   ================================================================ */
 
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.18);
+/* Contenedor principal del popup */
+body.dark .swal2-popup {
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.65) !important;
+}
+
+/* Título */
+body.dark .swal2-title {
+  color: #ffffff !important;
+}
+
+/* Contenido / HTML interior */
+body.dark .swal2-html-container {
+  color: rgba(255,255,255,0.80) !important;
+}
+
+/* Texto simple */
+body.dark .swal2-content,
+body.dark .swal2-text {
+  color: rgba(255,255,255,0.75) !important;
+}
+
+/* Inputs y selects dentro del popup */
+body.dark .swal2-input,
+body.dark .swal2-select,
+body.dark .swal2-textarea {
+  background: #1C2033 !important;
+  color: #C9D1E9 !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+body.dark .swal2-input:focus,
+body.dark .swal2-select:focus,
+body.dark .swal2-textarea:focus {
+  border-color: rgba(123,167,245,0.55) !important;
+  box-shadow: 0 0 0 3px rgba(123,167,245,0.15) !important;
+}
+
+/* Mensaje de validación */
+body.dark .swal2-validation-message {
+  background: rgba(220,38,38,0.15) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(220,38,38,0.25) !important;
+}
+
+/* Íconos (success, error, warning, info) */
+body.dark .swal2-icon {
+  border-color: rgba(255,255,255,0.15) !important;
+}
+
+/* Línea separadora del footer */
+body.dark .swal2-footer {
+  border-top-color: rgba(255,255,255,0.08) !important;
+  color: rgba(255,255,255,0.55) !important;
 }
 
 
