@@ -427,7 +427,7 @@ body.dark .saludo-icon{
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
-  color: rgba(43, 16, 112, 0.07);
+  color: rgba(43, 16, 112, 0.13);
   position: absolute;
   bottom: -32px;
   right: 4px;
@@ -2286,7 +2286,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(43, 16, 112, 0.08) !important;
+  color: rgba(43, 16, 112, 0.13) !important;
 }
 #totalIngresosMesPanel {
   position: absolute !important;
@@ -2298,7 +2298,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(16, 185, 129, 0.10) !important;
+  color: rgba(16, 185, 129, 0.18) !important;
 }
 body.dark #totalPacientesMesPanel {
   color: rgba(255,255,255,0.12) !important;
