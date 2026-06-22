@@ -2079,5 +2079,27 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
   color: #ffffff !important;
 }
 
+/* Cards de Casos (Estadísticas) en modo CLARO: degradado azul, título arriba-izq, número grande abajo-der */
+body:not(.dark) .stats-card-demo {
+  background: linear-gradient(145deg, #3B82F6, #1e3a8a) !important;
+  text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 120px;
+  box-shadow: 0 6px 18px rgba(30,58,138,0.28) !important;
+}
+body:not(.dark) .stats-card-demo > div:first-child {
+  color: #ffffff !important;
+  margin-bottom: 0 !important;
+}
+body:not(.dark) .stats-card-demo > div:last-child {
+  color: #ffffff !important;
+  text-align: right !important;
+  align-self: flex-end !important;
+  font-size: 48px !important;
+  line-height: 1;
+}
+
 
 </style>
