@@ -2150,5 +2150,26 @@ body:not(.dark) .stats-card-demo > div:last-child {
   pointer-events: none;
 }
 
+/* Degradado azul oscuro para bloques Estadísticas + barra de saludo (solo dark mode) */
+body.dark .dash-block[style*="grid-column: 1; grid-row: 2"],
+body.dark .dash-block[style*="grid-column: 2; grid-row: 1 / span 2"],
+body.dark .dash-block[style*="grid-column: 3; grid-row: 1;"] {
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.50) !important;
+}
+/* Barra de saludo "Bienvenido" como card con degradado */
+body.dark .saludo-bloque {
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.50);
+  border-radius: 16px;
+  padding: 12px 20px;
+}
+body.dark .saludo-bloque .saludo-icon {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.18);
+}
+
 
 </style>
