@@ -21,11 +21,11 @@
   --text:      #042E7B;
   --text-soft: #004EE0;
   /* Tarjetas (counter cards) */
-  --card-bg:    linear-gradient(145deg, #DEE2E6, #F3F9FA);
+  --card-bg:    linear-gradient(145deg, #E9ECEF, #F3F9FA);
   --card-border: #E9ECEF;
   --card-text:  #042E7B;
   --card-soft:  #64748b;
-  --card-arrow: #DEE2E6;
+  --card-arrow: #E9ECEF;
   /* compatibilidad con reglas existentes */
   --dashboard-bg: var(--bg);
 }
@@ -55,8 +55,8 @@ body {
 /* AQUÍ PEGAS EL CÓDIGO DE LA BARRA DE DESPLAZAMIENTO */
 .table-responsive::-webkit-scrollbar { width: 8px; height: 8px; }
 .table-responsive::-webkit-scrollbar-track { background: #E9ECEF; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb { background: #DEE2E6; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb:hover { background: #CED4DA; }
+.table-responsive::-webkit-scrollbar-thumb { background: #E9ECEF; border-radius: 4px; }
+.table-responsive::-webkit-scrollbar-thumb:hover { background: #DEE2E6; }
 
 
 .app-container {
@@ -449,7 +449,7 @@ body.dark .saludo-icon{
 }
 
 .table-card {
-  background: linear-gradient(145deg, #DEE2E6, #F3F9FA);
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA);
   border-radius: 20px;
   padding: 28px 36px;
   border: 1px solid #E9ECEF;
@@ -2173,7 +2173,7 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
 
 /* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: linear-gradient(145deg, #DEE2E6, #F3F9FA) !important;
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
   border: 1px solid #E9ECEF !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
@@ -2213,7 +2213,7 @@ body:not(.dark) .stats-card-demo > div:last-child {
 
 /* Bloques Estadísticas en modo CLARO: paleta gris neutro */
 body:not(.dark) .dash-block {
-  background: linear-gradient(145deg, #DEE2E6, #F3F9FA) !important;
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
   border: 1px solid #E9ECEF !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
@@ -2234,7 +2234,7 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
 
 /* Panel de Casos en modo CLARO: paleta gris neutro */
 body:not(.dark) .panel-casos-block {
-  background: linear-gradient(145deg, #DEE2E6, #F3F9FA) !important;
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
   border: 1px solid #E9ECEF !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
