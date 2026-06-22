@@ -2205,7 +2205,7 @@ function abrirSelectorFechaPanel() {
     const cx = 130;
     const cy = 130;
     const radio = 95;
-    const grosor = 26;
+    const grosor = 34;
 
     if (solicitados === 0 && leidos === 0) {
       ctx.clearRect(0, 0, 260, 260);
@@ -2222,8 +2222,21 @@ function abrirSelectorFechaPanel() {
       return;
     }
 
-    const colorSolicitados = esDark ? '#4A6FE3' : '#1e3a8a';
-    const colorLeidos = '#10b981';
+    // Degradados diagonales para los dos colores del anillo
+    const gradAzul = ctx.createLinearGradient(cx - radio, cy - radio, cx + radio, cy + radio);
+    if (esDark) {
+      gradAzul.addColorStop(0, '#6B8DF5');
+      gradAzul.addColorStop(1, '#2A4FB0');
+    } else {
+      gradAzul.addColorStop(0, '#3B82F6');
+      gradAzul.addColorStop(1, '#1e3a8a');
+    }
+    const gradVerde = ctx.createLinearGradient(cx - radio, cy - radio, cx + radio, cy + radio);
+    gradVerde.addColorStop(0, '#34d399');
+    gradVerde.addColorStop(1, '#059669');
+
+    const colorSolicitados = gradAzul;
+    const colorLeidos = gradVerde;
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
     const colorProgreso = esBaseSolicitados ? colorLeidos : colorSolicitados;
