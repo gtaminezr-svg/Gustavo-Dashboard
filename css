@@ -2088,6 +2088,8 @@ body:not(.dark) .stats-card-demo {
   justify-content: space-between !important;
   min-height: 120px;
   box-shadow: 0 6px 18px rgba(30,58,138,0.28) !important;
+  position: relative;
+  overflow: hidden;
 }
 body:not(.dark) .stats-card-demo > div:first-child {
   color: #ffffff !important;
@@ -2098,13 +2100,19 @@ body:not(.dark) .stats-card-demo > div:first-child {
   text-align: left !important;
   align-self: flex-start !important;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 body:not(.dark) .stats-card-demo > div:last-child {
-  color: #ffffff !important;
-  text-align: right !important;
-  align-self: flex-end !important;
-  font-size: 64px !important;
+  color: rgba(255,255,255,0.28) !important;
+  position: absolute;
+  bottom: -32px;
+  right: 4px;
+  font-size: 130px !important;
+  font-weight: 900 !important;
   line-height: 1;
+  z-index: 0;
+  pointer-events: none;
 }
 
 
