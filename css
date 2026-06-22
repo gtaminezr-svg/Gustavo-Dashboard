@@ -2087,6 +2087,12 @@ body.dark #listaSegurosTop [style*="background:#e2e8f0"] {
   border: none !important;
   padding: 0 !important;
 }
+/* Dark mode override: body.dark .dash-block has higher specificity, so we match it here */
+body.dark .carrusel-block {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
 
 /* Controles (ojo + flechas) dentro de la tarjeta del carrusel */
 .carrusel-controles .carrusel-ojo { color: #2b1070; }

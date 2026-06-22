@@ -1914,7 +1914,7 @@ function abrirSelectorFechaPanel() {
       const tbody = document.getElementById('tablaUltimosMedico');
       if (tbody) tbody.innerHTML = sinDatos;
       const carrusel = document.getElementById('carruselContenedorTarjetas');
-      if (carrusel) carrusel.innerHTML = '<div style="color:#cbd5e1; font-size:12px; font-weight:600; text-align:center; padding-top:40px;">Sin resultados</div>';
+      if (carrusel) carrusel.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:100%; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;"><i class="fas fa-search" style="font-size:22px; color:#cbd5e1;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin datos</span></div>`;
       const controles = document.getElementById('controlesCarrusel');
       if (controles) controles.style.display = 'none';
       const burbujas = document.getElementById('contenedorBurbujasSeguros');
@@ -2424,7 +2424,7 @@ function abrirSelectorFechaPanel() {
     if (!contenedor) return;
 
     if (pacientesCarrusel.length === 0) {
-      contenedor.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; font-weight:600;">Sin registros en este mes</div>`;
+      contenedor.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:100%; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;"><i class="fas fa-inbox" style="font-size:22px; color:#cbd5e1;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin registros en este mes</span></div>`;
       return;
     }
 
