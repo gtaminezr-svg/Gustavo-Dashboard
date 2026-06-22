@@ -21,7 +21,7 @@
   --text:      #042E7B;
   --text-soft: #004EE0;
   /* Tarjetas (counter cards) */
-  --card-bg:    linear-gradient(145deg, #E9ECEF, #F3F9FA);
+  --card-bg:    #ffffff;
   --card-border: #E9ECEF;
   --card-text:  #042E7B;
   --card-soft:  #64748b;
@@ -1569,8 +1569,8 @@ body.dark .search-container {
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 body:not(.dark) .search-container {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border-bottom: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 
@@ -2181,8 +2181,8 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
 
 /* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
   display: flex !important;
@@ -2221,8 +2221,8 @@ body:not(.dark) .stats-card-demo > div:last-child {
 
 /* Bloques Estadísticas en modo CLARO: paleta gris neutro */
 body:not(.dark) .dash-block {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
@@ -2232,15 +2232,15 @@ body:not(.dark) .dash-block {
 
 /* Sidebar */
 body:not(.dark) .sidebar {
-  background: linear-gradient(180deg, #E9ECEF, #F3F9FA) !important;
-  border-right: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
   box-shadow: none !important;
 }
 
 /* Barra de título / saludo */
 body:not(.dark) .section-header-bar {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 body.dark .section-header-bar {
@@ -2253,22 +2253,22 @@ body.dark .section-header-bar {
 /* Todos los bloques sin clase específica en vistaRegistroPersonal */
 body:not(.dark) #vistaRegistroPersonal [style*="background:white"],
 body:not(.dark) #vistaRegistroPersonal [style*="background: white"] {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 
 /* Bloque 7 (ficha médico) por ID */
 body:not(.dark) #bloque7 {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 
 /* Thead de la tabla principal en modo claro */
 body:not(.dark) .table-card thead[style*="background: white"],
 body:not(.dark) .table-card thead[style*="background:white"] {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  background: #ffffff !important;
   box-shadow: 0 1px 0 #E9ECEF !important;
 }
 
@@ -2288,8 +2288,8 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
 
 /* Panel de Casos en modo CLARO: paleta gris neutro */
 body:not(.dark) .panel-casos-block {
-  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
-  border: 1px solid #E9ECEF !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
