@@ -2329,6 +2329,11 @@ body.dark #labelSeguroTop {
 body.dark #iconoSeguroTop {
   color: rgba(255,255,255,0.12) !important;
   opacity: 1 !important;
+  font-size: 120px !important;
+}
+body.dark #iconoAtendidos,
+body.dark #iconoIngresos {
+  display: none !important;
 }
 
 
