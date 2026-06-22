@@ -3103,21 +3103,19 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   const barCount = lista.length;
 
-  const leftArea = 100;
-  const rightArea = 60;
-  const topArea = 20;
-  const bottomArea = 20;
+  const leftArea  = 110; // espacio para nombres
+  const rightArea = 70;  // espacio para números
+  const topArea    = 30;
+  const bottomArea = 30;
   const chartWidth = width - leftArea - rightArea;
-  const available = height - topArea - bottomArea;
+  const available  = height - topArea - bottomArea;
 
-  const maxBarHeight = 45;
-  // Distribuimos las barras con un espacio igual arriba, abajo y entre ellas,
-  // para que el grupo quede centrado verticalmente y ocupe bien el espacio.
-  let barHeight = Math.min(maxBarHeight, available / (barCount + (barCount + 1) * 0.4));
-  let gap = barCount > 0 ? (available - barHeight * barCount) / (barCount + 1) : 0;
-  if (gap < 0) gap = 0;
-  const barStep = barHeight + gap;
-  const startY = topArea + gap;
+  // Barras compactas juntas, centradas verticalmente
+  const barHeight = 26;
+  const gap       = 8;   // pequeño espacio entre barras
+  const barStep   = barHeight + gap;
+  const totalGroupH = barCount * barStep - gap;
+  const startY = topArea + Math.max(0, (available - totalGroupH) / 2);
 
   let startTime = null;
   const duration = 1000;
