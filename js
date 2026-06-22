@@ -3105,14 +3105,14 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
   const leftArea  = 110; // espacio para nombres
   const rightArea = 70;  // espacio para números
-  const topArea    = 30;
-  const bottomArea = 30;
+  const topArea    = 10;
+  const bottomArea = 10;
   const chartWidth = width - leftArea - rightArea;
   const available  = height - topArea - bottomArea;
 
-  // Barras compactas juntas, centradas verticalmente
-  const barHeight = 26;
-  const gap       = 8;   // pequeño espacio entre barras
+  // Barras más grandes para llenar el espacio, juntas y centradas
+  const barHeight = 46;
+  const gap       = 8;
   const barStep   = barHeight + gap;
   const totalGroupH = barCount * barStep - gap;
   const startY = topArea + Math.max(0, (available - totalGroupH) / 2);
