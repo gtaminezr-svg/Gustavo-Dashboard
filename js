@@ -1563,7 +1563,7 @@ function mostrarVistaPanelCasos(){
       <!-- Grupo derecho: Búsqueda + Descargar Base + píldora de fecha (izquierda vacía) -->
       <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px; margin-left:auto;">
         <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
-          <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <input type="text" id="inputBuscarCasoPanel" class="search-bar-input" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
           <button onclick="toggleBuscadorPanel()" title="Buscar" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-search"></i>
           </button>
