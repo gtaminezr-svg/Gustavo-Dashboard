@@ -2226,6 +2226,46 @@ body:not(.dark) .dash-block {
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
+/* ================================================================
+   MODO CLARO — todos los bloques/cuadros del dashboard
+   ================================================================ */
+
+/* Sidebar */
+body:not(.dark) .sidebar {
+  background: linear-gradient(180deg, #E9ECEF, #F3F9FA) !important;
+  border-right: 1px solid #E9ECEF !important;
+  box-shadow: none !important;
+}
+
+/* Barra de título / saludo */
+body:not(.dark) .section-header-bar {
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  border: 1px solid #E9ECEF !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+/* Todos los bloques sin clase específica en vistaRegistroPersonal */
+body:not(.dark) #vistaRegistroPersonal [style*="background:white"],
+body:not(.dark) #vistaRegistroPersonal [style*="background: white"] {
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  border: 1px solid #E9ECEF !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+/* Bloque 7 (ficha médico) por ID */
+body:not(.dark) #bloque7 {
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  border: 1px solid #E9ECEF !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
+
+/* Thead de la tabla principal en modo claro */
+body:not(.dark) .table-card thead[style*="background: white"],
+body:not(.dark) .table-card thead[style*="background:white"] {
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  box-shadow: 0 1px 0 #E9ECEF !important;
+}
+
 /* Degradado azul oscuro para bloques Estadísticas + barra de saludo (solo dark mode) */
 body.dark .dash-block[style*="grid-column: 1; grid-row: 2"],
 body.dark .dash-block[style*="grid-column: 2; grid-row: 1 / span 2"],
