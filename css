@@ -1504,20 +1504,55 @@ body .swal2-container {
    DARK MODE — COUNTER CARDS (los 5 cards de estadística superiores)
    ================================================================ */
 
+/* Cards de bandejas (Pendientes/En Proceso/Completados/Desestimados):
+   mismo diseño que los cards de Estadísticas → degradado, título arriba-izq.
+   y número como marca de agua abajo-derecha. Solo en modo oscuro. */
 body.dark .counter-card {
-  background: #161929;
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.40);
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.50) !important;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 120px;
+  position: relative;
+  overflow: hidden;
 }
 body.dark .counter-card:hover {
-  box-shadow: 0 12px 36px rgba(0,0,0,0.55);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.65) !important;
   transform: translateY(-2px);
 }
-body.dark .counter-number {
-  color: #FFFFFF;
-}
+/* Etiqueta/título arriba-izquierda */
 body.dark .counter-label {
-  color: #6B7490;
+  color: rgba(255,255,255,0.75) !important;
+  font-size: 14px;
+  letter-spacing: .3px;
+  line-height: 1.3;
+  text-align: left;
+  align-self: flex-start;
+  position: relative;
+  z-index: 1;
+}
+body.dark .card-top-row {
+  justify-content: flex-start;
+  align-self: flex-start;
+  position: relative;
+  z-index: 1;
+}
+/* Número como marca de agua abajo-derecha */
+body.dark .counter-number {
+  color: rgba(255,255,255,0.12) !important;
+  position: absolute;
+  bottom: -32px;
+  right: 4px;
+  font-size: 130px;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1;
+  z-index: 0;
+  pointer-events: none;
 }
 /* Círculo en oscuro: color base neutro más visible */
 body.dark .card-dot {
