@@ -2107,6 +2107,16 @@ body.dark .dash-block [style*="text-transform:uppercase"][style*="color:#64748b"
   color: #FFFFFF !important;
 }
 
+/* Badges del carrusel (Casos del Mes / Próximos Eventos) — relleno sólido en modo oscuro */
+body.dark #miniCalTotalBadge {
+  background: #2b1070 !important;
+  color: #ffffff !important;
+}
+body.dark #proximosBadge {
+  background: #166534 !important;
+  color: #ffffff !important;
+}
+
 /* Lista de seguros: nombres e barra de fondo → dark mode */
 body.dark #listaSegurosTop [style*="color:#334155"] {
   color: #FFFFFF !important;

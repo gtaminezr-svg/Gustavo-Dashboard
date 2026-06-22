@@ -3592,8 +3592,15 @@ function verDetallesExamenesTop() {
   const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
 
   // 5. Construir la lista HTML detallada
+  const esDark = document.body.classList.contains('dark');
+  const cTxt    = esDark ? 'rgba(255,255,255,0.87)' : '#334155';
+  const cSub    = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+  const cBg     = esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9';
+  const cTitulo = esDark ? '#7BA7F5' : '#2b1070';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
-  
+
   lista.forEach((item, index) => {
     const nombre = item[0];
     const cantidad = item[1];
@@ -3602,16 +3609,16 @@ function verDetallesExamenesTop() {
 
     htmlDetalle += `
       <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:#334155;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:${cTxt};">
           <span style="text-align:left; line-height:1.2;">
-            <span style="color:#94a3b8; margin-right:4px;">#${index + 1}</span> 
+            <span style="color:${cSub}; margin-right:4px;">#${index + 1}</span>
             ${nombre}
           </span>
           <span style="color:${color}; font-weight:900; font-size: 16px;">
-            ${cantidad} <span style="font-size:11px; color:#94a3b8; font-weight:600;">(${porcentaje}%)</span>
+            ${cantidad} <span style="font-size:11px; color:${cSub}; font-weight:600;">(${porcentaje}%)</span>
           </span>
         </div>
-        <div style="width:100%; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+        <div style="width:100%; height:10px; background:${cBg}; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
           <div style="width:${porcentaje}%; height:100%; background-color:${color}; border-radius:5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
         </div>
       </div>
@@ -3621,8 +3628,9 @@ function verDetallesExamenesTop() {
 
   // 6. Lanzar la alerta
   Swal.fire({
-    title: '<div style="font-size:22px; font-weight:800; color:#2b1070; text-transform:uppercase; margin-bottom: 0;">Detalle de Exámenes</div><div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:none; margin-top:4px;">Exámenes más solicitados del mes</div>',
+    title: `<div style="font-size:22px; font-weight:800; color:${cTitulo}; text-transform:uppercase; margin-bottom: 0;">Detalle de Exámenes</div><div style="font-size:12px; font-weight:600; color:${cSub}; text-transform:none; margin-top:4px;">Exámenes más solicitados del mes</div>`,
     html: htmlDetalle,
+    background: bgModal,
     width: 420,
     confirmButtonText: 'Cerrar',
     confirmButtonColor: '#64748b',
@@ -3689,33 +3697,40 @@ function verDetallesSeguros() {
   }
 
   // 4. Construir la lista HTML detallada
+  const esDark = document.body.classList.contains('dark');
+  const cTxt    = esDark ? 'rgba(255,255,255,0.87)' : '#334155';
+  const cSub    = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+  const cBg     = esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9';
+  const cTitulo = esDark ? '#7BA7F5' : '#2b1070';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
-  
+
   lista.forEach((item, index) => {
     const nombre = item[0];
     const cantidad = item[1];
     const porcentaje = Math.round((cantidad / total) * 100);
-    
+
     // Paleta de colores exacta por marca de seguro
-    let color = '#64748b'; 
+    let color = '#64748b';
     if (nombre === 'MAPFRE') color = '#68000c';
     else if (nombre === 'RIMAC') color = '#dc2626';
-    else if (nombre === 'LA POSITIVA') color = '#ea580c'; 
+    else if (nombre === 'LA POSITIVA') color = '#ea580c';
     else if (nombre === 'PARTICULAR') color = '#16a34a';
     else if (nombre.includes('VIP')) color = '#ca8a04';
 
     htmlDetalle += `
       <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:#334155;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:${cTxt};">
           <span style="text-align:left; line-height:1.2; display:flex; align-items:center; gap:8px;">
             <span style="display:inline-block; width:12px; height:12px; border-radius:3px; background:${color};"></span>
             ${nombre}
           </span>
           <span style="color:${color}; font-weight:900; font-size: 16px;">
-            ${cantidad} <span style="font-size:11px; color:#94a3b8; font-weight:600;">(${porcentaje}%)</span>
+            ${cantidad} <span style="font-size:11px; color:${cSub}; font-weight:600;">(${porcentaje}%)</span>
           </span>
         </div>
-        <div style="width:100%; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+        <div style="width:100%; height:10px; background:${cBg}; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
           <div style="width:${porcentaje}%; height:100%; background-color:${color}; border-radius:5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
         </div>
       </div>
@@ -3725,8 +3740,9 @@ function verDetallesSeguros() {
 
   // 5. Lanzar la alerta emergente
   Swal.fire({
-    title: '<div style="font-size:22px; font-weight:800; color:#2b1070; text-transform:uppercase; margin-bottom: 0;">Detalle por Seguro</div><div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:none; margin-top:4px;">Distribución de pacientes atendidos</div>',
+    title: `<div style="font-size:22px; font-weight:800; color:${cTitulo}; text-transform:uppercase; margin-bottom: 0;">Detalle por Seguro</div><div style="font-size:12px; font-weight:600; color:${cSub}; text-transform:none; margin-top:4px;">Distribución de pacientes atendidos</div>`,
     html: htmlDetalle,
+    background: bgModal,
     width: 420,
     confirmButtonText: 'Cerrar',
     confirmButtonColor: '#64748b',
