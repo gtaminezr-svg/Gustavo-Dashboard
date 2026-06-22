@@ -2424,18 +2424,17 @@ function abrirSelectorFechaPanel() {
     if (!contenedor) return;
 
     if (pacientesCarrusel.length === 0) {
-      contenedor.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; font-weight:600; padding-top:20px;">Sin registros en este mes</div>`;
-      document.getElementById('controlesCarrusel').style.display = 'none';
+      contenedor.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; font-weight:600;">Sin registros en este mes</div>`;
       return;
     }
 
-    document.getElementById('controlesCarrusel').style.display = 'flex';
+    const totalC = pacientesCarrusel.length;
     let html = '';
-    
+
     // Construimos todas las tarjetas, la transición ocurre al mover las clases CSS
     pacientesCarrusel.forEach((p, i) => {
       html += `
-        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:95px; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:12px 15px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -2px 10px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:6px; transform-origin: top center;">
+        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:160px; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; gap:10px; transform-origin: top center;">
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Nombre:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;" title="${p.nombre || '—'}">${p.nombre || '—'}</span>
@@ -2447,6 +2446,13 @@ function abrirSelectorFechaPanel() {
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Vence:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b;">${p.vencimiento || '—'}</span>
+            </div>
+            <div class="carrusel-controles" style="position:absolute; bottom:14px; right:16px; display:flex; align-items:center; gap:12px;">
+              <i class="fas fa-eye carrusel-ojo" onclick="event.stopPropagation(); verDetalleCarrusel()" style="cursor:pointer; font-size:16px; transition:color 0.2s;" title="Ver Ficha Clínica"></i>
+              ${totalC > 1 ? `
+              <i class="fas fa-chevron-left carrusel-flecha" onclick="event.stopPropagation(); moverCarrusel(-1)" style="cursor:pointer; font-size:12px; padding:6px 10px; border-radius:6px; transition:background 0.2s;"></i>
+              <i class="fas fa-chevron-right carrusel-flecha" onclick="event.stopPropagation(); moverCarrusel(1)" style="cursor:pointer; font-size:12px; padding:6px 10px; border-radius:6px; transition:background 0.2s;"></i>
+              ` : ''}
             </div>
         </div>
       `;

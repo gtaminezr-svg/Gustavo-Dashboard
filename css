@@ -2080,6 +2080,24 @@ body.dark #listaSegurosTop [style*="background:#e2e8f0"] {
   background: #2D3451 !important;
 }
 
+/* Bloque "Pacientes Registrados": sin fondo ni título, las tarjetas ocupan todo (ambos modos) */
+.carrusel-block {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Controles (ojo + flechas) dentro de la tarjeta del carrusel */
+.carrusel-controles .carrusel-ojo { color: #2b1070; }
+.carrusel-controles .carrusel-ojo:hover { color: #10b981; }
+.carrusel-controles .carrusel-flecha { color: #64748b; background: #f1f5f9; }
+.carrusel-controles .carrusel-flecha:hover { background: #e2e8f0; }
+body.dark .carrusel-controles .carrusel-ojo { color: #7BA7F5; }
+body.dark .carrusel-controles .carrusel-ojo:hover { color: #10b981; }
+body.dark .carrusel-controles .carrusel-flecha { color: #C9D1E9; background: rgba(255,255,255,0.10); }
+body.dark .carrusel-controles .carrusel-flecha:hover { background: rgba(255,255,255,0.20); }
+
 /* Tarjetas del carrusel "Pacientes Registrados" → estilo ejecutivo en dark mode */
 body.dark .carrusel-card {
   background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
