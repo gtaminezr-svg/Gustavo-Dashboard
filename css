@@ -2080,17 +2080,22 @@ body.dark #listaSegurosTop [style*="background:#e2e8f0"] {
   background: #2D3451 !important;
 }
 
-/* Tarjetas del carrusel "Pacientes Registrados" → azul claro en dark mode */
+/* Tarjetas del carrusel "Pacientes Registrados" → estilo ejecutivo en dark mode */
 body.dark .carrusel-card {
-  background: #2563EB !important;
-  border-color: rgba(255,255,255,0.15) !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.35) !important;
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45) !important;
 }
+/* Label ("Nombre:", "Exámenes:", "Vence:") → blanco tenue */
 body.dark .carrusel-card [style*="color:#94a3b8"] {
-  color: rgba(255,255,255,0.65) !important;
+  color: rgba(255,255,255,0.50) !important;
+  font-size: 11px !important;
 }
+/* Valores → blanco, negrita prominente */
 body.dark .carrusel-card [style*="color:#1e293b"] {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
 }
 
 /* Barra de meses "Registro de Exámenes Top 6" (Estadísticas) → dark mode */
