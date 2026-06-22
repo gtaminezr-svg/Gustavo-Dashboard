@@ -2092,12 +2092,18 @@ body:not(.dark) .stats-card-demo {
 body:not(.dark) .stats-card-demo > div:first-child {
   color: #ffffff !important;
   margin-bottom: 0 !important;
+  font-size: 14px !important;
+  letter-spacing: .3px;
+  line-height: 1.3;
+  text-align: left !important;
+  align-self: flex-start !important;
+  width: 100%;
 }
 body:not(.dark) .stats-card-demo > div:last-child {
   color: #ffffff !important;
   text-align: right !important;
   align-self: flex-end !important;
-  font-size: 48px !important;
+  font-size: 64px !important;
   line-height: 1;
 }
 
