@@ -10,8 +10,8 @@
 }
 
 :root{
-  /* Paleta azul-gris (modo claro) */
-  --bg:        #F0F3FA;
+  /* Paleta Ancient Water — Pantone 12-4108 TCX (modo claro) */
+  --bg:        #F3F5FB;
   --surface:   #FFFFFF;
   --accent:    #004EE0;
   --accent-2:  #99CAFF;
@@ -21,11 +21,11 @@
   --text:      #042E7B;
   --text-soft: #004EE0;
   /* Tarjetas (counter cards) */
-  --card-bg:    linear-gradient(145deg, #D8E0F1, #F0F3FA);
-  --card-border: #C0CAD6;
+  --card-bg:    linear-gradient(145deg, #C9D1E6, #F3F5FB);
+  --card-border: #DCDFF0;
   --card-text:  #042E7B;
   --card-soft:  #64748b;
-  --card-arrow: #B0B6C6;
+  --card-arrow: #C9D1E6;
   /* compatibilidad con reglas existentes */
   --dashboard-bg: var(--bg);
 }
@@ -54,9 +54,9 @@ body {
 
 /* AQUÍ PEGAS EL CÓDIGO DE LA BARRA DE DESPLAZAMIENTO */
 .table-responsive::-webkit-scrollbar { width: 8px; height: 8px; }
-.table-responsive::-webkit-scrollbar-track { background: #D8E0F1; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb { background: #B0B6C6; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb:hover { background: #8B909E; }
+.table-responsive::-webkit-scrollbar-track { background: #D4DAE9; border-radius: 4px; }
+.table-responsive::-webkit-scrollbar-thumb { background: #C9D1E6; border-radius: 4px; }
+.table-responsive::-webkit-scrollbar-thumb:hover { background: #B8C2D8; }
 
 
 .app-container {
@@ -365,7 +365,7 @@ body.dark .saludo-icon{
   background: var(--card-bg);
   padding: 20px;
   border-radius: 20px;
-  border: 1px solid var(--card-border, #C0CAD6);
+  border: 1px solid var(--card-border, #DCDFF0);
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
   min-width: 250px;
   min-height: 120px;
@@ -428,7 +428,7 @@ body.dark .saludo-icon{
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
-  color: rgba(139, 144, 158, 0.75);
+  color: rgba(180, 190, 214, 0.85);
   position: absolute;
   bottom: -32px;
   right: 4px;
@@ -449,10 +449,10 @@ body.dark .saludo-icon{
 }
 
 .table-card {
-  background: linear-gradient(145deg, #D8E0F1, #F0F3FA);
+  background: linear-gradient(145deg, #C9D1E6, #F3F5FB);
   border-radius: 20px;
   padding: 28px 36px;
-  border: 1px solid #C0CAD6;
+  border: 1px solid #DCDFF0;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
 }
 
@@ -2173,8 +2173,8 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
 
 /* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: linear-gradient(145deg, #D8E0F1, #F0F3FA) !important;
-  border: 1px solid #C0CAD6 !important;
+  background: linear-gradient(145deg, #C9D1E6, #F3F5FB) !important;
+  border: 1px solid #DCDFF0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
   display: flex !important;
@@ -2207,14 +2207,14 @@ body:not(.dark) .stats-card-demo > div:last-child {
   line-height: 1;
   z-index: 0;
   pointer-events: none;
-  color: rgba(139, 144, 158, 0.75) !important;
+  color: rgba(180, 190, 214, 0.85) !important;
   opacity: 1;
 }
 
-/* Bloques Estadísticas en modo CLARO: paleta azul-gris */
+/* Bloques Estadísticas en modo CLARO: paleta Ancient Water */
 body:not(.dark) .dash-block {
-  background: linear-gradient(145deg, #D8E0F1, #F0F3FA) !important;
-  border: 1px solid #C0CAD6 !important;
+  background: linear-gradient(145deg, #C9D1E6, #F3F5FB) !important;
+  border: 1px solid #DCDFF0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
@@ -2232,10 +2232,10 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
    PANEL DE CASOS — dark mode: mismo diseño que Estadísticas/bandejas
    ================================================================ */
 
-/* Panel de Casos en modo CLARO: paleta azul-gris */
+/* Panel de Casos en modo CLARO: paleta Ancient Water */
 body:not(.dark) .panel-casos-block {
-  background: linear-gradient(145deg, #D8E0F1, #F0F3FA) !important;
-  border: 1px solid #C0CAD6 !important;
+  background: linear-gradient(145deg, #C9D1E6, #F3F5FB) !important;
+  border: 1px solid #DCDFF0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
@@ -2305,7 +2305,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(139, 144, 158, 0.75) !important;
+  color: rgba(180, 190, 214, 0.85) !important;
 }
 #totalIngresosMesPanel {
   position: absolute !important;
@@ -2317,7 +2317,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(139, 144, 158, 0.75) !important;
+  color: rgba(180, 190, 214, 0.85) !important;
 }
 body.dark #totalPacientesMesPanel {
   color: rgba(255,255,255,0.12) !important;
