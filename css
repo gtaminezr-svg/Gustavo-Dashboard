@@ -427,7 +427,7 @@ body.dark .saludo-icon{
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
-  color: rgba(43, 16, 112, 0.13);
+  color: rgba(43, 16, 112, 0.18);
   position: absolute;
   bottom: -32px;
   right: 4px;
@@ -2170,32 +2170,34 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
   color: #ffffff !important;
 }
 
-/* Cards de Casos (Estadísticas) en modo CLARO: degradado azul, título arriba-izq, número grande abajo-der */
+/* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: linear-gradient(145deg, #3B82F6, #1e3a8a) !important;
+  background: white !important;
+  border: 1px solid #eef2f7 !important;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
   min-height: 120px;
-  box-shadow: 0 6px 18px rgba(30,58,138,0.28) !important;
   position: relative;
   overflow: hidden;
 }
+/* Etiqueta arriba-izquierda */
 body:not(.dark) .stats-card-demo > div:first-child {
-  color: #ffffff !important;
+  color: #64748b !important;
   margin-bottom: 0 !important;
   font-size: 14px !important;
+  font-weight: 700 !important;
   letter-spacing: .3px;
-  line-height: 1.3;
   text-align: left !important;
   align-self: flex-start !important;
-  width: 100%;
   position: relative;
   z-index: 1;
 }
+/* Número: marca de agua abajo-derecha con el color propio de cada stat */
 body:not(.dark) .stats-card-demo > div:last-child {
-  color: rgba(255,255,255,0.28) !important;
   position: absolute;
   bottom: -32px;
   right: 4px;
@@ -2204,6 +2206,7 @@ body:not(.dark) .stats-card-demo > div:last-child {
   line-height: 1;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.18;
 }
 
 /* Degradado azul oscuro para bloques Estadísticas + barra de saludo (solo dark mode) */
@@ -2286,7 +2289,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(43, 16, 112, 0.13) !important;
+  color: rgba(43, 16, 112, 0.18) !important;
 }
 #totalIngresosMesPanel {
   position: absolute !important;
@@ -2298,7 +2301,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(16, 185, 129, 0.18) !important;
+  color: rgba(16, 185, 129, 0.22) !important;
 }
 body.dark #totalPacientesMesPanel {
   color: rgba(255,255,255,0.12) !important;
