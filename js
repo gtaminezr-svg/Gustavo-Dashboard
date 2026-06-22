@@ -3100,22 +3100,24 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   }
 
   // 4. Variables Espaciales del Canvas
-  const maxVal = Math.max(...lista.map(item => item[1]), 1); 
+  const maxVal = Math.max(...lista.map(item => item[1]), 1);
   const barCount = lista.length;
-  
-  const leftArea = 100;  
-  const rightArea = 60;  
-  // ¡CORRECCIÓN!: Aumentamos los márgenes superior e inferior para que respire
-  const topArea = 20;    
-  const bottomArea = 25; 
+
+  const leftArea = 100;
+  const rightArea = 60;
+  const topArea = 20;
+  const bottomArea = 20;
   const chartWidth = width - leftArea - rightArea;
-  
-  const barSpacing = 0; 
-  const maxBarHeight = 45; 
-  const calculatedBarHeight = (height - topArea - bottomArea) / barCount;
-  const barHeight = Math.min(calculatedBarHeight, maxBarHeight); 
-  
-  const startY = topArea + (height - topArea - bottomArea - (barHeight * barCount)) / 2;
+  const available = height - topArea - bottomArea;
+
+  const maxBarHeight = 45;
+  // Distribuimos las barras con un espacio igual arriba, abajo y entre ellas,
+  // para que el grupo quede centrado verticalmente y ocupe bien el espacio.
+  let barHeight = Math.min(maxBarHeight, available / (barCount + (barCount + 1) * 0.4));
+  let gap = barCount > 0 ? (available - barHeight * barCount) / (barCount + 1) : 0;
+  if (gap < 0) gap = 0;
+  const barStep = barHeight + gap;
+  const startY = topArea + gap;
 
   let startTime = null;
   const duration = 1000;
@@ -3137,8 +3139,8 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       const color = getColorEjecutivo(nombre);
       
       const barW = (valor / maxVal) * chartWidth * easeProgress;
-      const y = startY + index * barHeight; 
-      const widthVisible = Math.max(barW, 4); 
+      const y = startY + index * barStep;
+      const widthVisible = Math.max(barW, 4);
 
       // 1. Dibujar NOMBRE
       ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
@@ -3180,9 +3182,10 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     });
 
     // Línea base vertical decorativa (Con un pequeño rebose arriba y abajo para verse mejor)
+    const finBarras = startY + (barStep * (barCount - 1)) + barHeight;
     ctx.beginPath();
     ctx.moveTo(leftArea, startY - 8);
-    ctx.lineTo(leftArea, startY + (barHeight * barCount) + 8);
+    ctx.lineTo(leftArea, finBarras + 8);
     ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.20)' : '#bae6fd';
     ctx.lineWidth = 3;
     ctx.stroke();
@@ -3430,9 +3433,11 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     return;
   }
 
-  // 3. Paleta de colores clínicos solicitada
-  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
-  
+  // 3. Paleta de colores clínicos (tonos más claros en modo oscuro)
+  const colores = esDark
+    ? ['#A5C8FF', '#7BA7F5', '#4F8EF7', '#99CAFF', '#C9DDF5']
+    : ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
+
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   
   // Variables espaciales corregidas
@@ -3502,7 +3507,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       // Dibujar la cantidad arriba de la barra (¡Corregido!)
       if (progress > 0.4) {
         ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-        ctx.fillStyle = color;
+        ctx.fillStyle = esDark ? '#ffffff' : color;
         ctx.font = '900 22px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom'; // CORRECCIÓN: Evita que el número se hunda en la barra
