@@ -1568,6 +1568,11 @@ body.dark .search-container {
   box-shadow: none !important;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+body:not(.dark) .search-container {
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
+  border-bottom: 1px solid #E9ECEF !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
+}
 
 /* Encabezados de Calendario y Registro Personal → manejado al final del archivo */
 
