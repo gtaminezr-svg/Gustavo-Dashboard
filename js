@@ -2775,6 +2775,7 @@ function renderizarPacientesJunio() {
     return; // Detiene el código
   }
 
+  const esDark = document.body.classList.contains('dark');
   let html = '';
   pacientesJunio.forEach(p => {
     let colorSeguro = '#64748b';
@@ -2805,7 +2806,7 @@ function renderizarPacientesJunio() {
       estadoTextoMostrar = subEstadoPlano;
       const claveColor = subEstadoPlano.toLowerCase().trim();
       hexColor = mapaColoresSemaforo[claveColor] || '#f59e0b';
-      bgEstado = hexColor + '20';
+      bgEstado = esDark ? hexColor : hexColor + '20';
     }
 
     const especialidad = obtenerEspecialidadMedico(p.medico);
@@ -2829,7 +2830,7 @@ function renderizarPacientesJunio() {
           </div>
           <div style="font-size: 12px; color: #475569; font-weight: 500;">${especialidad}</div>
           <div>
-            <span style="background: ${bgEstado}; color: ${hexColor}; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
+            <span style="background: ${bgEstado}; color: ${esDark && subEstadoPlano ? '#ffffff' : hexColor}; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
           </div>
           
           <!-- Contenedor relativo para el lápiz y su menú -->
