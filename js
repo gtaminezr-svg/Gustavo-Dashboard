@@ -2805,10 +2805,10 @@ function renderizarPacientesJunio() {
 
     if (p.estado === 'Pendiente') {
       hexColor = '#ef4444';
-      bgEstado = '#ef444420';
+      bgEstado = esDark ? hexColor : hexColor + '20';
     } else if (p.estado === 'Completado') {
       hexColor = '#10b981';
-      bgEstado = '#10b98120';
+      bgEstado = esDark ? hexColor : hexColor + '20';
     }
 
     const subEstadoPlano = p.subEstado || '';
@@ -2841,7 +2841,7 @@ function renderizarPacientesJunio() {
           </div>
           <div style="font-size: 12px; color: #475569; font-weight: 500;">${especialidad}</div>
           <div>
-            <span style="background: ${bgEstado}; color: ${esDark && subEstadoPlano ? '#ffffff' : hexColor}; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
+            <span style="background: ${bgEstado}; color: ${esDark ? '#ffffff' : hexColor}; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
           </div>
           
           <!-- Contenedor relativo para el lápiz y su menú -->
