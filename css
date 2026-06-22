@@ -2132,9 +2132,9 @@ body.dark .carrusel-controles .carrusel-ojo:hover { color: #10b981; }
 body.dark .carrusel-controles .carrusel-flecha { color: #C9D1E9; background: rgba(255,255,255,0.10); }
 body.dark .carrusel-controles .carrusel-flecha:hover { background: rgba(255,255,255,0.20); }
 
-/* Tarjetas del carrusel en modo CLARO: sin fondo propio, se funde con el bloque padre */
+/* Tarjetas del carrusel en modo CLARO: mismo gradiente que el bloque padre, sin borde ni sombra */
 body:not(.dark) .carrusel-card {
-  background: transparent !important;
+  background: linear-gradient(145deg, #E9ECEF, #F3F9FA) !important;
   border: none !important;
   box-shadow: none !important;
 }
