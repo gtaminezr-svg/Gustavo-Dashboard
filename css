@@ -2132,6 +2132,13 @@ body.dark .carrusel-controles .carrusel-ojo:hover { color: #10b981; }
 body.dark .carrusel-controles .carrusel-flecha { color: #C9D1E9; background: rgba(255,255,255,0.10); }
 body.dark .carrusel-controles .carrusel-flecha:hover { background: rgba(255,255,255,0.20); }
 
+/* Tarjetas del carrusel en modo CLARO: sin fondo propio, se funde con el bloque padre */
+body:not(.dark) .carrusel-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Tarjetas del carrusel "Pacientes Registrados" → estilo ejecutivo en dark mode */
 body.dark .carrusel-card {
   background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;

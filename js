@@ -2473,7 +2473,7 @@ function abrirSelectorFechaPanel() {
     if (!contenedor) return;
 
     if (pacientesCarrusel.length === 0) {
-      contenedor.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:100%; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;"><i class="fas fa-inbox" style="font-size:22px; color:#cbd5e1;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin registros en este mes</span></div>`;
+      contenedor.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:200px; border-radius:16px; box-sizing:border-box;"></div>`;
       return;
     }
 
@@ -2483,7 +2483,7 @@ function abrirSelectorFechaPanel() {
     // Construimos todas las tarjetas, la transición ocurre al mover las clases CSS
     pacientesCarrusel.forEach((p, i) => {
       html += `
-        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:160px; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; gap:10px; transform-origin: top center;">
+        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:200px; border-radius:16px; padding:24px 28px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; justify-content:center; gap:12px; transform-origin: top center;">
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Nombre:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;" title="${p.nombre || '—'}">${p.nombre || '—'}</span>
