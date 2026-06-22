@@ -10,8 +10,8 @@
 }
 
 :root{
-  /* Paleta azul (modo claro) */
-  --bg:        #E3F2FF;
+  /* Paleta gris (modo claro) */
+  --bg:        #F8F9FA;
   --surface:   #FFFFFF;
   --accent:    #004EE0;
   --accent-2:  #99CAFF;
@@ -21,10 +21,11 @@
   --text:      #042E7B;
   --text-soft: #004EE0;
   /* Tarjetas (counter cards) */
-  --card-bg:    #FFFFFF;
+  --card-bg:    linear-gradient(145deg, #E9ECEF, #F8F9FA);
+  --card-border: #DEE2E6;
   --card-text:  #042E7B;
   --card-soft:  #64748b;
-  --card-arrow: #cbd5e1;
+  --card-arrow: #CED4DA;
   /* compatibilidad con reglas existentes */
   --dashboard-bg: var(--bg);
 }
@@ -53,9 +54,9 @@ body {
 
 /* AQUÍ PEGAS EL CÓDIGO DE LA BARRA DE DESPLAZAMIENTO */
 .table-responsive::-webkit-scrollbar { width: 8px; height: 8px; }
-.table-responsive::-webkit-scrollbar-track { background: #f8fafc; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-.table-responsive::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.table-responsive::-webkit-scrollbar-track { background: #E9ECEF; border-radius: 4px; }
+.table-responsive::-webkit-scrollbar-thumb { background: #CED4DA; border-radius: 4px; }
+.table-responsive::-webkit-scrollbar-thumb:hover { background: #A7AFB6; }
 
 
 .app-container {
@@ -364,7 +365,7 @@ body.dark .saludo-icon{
   background: var(--card-bg);
   padding: 20px;
   border-radius: 20px;
-  border: 1px solid #eef2f7;
+  border: 1px solid var(--card-border, #DEE2E6);
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
   min-width: 250px;
   min-height: 120px;
@@ -427,7 +428,7 @@ body.dark .saludo-icon{
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
-  color: rgba(43, 16, 112, 0.18);
+  color: rgba(167, 175, 182, 0.70);
   position: absolute;
   bottom: -32px;
   right: 4px;
@@ -451,7 +452,7 @@ body.dark .saludo-icon{
   background: white;
   border-radius: 20px;
   padding: 28px 36px;
-  border: 1px solid #eef2f7;
+  border: 1px solid #DEE2E6;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05);
 }
 
@@ -2172,8 +2173,8 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
 
 /* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: white !important;
-  border: 1px solid #eef2f7 !important;
+  background: linear-gradient(145deg, #E9ECEF, #F8F9FA) !important;
+  border: 1px solid #DEE2E6 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
   display: flex !important;
@@ -2206,7 +2207,15 @@ body:not(.dark) .stats-card-demo > div:last-child {
   line-height: 1;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.18;
+  color: rgba(167, 175, 182, 0.70) !important;
+  opacity: 1;
+}
+
+/* Bloques Estadísticas en modo CLARO: paleta gris */
+body:not(.dark) .dash-block {
+  background: linear-gradient(145deg, #E9ECEF, #F8F9FA) !important;
+  border: 1px solid #DEE2E6 !important;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
 
 /* Degradado azul oscuro para bloques Estadísticas + barra de saludo (solo dark mode) */
@@ -2222,6 +2231,13 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
 /* ================================================================
    PANEL DE CASOS — dark mode: mismo diseño que Estadísticas/bandejas
    ================================================================ */
+
+/* Panel de Casos en modo CLARO: paleta gris */
+body:not(.dark) .panel-casos-block {
+  background: linear-gradient(145deg, #E9ECEF, #F8F9FA) !important;
+  border: 1px solid #DEE2E6 !important;
+  box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
+}
 
 /* Todos los bloques del panel */
 body.dark .panel-casos-block {
@@ -2289,7 +2305,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(43, 16, 112, 0.18) !important;
+  color: rgba(167, 175, 182, 0.70) !important;
 }
 #totalIngresosMesPanel {
   position: absolute !important;
@@ -2301,7 +2317,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
   margin-top: 0 !important;
   z-index: 0 !important;
   pointer-events: none;
-  color: rgba(16, 185, 129, 0.22) !important;
+  color: rgba(167, 175, 182, 0.70) !important;
 }
 body.dark #totalPacientesMesPanel {
   color: rgba(255,255,255,0.12) !important;
