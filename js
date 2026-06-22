@@ -77,6 +77,12 @@
     const t = document.querySelector('.theme-toggle');
     if (t) t.classList.toggle('dark');
     document.body.classList.toggle('dark');
+
+    // Los gráficos en canvas conservan los píxeles dibujados con los colores del
+    // tema anterior (p. ej. el número del anillo en blanco). Hay que redibujarlos.
+    if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
+      dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
+    }
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
@@ -2170,8 +2176,10 @@ function abrirSelectorFechaPanel() {
   }
 
   let animacionDonutId = null;
+  let ultimoDonutMedico = null;
 
   function dibujarDonutMedico(solicitados, leidos) {
+    ultimoDonutMedico = { solicitados, leidos };
     const canvas = document.getElementById('donutMedico');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
