@@ -2336,6 +2336,31 @@ body.dark #iconoIngresos {
   display: none !important;
 }
 
+/* Botón "Descargar Base" — dark mode */
+body.dark #btnDescargarBase {
+  border-color: rgba(255,255,255,0.30) !important;
+  color: rgba(255,255,255,0.80) !important;
+  background: transparent !important;
+}
+
+/* Dropdown "Descargar Base" — dark mode */
+body.dark #menuDescargarBase {
+  background: #0f1e3d !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.55) !important;
+}
+body.dark #menuDescargarBase > div {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* Píldora de fecha "Junio 2026" — dark mode */
+body.dark #pildoraFechaPanel {
+  background: linear-gradient(145deg, #1a3a6e, #0a1220) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45) !important;
+  color: rgba(255,255,255,0.90) !important;
+}
+
 
   background: rgba(255,255,255,0.12);
   border-color: rgba(255,255,255,0.18);

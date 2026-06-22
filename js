@@ -1569,13 +1569,13 @@ function mostrarVistaPanelCasos(){
           </button>
         </div>
         <div style="position:relative; flex:0 0 auto;">
-          <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="this.style.background='var(--accent)'; this.style.color='var(--on-accent)';" onmouseout="this.style.background='transparent'; this.style.color='var(--accent)';">
+          <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.14)':'var(--accent)'; this.style.color=d?'#ffffff':'var(--on-accent)';" onmouseout="var d=document.body.classList.contains('dark'); this.style.background='transparent'; this.style.color=d?'rgba(255,255,255,0.80)':'var(--accent)';">
             Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
           </button>
           <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
-            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Top Exámenes</div>
-            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
-            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='transparent'">Base del Mes</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Top Exámenes</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
+            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Base del Mes</div>
           </div>
         </div>
 
@@ -1808,59 +1808,64 @@ function cerrarMenuDescargarBaseFuera(e) {
 }
 
 function abrirSelectorFechaPanel() {
-  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];  
-  const anioActualSistema = new Date().getFullYear();  
-  const anioLimite = anioActualSistema + 5;   
-  let opcionesAnio = '';  
-  for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioPanelSeleccionado ? 'selected' : ''}>${i}</option>`;  
-    
-  let opcionesMes = '';  
-  for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesPanelSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;  
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const anioActualSistema = new Date().getFullYear();
+  const anioLimite = anioActualSistema + 5;
+  let opcionesAnio = '';
+  for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioPanelSeleccionado ? 'selected' : ''}>${i}</option>`;
 
-  Swal.fire({  
-    title: 'Filtrar Casos por Fecha',  
-    width: 280,  
-    html: `  
-      <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">  
-        <div>  
-          <label style="font-size:12px; font-weight:700; color:#475569;">Año</label>  
-          <select id="popAnioPanel" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">  
-            ${opcionesAnio}  
-          </select>  
-        </div>  
-        <div>  
-          <label style="font-size:12px; font-weight:700; color:#475569;">Mes</label>  
-          <select id="popMesPanel" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">  
-            ${opcionesMes}  
-          </select>  
-        </div>  
-      </div>  
-    `,  
-    showCancelButton: true,  
-    confirmButtonText: 'Aplicar',  
-    cancelButtonText: 'Cancelar',  
-    confirmButtonColor: '#2b1070',  
-    cancelButtonColor: '#64748b',  
-    preConfirm: () => {  
-      return {  
-        anio: parseInt(document.getElementById('popAnioPanel').value),  
-        mes: parseInt(document.getElementById('popMesPanel').value)  
-      }  
-    }  
-  }).then((result) => {  
-    if (result.isConfirmed) {  
-      mesPanelSeleccionado = result.value.mes;  
-      anioPanelSeleccionado = result.value.anio;  
+  let opcionesMes = '';
+  for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesPanelSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;
 
-      // Acomoda la barra para que el mes elegido quede al centro visible
+  const esDark = document.body.classList.contains('dark');
+  const cLabel  = esDark ? 'rgba(255,255,255,0.60)' : '#475569';
+  const cSelect = esDark ? 'background:#1C2033; color:#C9D1E9; border:1px solid rgba(255,255,255,0.12);' : 'background:#fff; color:#334155; border:1px solid #cbd5e1;';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
+  Swal.fire({
+    title: 'Filtrar Casos por Fecha',
+    width: 280,
+    background: bgModal,
+    html: `
+      <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+        <div>
+          <label style="font-size:12px; font-weight:700; color:${cLabel};">Año</label>
+          <select id="popAnioPanel" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
+            ${opcionesAnio}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; color:${cLabel};">Mes</label>
+          <select id="popMesPanel" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
+            ${opcionesMes}
+          </select>
+        </div>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Aplicar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2b1070',
+    cancelButtonColor: '#64748b',
+    preConfirm: () => {
+      return {
+        anio: parseInt(document.getElementById('popAnioPanel').value),
+        mes: parseInt(document.getElementById('popMesPanel').value)
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      mesPanelSeleccionado = result.value.mes;
+      anioPanelSeleccionado = result.value.anio;
+
       anioBarraPanel = result.value.anio;
       mesInicioBarraPanel = result.value.mes > 0 ? result.value.mes - 1 : 11;
       if(result.value.mes === 0) anioBarraPanel--;
 
-      actualizarPildoraFechaPanel(); 
-      renderizarPacientesJunio(); 
-    }  
-  });  
+      actualizarPildoraFechaPanel();
+      renderizarPacientesJunio();
+    }
+  });
 }
 
 
