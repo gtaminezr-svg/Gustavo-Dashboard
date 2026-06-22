@@ -2667,7 +2667,10 @@ function renderizarPacientesJunio() {
         sumaIngresos += precio;
       }
     });
-    txtTotalIngresos.textContent = 'S/ ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const textoIngreso = 'S/. ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    txtTotalIngresos.textContent = textoIngreso;
+    const len = textoIngreso.length;
+    txtTotalIngresos.style.fontSize = len <= 10 ? '34px' : len <= 13 ? '26px' : len <= 16 ? '20px' : '16px';
   }
 
   const cardSeguroTop = document.getElementById('cardSeguroTop');
@@ -2759,7 +2762,7 @@ function renderizarPacientesJunio() {
     if (txtTotal) txtTotal.textContent = '0';
     
     const txtIngresos = document.getElementById('totalIngresosMesPanel');
-    if (txtIngresos) txtIngresos.textContent = 'S/ 0.00';
+    if (txtIngresos) { txtIngresos.textContent = 'S/. 0.00'; txtIngresos.style.fontSize = '34px'; }
     
     const txtSeguro = document.getElementById('seguroTopTexto');
     if (txtSeguro) txtSeguro.innerHTML = '<span style="font-size: 32px; font-weight: 900; color: #2b1070;">-</span>';
