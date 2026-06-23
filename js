@@ -1,7 +1,8 @@
 <script>
   let bdPacientes = [];
   let pacientesFiltrados = [];
-  let medicosEspecialidades = []; 
+  let medicosEspecialidades = [];
+  let medicoSeleccionado = null;
   let bandejaActual = 'Pendiente';
   let paginaActual = 1;
   const registrosPorPagina = 10;
@@ -90,6 +91,9 @@
       if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
     }
     if (typeof renderizarCalendario === 'function') renderizarCalendario();
+    if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
+    if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
+    if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
@@ -4658,23 +4662,32 @@ function renderizarListaMedicosPersonal(filtro) {
     return;
   }
 
+  const esDark = document.body.classList.contains('dark');
   const term = (filtro || '').toLowerCase().trim();
+
+  const filaBorde   = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const filaBg      = esDark ? 'transparent'            : 'white';
+  const filaHover   = esDark ? 'rgba(255,255,255,0.07)' : '#f8fafc';
+  const textoNombre = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoEsp    = esDark ? 'rgba(255,255,255,0.55)' : '#475569';
+  const textoFecha  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+  const sinDatosClr = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
 
   const filas = medicosEspecialidades
     .map((m, i) => ({ m: m, i: i }))
     .filter(o => !term || (o.m.nombre || '').toLowerCase().includes(term))
     .map(o => `
     <div data-idx="${o.i}" onclick="mostrarFichaMedico(${o.i})"
-      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid #f1f5f9; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;"
-      onmouseover="if(!this.classList.contains('fila-activa')) this.style.background='#f8fafc'"
-      onmouseout="if(!this.classList.contains('fila-activa')) this.style.background='white'">
-      <div style="font-weight:600; color:#1e293b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.nombre || '—'}</div>
-      <div style="color:#475569; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.especialidad || '—'}</div>
-      <div style="color:#94a3b8;">${o.m.fechaRegistro || '—'}</div>
+      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid ${filaBorde}; background:${filaBg}; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;"
+      onmouseover="if(!this.classList.contains('fila-activa')) this.style.background='${filaHover}'"
+      onmouseout="if(!this.classList.contains('fila-activa')) this.style.background='${filaBg}'">
+      <div style="font-weight:600; color:${textoNombre}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.nombre || '—'}</div>
+      <div style="color:${textoEsp}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.especialidad || '—'}</div>
+      <div style="color:${textoFecha};">${o.m.fechaRegistro || '—'}</div>
     </div>
   `).join('');
 
-  lista.innerHTML = filas || '<div style="padding:20px; text-align:center; color:#94a3b8; font-size:13px; font-weight:600;">Sin resultados</div>';
+  lista.innerHTML = filas || `<div style="padding:20px; text-align:center; color:${sinDatosClr}; font-size:13px; font-weight:600;">Sin resultados</div>`;
 }
 
 function filtrarMedicosPersonal(termino) {
@@ -4684,17 +4697,19 @@ function filtrarMedicosPersonal(termino) {
 function mostrarFichaMedico(idx) {
   const m = medicosEspecialidades[idx];
   if (!m) return;
+  medicoSeleccionado = idx;
 
+  const esDark = document.body.classList.contains('dark');
   document.querySelectorAll('#listaMedicosPersonal > div').forEach(el => {
     el.classList.remove('fila-activa');
-    el.style.background = 'white';
+    el.style.background = esDark ? 'transparent' : 'white';
     el.style.borderLeft = '3px solid transparent';
   });
   const fila = document.querySelector(`#listaMedicosPersonal > div[data-idx="${idx}"]`);
   if (fila) {
     fila.classList.add('fila-activa');
-    fila.style.background = '#ede9fe';
-    fila.style.borderLeft = '3px solid #2b1070';
+    fila.style.background = esDark ? 'rgba(99,102,241,0.18)' : '#ede9fe';
+    fila.style.borderLeft  = esDark ? '3px solid #818cf8'    : '3px solid #2b1070';
   }
 
   const reg = bdPacientes.filter(p => p.medico === m.nombre).length;
@@ -4709,50 +4724,56 @@ function mostrarFichaMedico(idx) {
   const bloque7 = document.getElementById('bloque7');
   if (!bloque7) return;
 
+  const divisor    = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const textoVal   = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoLabel = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const miniCardBg = esDark ? 'rgba(255,255,255,0.06)' : '#f8fafc';
+  const numRegClr  = esDark ? '#a5b4fc'                : '#2b1070';
+
   bloque7.innerHTML = `
     <div style="padding:24px; display:flex; flex-direction:column; gap:18px; box-sizing:border-box;">
 
       <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
         <div style="width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
-        <div style="font-size:20px; font-weight:900; color:#1e293b; line-height:1.2;">${m.nombre}</div>
+        <div style="font-size:20px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre}</div>
         <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
       </div>
 
-      <div style="border-top:1px solid #f1f5f9;"></div>
+      <div style="border-top:1px solid ${divisor};"></div>
 
       <div style="display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">CMP</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.cmp || '—'}</span>
+          <span style="font-size:12px; font-weight:600; color:${textoLabel};">CMP</span>
+          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">RNE / RNA</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.rne || '—'}</span>
+          <span style="font-size:12px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
+          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Fecha de Registro</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.fechaRegistro || '—'}</span>
+          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
+          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Nacionalidad</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.nacionalidad || '—'}</span>
+          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
+          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Edad</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.edad || '—'}</span>
+          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Edad</span>
+          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
         </div>
       </div>
 
-      <div style="border-top:1px solid #f1f5f9;"></div>
+      <div style="border-top:1px solid ${divisor};"></div>
 
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div style="background:#f8fafc; border-radius:12px; padding:16px; text-align:center;">
-          <div style="font-size:30px; font-weight:900; color:#2b1070; line-height:1;">${reg}</div>
-          <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px; line-height:1.4;">Pacientes<br>Registrados</div>
+        <div style="background:${miniCardBg}; border-radius:12px; padding:16px; text-align:center;">
+          <div style="font-size:30px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
+          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px; line-height:1.4;">Pacientes<br>Registrados</div>
         </div>
-        <div style="background:#f8fafc; border-radius:12px; padding:16px; text-align:center;">
+        <div style="background:${miniCardBg}; border-radius:12px; padding:16px; text-align:center;">
           <div style="font-size:30px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
-          <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px; line-height:1.4;">Pacientes<br>Leídos</div>
+          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px; line-height:1.4;">Pacientes<br>Leídos</div>
         </div>
       </div>
 
@@ -4767,6 +4788,11 @@ function mostrarFichaMedico(idx) {
 function renderizarMedicoLectorMes() {
   const cont = document.getElementById('bloque6Contenido');
   if (!cont) return;
+
+  const esDark = document.body.classList.contains('dark');
+  const textoNombre = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoLabel  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const textoVacio  = esDark ? 'rgba(255,255,255,0.30)' : '#cbd5e1';
 
   const ahora = new Date();
   const mes = ahora.getMonth();
@@ -4789,7 +4815,7 @@ function renderizarMedicoLectorMes() {
     .sort((a, b) => b.total - a.total);
 
   if (ranking.length === 0) {
-    cont.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:#cbd5e1;"><i class="fas fa-user-md" style="font-size:30px;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin lecturas este mes</span></div>';
+    cont.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:${textoVacio};"><i class="fas fa-user-md" style="font-size:30px;"></i><span style="font-size:12px; font-weight:600; color:${textoLabel};">Sin lecturas este mes</span></div>`;
     return;
   }
 
@@ -4802,10 +4828,10 @@ function renderizarMedicoLectorMes() {
         <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white;">${iniciales}</div>
         <div style="position:absolute; bottom:-3px; right:-3px; background:#fbbf24; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white;"><i class="fas fa-trophy" style="color:white; font-size:9px;"></i></div>
       </div>
-      <div style="font-size:14px; font-weight:800; color:#1e293b; line-height:1.2;">${top.nombre}</div>
+      <div style="font-size:14px; font-weight:800; color:${textoNombre}; line-height:1.2;">${top.nombre}</div>
       <div style="display:flex; align-items:baseline; gap:5px;">
         <span style="font-size:28px; font-weight:900; color:#10b981; line-height:1;">${top.total}</span>
-        <span style="font-size:11px; font-weight:600; color:#94a3b8;">lectura${top.total === 1 ? '' : 's'}</span>
+        <span style="font-size:11px; font-weight:600; color:${textoLabel};">lectura${top.total === 1 ? '' : 's'}</span>
       </div>
     </div>
   `;
