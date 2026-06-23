@@ -6,6 +6,8 @@
   let bandejaActual = 'Pendiente';
   let paginaActual = 1;
   const registrosPorPagina = 10;
+  let _notifData = { vencidos: 0, porVencer: 0, pendientes: 0, agendados: 0 };
+  let _notifDismissed = false;
   let examenesSeleccionados = []; 
   let dniFichaActual = "";
   let subEstadoSeleccionado = "";
@@ -107,6 +109,84 @@
     if (menu && !menu.contains(e.target)) {
       cerrarMenuUsuario();
     }
+  }
+
+  function togglePanelNotificaciones(event) {
+    event.stopPropagation();
+    cerrarMenuUsuario();
+    const panel = document.getElementById('panelNotificaciones');
+    if (!panel) return;
+    if (panel.dataset.abierto === 'true') {
+      cerrarPanelNotificaciones();
+    } else {
+      const btn = document.getElementById('btnCampana');
+      const rect = btn ? btn.getBoundingClientRect() : event.currentTarget.getBoundingClientRect();
+      panel.style.top = (rect.bottom + 8) + 'px';
+      panel.style.right = (window.innerWidth - rect.right) + 'px';
+      panel.style.left = 'auto';
+      renderPanelNotificaciones();
+      panel.style.maxHeight = '400px';
+      panel.style.opacity = '1';
+      panel.dataset.abierto = 'true';
+      setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
+    }
+  }
+
+  function cerrarPanelNotificaciones() {
+    const panel = document.getElementById('panelNotificaciones');
+    if (!panel) return;
+    panel.style.maxHeight = '0';
+    panel.style.opacity = '0';
+    panel.dataset.abierto = 'false';
+    document.removeEventListener('click', cerrarPanelNotificacionesFuera);
+  }
+
+  function cerrarPanelNotificacionesFuera(e) {
+    const panel = document.getElementById('panelNotificaciones');
+    if (panel && !panel.contains(e.target)) {
+      cerrarPanelNotificaciones();
+    }
+  }
+
+  function limpiarNotificaciones() {
+    _notifDismissed = true;
+    const dot = document.getElementById('bellDot');
+    if (dot) dot.style.display = 'none';
+    renderPanelNotificaciones();
+  }
+
+  function renderPanelNotificaciones() {
+    const body = document.getElementById('notifContenido');
+    if (!body) return;
+    const esDark = document.body.classList.contains('dark');
+
+    if (_notifDismissed) {
+      body.innerHTML = `
+        <div class="notif-empty">
+          <i class="far fa-bell-slash" style="font-size:28px; opacity:0.35; display:block; margin-bottom:8px;"></i>
+          Sin notificaciones nuevas
+        </div>`;
+      return;
+    }
+
+    const borderColor = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+    const items = [
+      { icon: 'fas fa-hourglass-half', bg: '#f59e0b', label: 'Pacientes Pendientes', count: _notifData.pendientes, desc: 'En espera de atención' },
+      { icon: 'fas fa-exclamation-circle', bg: '#ef4444', label: 'Pacientes Vencidos', count: _notifData.vencidos, desc: 'Fecha límite superada' },
+      { icon: 'fas fa-calendar-check', bg: '#10b981', label: 'Agendados en Calendario', count: _notifData.agendados, desc: 'Con programación activa' }
+    ];
+
+    body.innerHTML = items.map((item, i) => `
+      <div class="notif-item" style="${i < items.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
+        <div class="notif-item-icon" style="background:${item.bg}22; color:${item.bg};">
+          <i class="${item.icon}"></i>
+        </div>
+        <div class="notif-item-text">
+          <span class="notif-item-label">${item.label}</span>
+          <span class="notif-item-desc">${item.desc}</span>
+        </div>
+        <span class="notif-item-badge" style="background:${item.bg}22; color:${item.bg};">${item.count}</span>
+      </div>`).join('');
   }
 
   function abrirPaletaColores() {
@@ -300,10 +380,15 @@
   }
 
   function actualizarNotificacionCampana(vencidos, porVencer) {
+    const pendientes = (bdPacientes || []).filter(p => p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso')).length;
+    const agendados = (typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : []).length;
+    _notifData = { vencidos, porVencer, pendientes, agendados };
+    _notifDismissed = false;
+
     const btn = document.getElementById('btnCampana');
     const dot = document.getElementById('bellDot');
     if (!btn || !dot) return;
-    const hayNotificaciones = vencidos > 0 || porVencer > 0;
+    const hayNotificaciones = vencidos > 0 || porVencer > 0 || pendientes > 0 || agendados > 0;
     if (hayNotificaciones) {
       dot.style.display = 'block';
       if (!btn.dataset.animado) {
@@ -585,7 +670,7 @@
           <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-sync-alt"></i>
           </button>
-          <button id="btnCampana" title="Notificaciones" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease; position:relative;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+          <button id="btnCampana" title="Notificaciones" onclick="togglePanelNotificaciones(event)" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease; position:relative;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="far fa-bell"></i>
             <span id="bellDot" class="bell-dot" style="display:none;"></span>
           </button>

@@ -825,6 +825,15 @@
     </div>
   </div>
 
+  <!-- Panel de notificaciones (global, posicionado por JS) -->
+  <div id="panelNotificaciones" class="notif-panel" data-abierto="false">
+    <div class="notif-panel-header">
+      <span class="notif-panel-title"><i class="fas fa-bell"></i> Notificaciones</span>
+      <button class="notif-borrar-todo" onclick="limpiarNotificaciones()">Borrar todo</button>
+    </div>
+    <div id="notifContenido" class="notif-panel-body"></div>
+  </div>
+
   <!-- Menú desplegable del usuario (global, posicionado por JS) -->
   <div id="menuUsuario" class="user-dropdown" data-abierto="false">
     <div class="user-dropdown-item" onclick="abrirPaletaColores()">
