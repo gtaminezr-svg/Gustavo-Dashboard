@@ -149,7 +149,7 @@
       panel.style.right = (window.innerWidth - rect.right) + 'px';
       panel.style.left = 'auto';
       renderPanelNotificaciones();
-      panel.style.maxHeight = '400px';
+      panel.style.maxHeight = '360px';
       panel.style.opacity = '1';
       panel.dataset.abierto = 'true';
       setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
