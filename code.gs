@@ -837,20 +837,20 @@ function crearTopExamenesExcel(filas) {
     sheet.setColumnWidth(3, 100);
     sheet.setFrozenRows(1);
 
-    // Gráfico de barras horizontales (Examen vs Cantidad)
+    // Gráfico de columnas (Examen vs Cantidad)
     var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
-    var chartHeight = Math.max(300, Math.min(700, 80 + filas.length * 24));
     var chart = sheet.newChart()
-      .setChartType(Charts.ChartType.BAR)
+      .setChartType(Charts.ChartType.COLUMN)
       .addRange(dataRange)
       .setPosition(2, 5, 0, 0)
       .setOption('title', 'Top Exámenes Más Usados')
-      .setOption('legend', { position: 'none' })
-      .setOption('hAxis', { title: 'Cantidad de usos' })
-      .setOption('vAxis', { title: 'Examen' })
+      .setOption('isStacked', false)
+      .setOption('legend', { position: 'top', textStyle: { fontSize: 12 } })
+      .setOption('hAxis', { title: 'Examen', slantedText: true, slantedTextAngle: 45 })
+      .setOption('vAxis', { title: 'Cantidad de usos', minValue: 0 })
       .setOption('colors', ['#004EE0'])
-      .setOption('width', 620)
-      .setOption('height', chartHeight)
+      .setOption('width', 680)
+      .setOption('height', 420)
       .build();
     sheet.insertChart(chart);
 
