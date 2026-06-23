@@ -3999,6 +3999,19 @@ function calClickDia(fechaStr, esPasado) {
   const fecha = new Date(fechaStr + 'T00:00:00');
   const opciones = { year:'numeric', month:'long', day:'numeric' };
   const fechaFormateada = fecha.toLocaleDateString('es-PE', opciones);
+  const esDark = document.body.classList.contains('dark');
+
+  // Colores adaptativos del modal
+  const modalBg      = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff';
+  const tituloClr    = esDark ? '#ffffff'                  : '#1e293b';
+  const seccionClr   = esDark ? '#a5b4fc'                  : '#2b1070';
+  const seccionVerde = esDark ? '#86efac'                  : '#166534';
+  const regChipBg    = esDark ? 'rgba(139,92,246,0.20)'    : '#ede9fe';
+  const regChipClr   = esDark ? '#c4b5fd'                  : '#2b1070';
+  const regEstadoClr = esDark ? '#a78bfa'                  : '#7c3aed';
+  const progChipBg   = esDark ? 'rgba(16,185,129,0.18)'    : '#dcfce7';
+  const progChipClr  = esDark ? '#6ee7b7'                  : '#166534';
+  const sinDatosClr  = esDark ? 'rgba(255,255,255,0.35)'   : '#94a3b8';
 
   // Ver programados de ese día
   const programadosDelDia = pacientesProgramados.filter(p => p.fechaProgramada === fechaStr);
@@ -4012,19 +4025,30 @@ function calClickDia(fechaStr, esPasado) {
 
   let listaHTML = '';
   if (registradosDelDia.length > 0) {
-    listaHTML += `<div style="font-size:12px; font-weight:700; color:#2b1070; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Registrados</div>`;
+    listaHTML += `<div style="font-size:12px; font-weight:700; color:${seccionClr}; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Registrados</div>`;
     registradosDelDia.forEach(p => {
-      listaHTML += `<div style="background:#ede9fe; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:#2b1070; font-weight:600;">${p.nombre} <span style="font-weight:400; color:#7c3aed;">· ${p.estado}</span></div>`;
+      listaHTML += `<div style="background:${regChipBg}; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:${regChipClr}; font-weight:600;">${p.nombre} <span style="font-weight:400; color:${regEstadoClr};">· ${p.estado}</span></div>`;
     });
   }
   if (programadosDelDia.length > 0) {
-    listaHTML += `<div style="font-size:12px; font-weight:700; color:#166534; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; margin-top:10px;">Programados</div>`;
+    listaHTML += `<div style="font-size:12px; font-weight:700; color:${seccionVerde}; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; margin-top:10px;">Programados</div>`;
     programadosDelDia.forEach(p => {
-      listaHTML += `<div style="background:#dcfce7; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:#166534; font-weight:600;">📅 ${p.nombre} <span style="font-weight:400;">· ${p.medico}</span></div>`;
+      const progId = p.id || p.dni || '';
+      listaHTML += `
+        <div style="display:flex; align-items:center; gap:8px; background:${progChipBg}; border-radius:8px; padding:8px 12px; margin-bottom:6px;">
+          <span style="flex:1; font-size:13px; color:${progChipClr}; font-weight:600;">📅 ${p.nombre} <span style="font-weight:400;">· ${p.medico}</span></span>
+          <button onclick="confirmarEliminarProgramacion('${progId}', '${fechaStr}')"
+            title="Eliminar programación"
+            style="flex-shrink:0; background:transparent; border:none; cursor:pointer; color:#ef4444; font-size:14px; padding:5px 7px; border-radius:6px; line-height:1; transition:background 0.15s;"
+            onmouseover="this.style.background='rgba(239,68,68,0.15)'"
+            onmouseout="this.style.background='transparent'">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>`;
     });
   }
   if (listaHTML === '') {
-    listaHTML = `<div style="color:#94a3b8; font-size:13px; text-align:center; padding:10px;">Sin pacientes este día</div>`;
+    listaHTML = `<div style="color:${sinDatosClr}; font-size:13px; text-align:center; padding:10px;">Sin pacientes este día</div>`;
   }
 
   Swal.fire({
@@ -4050,8 +4074,8 @@ function calClickDia(fechaStr, esPasado) {
       <div style="
         margin-top:16px;
         width:100%;
-        background:#f1f5f9;
-        color:#94a3b8;
+        background:${esDark ? 'rgba(255,255,255,0.06)' : '#f1f5f9'};
+        color:${esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8'};
         border-radius:10px;
         padding:12px;
         font-size:13px;
@@ -4063,7 +4087,41 @@ function calClickDia(fechaStr, esPasado) {
     `,
     showConfirmButton: false,
     showCloseButton: true,
-    width: 420
+    width: 420,
+    background: modalBg,
+    color: tituloClr
+  });
+}
+
+function confirmarEliminarProgramacion(id, fechaStr) {
+  const esDark = document.body.classList.contains('dark');
+  Swal.fire({
+    title: '¿Eliminar programación?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: esDark ? '#334155' : '#64748b',
+    background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+    color: esDark ? '#ffffff' : '#1e293b'
+  }).then(result => {
+    if (!result.isConfirmed) return;
+    Swal.fire({ title: 'Eliminando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    google.script.run
+      .withSuccessHandler(function() {
+        iniciarCalendario();
+        Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1200, showConfirmButton: false,
+          background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+          color: esDark ? '#ffffff' : '#1e293b' });
+      })
+      .withFailureHandler(function() {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar. Intenta de nuevo.',
+          background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+          color: esDark ? '#ffffff' : '#1e293b' });
+      })
+      .eliminarProgramacion(id);
   });
 }
 
