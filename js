@@ -190,9 +190,8 @@
   function limpiarNotificaciones() {
     _notifItems = [];
     _notifDismissed = true;
-    const hayAlerta = _notifData.vencidos > 0 || _notifData.porVencer > 0;
     const dot = document.getElementById('bellDot');
-    if (dot) dot.style.display = hayAlerta ? 'block' : 'none';
+    if (dot) dot.style.display = 'none';
     renderPanelNotificaciones();
   }
 
@@ -201,6 +200,17 @@
     if (!body) return;
     const esDark = document.body.classList.contains('dark');
     const borderColor = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+
+    // Estado vacío tras borrar todo
+    if (_notifDismissed && _notifItems.length === 0) {
+      body.innerHTML = `
+        <div class="notif-empty">
+          <i class="far fa-bell-slash" style="font-size:26px; opacity:0.30; display:block; margin-bottom:8px;"></i>
+          Sin notificaciones nuevas
+        </div>`;
+      return;
+    }
+
     let html = '';
 
     // Sección de actividad reciente
@@ -219,7 +229,7 @@
       html += `<div style="height:1px; background:${borderColor}; margin:4px 0 0;"></div>`;
     }
 
-    // Sección de resumen (siempre visible)
+    // Sección de resumen (siempre visible cuando no se ha borrado)
     html += `<div class="notif-section-label">Resumen</div>`;
     const stats = [
       { icon: 'fas fa-hourglass-half', bg: '#f59e0b', label: 'Pacientes Pendientes', count: _notifData.pendientes, desc: 'En espera de atención' },

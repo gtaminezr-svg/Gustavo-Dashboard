@@ -829,7 +829,7 @@
   <div id="panelNotificaciones" class="notif-panel" data-abierto="false">
     <div class="notif-panel-header">
       <span class="notif-panel-title"><i class="fas fa-bell"></i> Notificaciones</span>
-      <button class="notif-borrar-todo" onclick="limpiarNotificaciones()">Borrar todo</button>
+      <button class="notif-borrar-todo" onclick="event.stopPropagation(); limpiarNotificaciones()">Borrar todo</button>
     </div>
     <div id="notifContenido" class="notif-panel-body"></div>
   </div>
