@@ -138,12 +138,65 @@
     setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
   }
 
+  function _colorLighten(hex, amount) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255, Math.round(r + (255-r)*amount));
+    g = Math.min(255, Math.round(g + (255-g)*amount));
+    b = Math.min(255, Math.round(b + (255-b)*amount));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
+  function aplicarColorTema(hex, light) {
+    try {
+      if (!hex) return;
+      var lightHex = light || _colorLighten(hex, 0.45);
+      var bgHex    = _colorLighten(hex, 0.80);
+      var root = document.documentElement;
+      root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+      root.style.setProperty('--surface',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+      root.style.setProperty('--card-border',  hex);
+      root.style.setProperty('--bg',           bgHex);
+      root.style.setProperty('--dashboard-bg', bgHex);
+    } catch(e) {}
+  }
+
+  function _elegirColorTema(hex, light) {
+    aplicarColorTema(hex, light);
+    sessionStorage.setItem('sislab_color', hex);
+    var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, hex);
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color guardado', text: 'El color se aplicó y se guardó en tu cuenta.', timer: 1800, showConfirmButton: false, timerProgressBar: true });
+  }
+
+  function _restablecerColorTema() {
+    var root = document.documentElement;
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--surface');
+    root.style.removeProperty('--card-border');
+    root.style.removeProperty('--bg');
+    root.style.removeProperty('--dashboard-bg');
+    sessionStorage.removeItem('sislab_color');
+    var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, '');
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
+  }
+
   window.onload = function() {
     if (sessionStorage.getItem('sislab_auth') === '1') {
       window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
       window.__rolUsuario    = sessionStorage.getItem('sislab_rol') || 'Admin';
-      const colorGuardado = sessionStorage.getItem('sislab_color');
-      if (colorGuardado) aplicarColorTema(colorGuardado);
+      try {
+        var colorGuardado = sessionStorage.getItem('sislab_color');
+        if (colorGuardado) aplicarColorTema(colorGuardado);
+      } catch(e) {}
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'flex';
       _iniciarApp();
@@ -472,55 +525,6 @@
       color: esDark ? '#e2e8f0' : '#1e293b',
       width: 420
     });
-  }
-
-  function _colorLighten(hex, amount) {
-    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-    r = Math.min(255, Math.round(r + (255-r)*amount));
-    g = Math.min(255, Math.round(g + (255-g)*amount));
-    b = Math.min(255, Math.round(b + (255-b)*amount));
-    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
-  }
-
-  function aplicarColorTema(hex, light) {
-    if (!hex) return;
-    const lightHex = light || _colorLighten(hex, 0.45);
-    const bgHex    = _colorLighten(hex, 0.80);
-    const root = document.documentElement;
-    root.style.setProperty('--card-bg',     'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
-    root.style.setProperty('--surface',     'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
-    root.style.setProperty('--card-border', hex);
-    root.style.setProperty('--bg',          bgHex);
-    root.style.setProperty('--dashboard-bg', bgHex);
-  }
-
-  function _elegirColorTema(hex, light) {
-    aplicarColorTema(hex, light);
-    sessionStorage.setItem('sislab_color', hex);
-    const usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
-    google.script.run
-      .withSuccessHandler(function() {})
-      .withFailureHandler(function() {})
-      .guardarColorTema(usuario, hex);
-    Swal.close();
-    Swal.fire({ icon: 'success', title: 'Color guardado', text: 'El color se aplicó y se guardó en tu cuenta.', timer: 1800, showConfirmButton: false, timerProgressBar: true });
-  }
-
-  function _restablecerColorTema() {
-    const root = document.documentElement;
-    root.style.removeProperty('--card-bg');
-    root.style.removeProperty('--surface');
-    root.style.removeProperty('--card-border');
-    root.style.removeProperty('--bg');
-    root.style.removeProperty('--dashboard-bg');
-    sessionStorage.removeItem('sislab_color');
-    const usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
-    google.script.run
-      .withSuccessHandler(function() {})
-      .withFailureHandler(function() {})
-      .guardarColorTema(usuario, '');
-    Swal.close();
-    Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
   }
 
   // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
