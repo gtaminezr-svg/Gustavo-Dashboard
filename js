@@ -229,6 +229,11 @@
         'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
         'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
         'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + iconOverBg + ' !important; color: ' + onVivid + ' !important; }',
+        /* botones icono (🔍🔄🔔) dentro del search-container vívido */
+        'body:not(.dark) .search-container .btn-icon-action { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; box-shadow: none !important; }',
+        /* Descargar Base y píldora de fecha en Panel de Casos (dentro de search-container) */
+        'body:not(.dark) .search-container #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
+        'body:not(.dark) .search-container #pildoraFechaPanel { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; box-shadow: none !important; }',
         /* botones cápsula dentro de la barra de saludo vívida */
         'body:not(.dark) .section-header-bar .btn-capsula { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; background: ' + btnOverBg + ' !important; }',
         'body:not(.dark) .section-header-bar .btn-capsula:hover { background: ' + (lum > 0.20 ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.30)') + ' !important; }',
@@ -243,8 +248,8 @@
         /* columnas de encabezado en sub-paneles: tinte suave */
         'body:not(.dark) .rp-col-header { background: ' + softBg1 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .rp-col-header div { color: ' + colHeaderTxt + ' !important; }',
-        /* botón Descargar Base */
-        'body:not(.dark) #btnDescargarBase { color: ' + hex + ' !important; border-color: ' + hex + ' !important; }',
+        /* botón Descargar Base (regla general, sobreescrita por la de search-container arriba) */
+        'body:not(.dark) #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
         /* botones de pestaña en Panel de Casos */
         'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
         'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
