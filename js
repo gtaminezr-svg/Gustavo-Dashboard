@@ -146,17 +146,61 @@
     return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
   }
 
+  function _colorDarken(hex, amount) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.max(0, Math.round(r * (1 - amount)));
+    g = Math.max(0, Math.round(g * (1 - amount)));
+    b = Math.max(0, Math.round(b * (1 - amount)));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
   function aplicarColorTema(hex, light) {
     try {
       if (!hex) return;
       var lightHex = light || _colorLighten(hex, 0.45);
-      var bgHex    = _colorLighten(hex, 0.80);
+      var bgHex    = _colorLighten(hex, 0.84);
+      var dkHex    = _colorDarken(hex, 0.25);
+      var softBg1  = _colorLighten(hex, 0.84);
+      var softBg2  = _colorLighten(hex, 0.68);
+      var borderSoft = _colorLighten(hex, 0.52);
       var root = document.documentElement;
+
+      // Fondos y superficie
       root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
       root.style.setProperty('--surface',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
       root.style.setProperty('--card-border',  hex);
       root.style.setProperty('--bg',           bgHex);
       root.style.setProperty('--dashboard-bg', bgHex);
+      root.style.setProperty('--card-text',    '#ffffff');
+
+      // Colores de acento (botones, menú activo, badges, etc.)
+      root.style.setProperty('--accent',       hex);
+      root.style.setProperty('--accent-2',     lightHex);
+      root.style.setProperty('--accent-dk',    dkHex);
+      root.style.setProperty('--on-accent',    '#ffffff');
+      root.style.setProperty('--on-accent-2',  dkHex);
+      root.style.setProperty('--text',         dkHex);
+      root.style.setProperty('--text-soft',    hex);
+
+      // Inyectar CSS para cards con background:white hardcodeado (inline style)
+      var estilo = document.getElementById('_temaEstilo');
+      if (!estilo) {
+        estilo = document.createElement('style');
+        estilo.id = '_temaEstilo';
+        document.head.appendChild(estilo);
+      }
+      var softGrad  = 'linear-gradient(145deg, ' + softBg1 + ', ' + softBg2 + ')';
+      var vividGrad = 'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')';
+      estilo.textContent = [
+        'body:not(.dark) .stats-card-demo { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .dash-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .panel-casos-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .cal-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .table-card { background: ' + softGrad + ' !important; }',
+        'body:not(.dark) .search-container { background: ' + vividGrad + ' !important; }',
+      ].join('\n');
     } catch(e) {}
   }
 
@@ -179,6 +223,16 @@
     root.style.removeProperty('--card-border');
     root.style.removeProperty('--bg');
     root.style.removeProperty('--dashboard-bg');
+    root.style.removeProperty('--card-text');
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--accent-2');
+    root.style.removeProperty('--accent-dk');
+    root.style.removeProperty('--on-accent');
+    root.style.removeProperty('--on-accent-2');
+    root.style.removeProperty('--text');
+    root.style.removeProperty('--text-soft');
+    var estilo = document.getElementById('_temaEstilo');
+    if (estilo) estilo.remove();
     sessionStorage.removeItem('sislab_color');
     var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
     google.script.run
@@ -508,7 +562,7 @@
             <input type="color" id="colorLibre" value="${colorActual || '#004EE0'}"
               style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;">
             <button onclick="_elegirColorTema(document.getElementById('colorLibre').value, null)"
-              style="background:#004EE0;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">
+              style="background:var(--accent,#004EE0);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">
               Aplicar
             </button>
           </div>
