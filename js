@@ -172,10 +172,11 @@
       var softBg2    = _colorLighten(hex, 0.68);
       var borderSoft = _colorLighten(hex, 0.52);
 
-      var lum      = _luminance(hex);
-      var onVivid  = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
-      var onSoft   = _colorDarken(hex, 0.65);
+      var lum        = _luminance(hex);
+      var onVivid    = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
       var onVividSub = lum > 0.20 ? _colorDarken(hex, 0.50) : 'rgba(255,255,255,0.75)';
+      var btnOverBg  = lum > 0.20 ? 'rgba(0,0,0,0.13)' : 'rgba(255,255,255,0.20)';
+      var iconOverBg = lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)';
 
       var root = document.documentElement;
       root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
@@ -201,7 +202,7 @@
       var softGrad  = 'linear-gradient(145deg, ' + softBg1 + ', ' + softBg2 + ')';
       var vividGrad = 'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')';
       estilo.textContent = [
-        /* cards y bloques suaves */
+        /* cards y bloques: degradado suave */
         'body:not(.dark) .stats-card-demo { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .dash-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .panel-casos-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
@@ -210,20 +211,25 @@
         'body:not(.dark) .carrusel-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         /* .cal-panel: solo los blancos (excluir el panel oscuro de fecha actual) */
         'body:not(.dark) .cal-panel:not([style*="#1e293b"]) { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        /* bloques que no tienen clase: por ID */
+        /* bloques sin clase: por ID */
         'body:not(.dark) #bloque7 { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        /* table-card y search-container: degradado vívido */
-        'body:not(.dark) .table-card { background: ' + vividGrad + ' !important; }',
+        /* table-card: suave para que las filas sean legibles */
+        'body:not(.dark) .table-card { background: ' + softGrad + ' !important; }',
+        /* encabezado de la bandeja: vivid + diferenciado como barra de título */
+        'body:not(.dark) .table-header-container { background: ' + vividGrad + ' !important; border-radius: 12px !important; padding: 14px 20px !important; margin-bottom: 14px !important; }',
+        'body:not(.dark) .table-card .table-title { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .table-card #btnNuevoRegistro { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; border: 1.5px solid ' + onVividSub + ' !important; }',
+        /* thead sticky: tinte suave del tema */
+        'body:not(.dark) .table-card thead[style*="background: white"], body:not(.dark) .table-card thead[style*="background:white"] { background: ' + softBg1 + ' !important; }',
+        /* search-container y section-header-bar: vívido */
         'body:not(.dark) .search-container { background: ' + vividGrad + ' !important; }',
-        /* barras de saludo de bienvenida */
         'body:not(.dark) .section-header-bar { background: ' + vividGrad + ' !important; }',
         /* contraste de texto en zonas vívidas */
         'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
         'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
-        'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + (lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)') + ' !important; color: ' + onVivid + ' !important; }',
-        'body:not(.dark) .table-card * { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + iconOverBg + ' !important; color: ' + onVivid + ' !important; }',
         /* botón Descargar Base */
-        'body:not(.dark) #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVivid + ' !important; }',
+        'body:not(.dark) #btnDescargarBase { color: ' + hex + ' !important; border-color: ' + hex + ' !important; }',
         /* botones de pestaña en Panel de Casos */
         'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
         'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
