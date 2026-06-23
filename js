@@ -121,6 +121,8 @@
     sessionStorage.removeItem('sislab_rol');
     sessionStorage.removeItem('sislab_color');
     _limpiarVisualColorTema();
+    var restricEl = document.getElementById('_restriccionEjec');
+    if (restricEl) restricEl.remove();
     document.getElementById('appContainer').style.display = 'none';
     const screen = document.getElementById('loginScreen');
     screen.style.opacity = '0';
@@ -323,6 +325,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'flex';
       _iniciarApp();
+      _aplicarRestriccionesRol();
     }
     // Si no hay sesión, la loginScreen ya es visible por defecto
   };
@@ -380,6 +383,7 @@
               screen.style.display = 'none';
               document.getElementById('appContainer').style.display = 'flex';
               _iniciarApp();
+              _aplicarRestriccionesRol();
             }, 420);
           } else {
             _resetLoginBtn('Usuario o PIN incorrecto. Inténtalo de nuevo.');
@@ -412,6 +416,26 @@
         .withFailureHandler(function(){ /* sin conexión: deja el saludo por defecto */ })
         .getUsuarioActual();
     } catch (e) {}
+  }
+
+  function _aplicarRestriccionesRol() {
+    var esEjecutivo = (window.__rolUsuario || '').toLowerCase() === 'ejecutivo';
+    // Botón Descargar Base (Panel de Casos)
+    var btnDesc = document.getElementById('btnDescargarBase');
+    if (btnDesc) btnDesc.style.display = esEjecutivo ? 'none' : '';
+    // Botón Ejecutivos (Registro Personal)
+    var btnEjec = document.querySelector('button.btn-capsula[data-tab="ejecutivo"]');
+    if (btnEjec) btnEjec.style.display = esEjecutivo ? 'none' : '';
+    // Lápiz de filas: se controla en el render, pero también via CSS
+    var styleId = '_restriccionEjec';
+    var prev = document.getElementById(styleId);
+    if (prev) prev.remove();
+    if (esEjecutivo) {
+      var s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = '.icon-edit-row { display: none !important; } .dropdown-acciones { display: none !important; }';
+      document.head.appendChild(s);
+    }
   }
 
   function aplicarSaludo() {
