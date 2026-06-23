@@ -803,3 +803,66 @@ function validarCredenciales(usuario, pin) {
     return { ok: false };
   }
 }
+
+////////////// Generar Excel con Top Exámenes y gráfico de barras //////////////
+function generarTopExamenesExcel(filas) {
+  try {
+    var ss = SpreadsheetApp.create('__topexamenes_tmp__');
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Top Exámenes');
+
+    // Encabezados
+    var header = sheet.getRange(1, 1, 1, 3);
+    header.setValues([['Posición', 'Examen', 'Cantidad']]);
+    header.setFontWeight('bold');
+    header.setBackground('#004EE0');
+    header.setFontColor('#FFFFFF');
+
+    // Datos
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, 3).setValues(filas);
+    }
+
+    // Anchos de columna
+    sheet.setColumnWidth(1, 80);
+    sheet.setColumnWidth(2, 300);
+    sheet.setColumnWidth(3, 100);
+
+    // Gráfico de barras horizontales (Examen vs Cantidad)
+    var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
+    var chart = sheet.newChart()
+      .setChartType(Charts.ChartType.BAR)
+      .addRange(dataRange)
+      .setPosition(2, 5, 0, 0)
+      .setOption('title', 'Top Exámenes Más Usados')
+      .setOption('legend', { position: 'none' })
+      .setOption('hAxis', { title: 'Cantidad de usos' })
+      .setOption('vAxis', { title: 'Examen' })
+      .setOption('colors', ['#004EE0'])
+      .setOption('width', 620)
+      .setOption('height', Math.max(300, Math.min(600, 60 + filas.length * 22)))
+      .build();
+    sheet.insertChart(chart);
+
+    // Exportar como .xlsx
+    var fileId = ss.getId();
+    var token = ScriptApp.getOAuthToken();
+    var url = 'https://docs.google.com/spreadsheets/d/' + fileId + '/export?format=xlsx';
+    var resp = UrlFetchApp.fetch(url, {
+      headers: { Authorization: 'Bearer ' + token },
+      muteHttpExceptions: true
+    });
+
+    // Borrar la hoja temporal
+    DriveApp.getFileById(fileId).setTrashed(true);
+
+    if (resp.getResponseCode() !== 200) {
+      throw new Error('No se pudo exportar el archivo Excel (código ' + resp.getResponseCode() + ').');
+    }
+
+    return Utilities.base64Encode(resp.getBlob().getBytes());
+  } catch (e) {
+    Logger.log('Error generarTopExamenesExcel: ' + e);
+    throw new Error(e.message || 'No se pudo generar el archivo Excel.');
+  }
+}

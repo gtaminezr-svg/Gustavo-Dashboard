@@ -2255,27 +2255,39 @@ function descargarTopExamenes() {
     });
   });
 
-  const filas = Object.entries(conteo)
-    .sort(function(a, b) { return b[1] - a[1]; })
-    .map(function(entry, idx) {
-      return (idx + 1) + ',' + _csvEscape(entry[0]) + ',' + entry[1];
-    });
+  const ordenado = Object.entries(conteo).sort(function(a, b) { return b[1] - a[1]; });
 
-  if (filas.length === 0) {
+  if (ordenado.length === 0) {
     Swal.fire({ icon: 'info', title: 'Sin exámenes', text: 'Los pacientes cargados no tienen exámenes registrados.', confirmButtonColor: '#004EE0' });
     return;
   }
 
-  const csv = '﻿' + 'Posición,Examen,Cantidad\n' + filas.join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'top_examenes_' + _csvFechaHoy() + '.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const filas = ordenado.map(function(entry, idx) { return [idx + 1, entry[0], entry[1]]; });
+
+  Swal.fire({ title: 'Generando Excel...', text: 'Creando el archivo con gráfico de barras, un momento.', allowOutsideClick: false, didOpen: function() { Swal.showLoading(); } });
+
+  google.script.run
+    .withSuccessHandler(function(base64) {
+      Swal.close();
+      try {
+        const bytes = Uint8Array.from(atob(base64), function(c) { return c.charCodeAt(0); });
+        const blob  = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url   = URL.createObjectURL(blob);
+        const a     = document.createElement('a');
+        a.href      = url;
+        a.download  = 'top_examenes_' + _csvFechaHoy() + '.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch(e) {
+        Swal.fire({ icon: 'error', title: 'Error al descargar', text: e.message, confirmButtonColor: '#004EE0' });
+      }
+    })
+    .withFailureHandler(function(err) {
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo generar el Excel.', confirmButtonColor: '#004EE0' });
+    })
+    .generarTopExamenesExcel(filas);
 }
 
 function _csvEscape(val) {
