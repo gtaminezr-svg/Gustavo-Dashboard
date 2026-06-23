@@ -1753,17 +1753,13 @@ body.dark .search-bar-input::placeholder {
 /* Punto rojo de notificación en campana */
 .bell-dot {
   position: absolute;
-  top: 5px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
+  top: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #ef4444;
-  border: 2px solid white;
   pointer-events: none;
-}
-body.dark .bell-dot {
-  border-color: #12141C;
 }
 
 /* Animación de sacudida de la campana */
