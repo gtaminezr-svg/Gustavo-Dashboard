@@ -292,6 +292,9 @@
   // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
   // el modo oscuro real se aplicará cuando definamos la paleta de colores)
   function toggleModoOscuro() {
+    document.body.classList.add('theme-transitioning');
+    setTimeout(function() { document.body.classList.remove('theme-transitioning'); }, 500);
+
     const t = document.querySelector('.theme-toggle');
     if (t) t.classList.toggle('dark');
     document.body.classList.toggle('dark');

@@ -2937,4 +2937,20 @@ body.dark .user-dropdown-item:hover {
   background: rgba(255,255,255,0.08);
 }
 
+/* ================================================================
+   TRANSICIÓN SUAVE AL CAMBIAR DE TEMA
+   ================================================================ */
+body.theme-transitioning,
+body.theme-transitioning *,
+body.theme-transitioning *::before,
+body.theme-transitioning *::after {
+  transition:
+    background 0.40s ease,
+    background-color 0.40s ease,
+    color 0.30s ease,
+    border-color 0.30s ease,
+    box-shadow 0.35s ease,
+    fill 0.30s ease !important;
+}
+
 </style>
