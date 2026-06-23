@@ -211,6 +211,8 @@ nav {
 .theme-toggle.dark .theme-toggle-thumb{ transform:translateX(29px); }
 .theme-toggle.dark .theme-sun{ color:#94a3b8; }
 .theme-toggle.dark .theme-moon{ color:#3b82f6; }
+.theme-toggle.dark { background: #1e3a5f; }
+body.dark #progresoCasosPct { color: rgba(255,255,255,0.85) !important; }
 .sidebar.collapsed .theme-toggle{ display:none; }
 
 /* Saludo "Bienvenido ..." en la barra superior */

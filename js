@@ -682,6 +682,7 @@
       if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
       if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
       if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
+      if (typeof actualizarProgresoCasos === 'function') actualizarProgresoCasos();
 
       // Fase 3: revelar el nuevo tema con fade-in
       app.style.opacity = '1';
