@@ -245,6 +245,27 @@ nav {
   font-weight:800;
   color:var(--text);
   white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: #991b1b;
+  color: #fef2f2;
+  box-shadow: 0 2px 6px rgba(153,27,27,0.35);
+}
+body.dark .role-badge {
+  background: #7f1d1d;
+  color: #fecaca;
+  box-shadow: 0 2px 6px rgba(127,29,29,0.45);
 }
 body.dark .welcome-text{
   color:#ffffff;

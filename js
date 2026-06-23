@@ -164,7 +164,8 @@
   function aplicarSaludo() {
     if (!window.__nombreUsuario) return;
     document.querySelectorAll('.welcome-text').forEach(function(el){
-      el.textContent = 'Bienvenido ' + window.__nombreUsuario;
+      el.innerHTML = 'Bienvenido ' + window.__nombreUsuario +
+        ' <span class="role-badge">Admin</span>';
     });
   }
 
