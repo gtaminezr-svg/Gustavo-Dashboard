@@ -931,3 +931,88 @@ function crearSeguroExcel(filas, etiquetaMes) {
     return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
   }
 }
+
+////////////// Generar Excel Base del Mes (tabla completa de pacientes) //////////////
+function crearBaseMesExcel(filas, etiquetaMes) {
+  try {
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Base del Mes - ' + label);
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Base ' + label);
+
+    var encabezados = [
+      'FECHA DE REGISTRO',
+      'ESTADO DEL CASO',
+      'NÚMERO DE CASO',
+      'DNI',
+      'NOMBRE DE PACIENTE',
+      'EXÁMENES',
+      'CELULAR',
+      'SEGURO',
+      'MÉDICO SOLICITANTE',
+      'FECHA DE RECOJO',
+      'FECHA DE ENVÍO DE RESULTADOS',
+      'EJECUTIVO',
+      'PRECIO DE EXÁMENES',
+      'MÉDICO LECTOR',
+      'FECHA DE VENCIMIENTO',
+      'RESULTADO CIERRE'
+    ];
+
+    var numCols = encabezados.length;
+
+    // Encabezados
+    var headerRange = sheet.getRange(1, 1, 1, numCols);
+    headerRange.setValues([encabezados]);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#004EE0');
+    headerRange.setFontColor('#FFFFFF');
+    headerRange.setHorizontalAlignment('center');
+    headerRange.setVerticalAlignment('middle');
+    sheet.setRowHeight(1, 36);
+
+    // Datos
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, numCols).setValues(filas);
+      // Filas alternadas
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, numCols).setBackground('#EEF4FF');
+        }
+      }
+      // Columna RESULTADO CIERRE: color según valor
+      for (var j = 0; j < filas.length; j++) {
+        var cierre = (filas[j][15] || '').toString().trim();
+        var cierreCell = sheet.getRange(j + 2, 16);
+        if (cierre === 'Completado') {
+          cierreCell.setBackground('#D1FAE5');
+          cierreCell.setFontColor('#065F46');
+          cierreCell.setFontWeight('bold');
+        } else if (cierre === 'Desestimado') {
+          cierreCell.setBackground('#FEE2E2');
+          cierreCell.setFontColor('#991B1B');
+          cierreCell.setFontWeight('bold');
+        }
+      }
+    }
+
+    // Anchos de columna
+    var anchos = [130, 110, 120, 85, 200, 250, 100, 130, 180, 120, 170, 140, 110, 180, 130, 120];
+    for (var c = 0; c < anchos.length; c++) {
+      sheet.setColumnWidth(c + 1, anchos[c]);
+    }
+    sheet.setFrozenRows(1);
+
+    // Borde exterior de la tabla
+    if (filas.length > 0) {
+      sheet.getRange(1, 1, filas.length + 1, numCols)
+        .setBorder(true, true, true, true, true, true, '#CBD5E1', SpreadsheetApp.BorderStyle.SOLID);
+    }
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
+  } catch (e) {
+    Logger.log('Error crearBaseMesExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
+  }
+}

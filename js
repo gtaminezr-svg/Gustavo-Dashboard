@@ -2006,7 +2006,7 @@ function mostrarVistaPanelCasos(){
           <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
             <div onclick="cerrarMenuDescargarBase(); descargarTopExamenes();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Top Exámenes</div>
             <div onclick="cerrarMenuDescargarBase(); descargarPacientesPorSeguro();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
-            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Base del Mes</div>
+            <div onclick="cerrarMenuDescargarBase(); descargarBaseMes();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Base del Mes</div>
           </div>
         </div>
 
@@ -2379,6 +2379,88 @@ function descargarPacientesPorSeguro() {
       Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
     })
     .crearSeguroExcel(filas, etiquetaMes);
+}
+
+function descargarBaseMes() {
+  if (!bdPacientes || bdPacientes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay pacientes cargados para generar el reporte.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const mesBuscado = mesPanelSeleccionado + 1;
+  const anioBuscado = anioPanelSeleccionado;
+  const nombresMesesTop = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const etiquetaMes = nombresMesesTop[mesPanelSeleccionado] + ' ' + anioBuscado;
+
+  const pacientesMes = bdPacientes.filter(function(p) {
+    if (!p.fechaCreacion) return false;
+    const fc = p.fechaCreacion.toString();
+    if (fc.includes('/')) {
+      const partes = fc.split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[2].split(' ')[0], 10) === anioBuscado;
+    } else if (fc.includes('-')) {
+      const partes = fc.split('T')[0].split('-');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[0], 10) === anioBuscado;
+    }
+    return false;
+  });
+
+  if (pacientesMes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin registros', text: 'No hay pacientes registrados en ' + etiquetaMes + '.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Generando Base del Mes...',
+    text: 'Preparando Excel de ' + etiquetaMes + ', espera un momento.',
+    allowOutsideClick: false,
+    didOpen: function() { Swal.showLoading(); }
+  });
+
+  const filas = pacientesMes.map(function(p) {
+    const examenes = Array.isArray(p.listaExamenes) ? p.listaExamenes.join(', ') : (p.listaExamenes || '');
+    const subE = (p.subEstado || '').toLowerCase().trim();
+    let resultadoCierre = '';
+    if (p.estado === 'Completado') {
+      resultadoCierre = subE === 'desestimado' ? 'Desestimado' : 'Completado';
+    }
+    return [
+      p.fechaCreacion   || '',
+      p.estado          || '',
+      p.caso            || '',
+      p.dni             || '',
+      p.nombre          || '',
+      examenes,
+      p.telefono        || '',
+      p.seguro          || '',
+      p.medico          || '',
+      '',                           // Fecha de Recojo (no almacenado aún)
+      '',                           // Fecha de Envío de Resultados (no almacenado aún)
+      p.ejecutivo       || '',
+      p.precioTotal     || '',
+      p.medicoLector    || '',
+      p.vencimiento     || '',
+      resultadoCierre
+    ];
+  });
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      Swal.close();
+      if (!result || !result.ok) {
+        Swal.fire({ icon: 'error', title: 'Error al generar', text: (result && result.error) || 'No se pudo crear el archivo.', confirmButtonColor: '#004EE0' });
+        return;
+      }
+      const exportUrl = 'https://docs.google.com/spreadsheets/d/' + result.fileId + '/export?format=xlsx';
+      window.open(exportUrl, '_blank');
+    })
+    .withFailureHandler(function(err) {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
+    })
+    .crearBaseMesExcel(filas, etiquetaMes);
 }
 
 function _csvEscape(val) {
