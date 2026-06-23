@@ -779,17 +779,18 @@ function validarCredenciales(usuario, pin) {
     const hoja = ss.getSheetByName("Ejecutivos");
     if (!hoja || hoja.getLastRow() < 2) return { ok: false };
 
-    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios
-    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 5).getValues();
+    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol
+    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 6).getValues();
 
     for (var i = 0; i < data.length; i++) {
       var usuarioHoja = (data[i][4] || "").toString().trim();
       var pinHoja     = (data[i][1] || "").toString().trim();
       var nombreHoja  = (data[i][0] || "").toString().trim();
+      var rolHoja     = (data[i][5] || "Admin").toString().trim();
 
       if (usuarioHoja.toLowerCase() === usuario.toLowerCase().trim()
           && pinHoja === pin.toString().trim()) {
-        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja };
+        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja };
       }
     }
     return { ok: false };

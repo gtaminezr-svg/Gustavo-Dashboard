@@ -85,6 +85,7 @@
   window.onload = function() {
     if (sessionStorage.getItem('sislab_auth') === '1') {
       window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
+      window.__rolUsuario    = sessionStorage.getItem('sislab_rol') || 'Admin';
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'flex';
       _iniciarApp();
@@ -128,8 +129,10 @@
         try {
           if (result && result.ok) {
             window.__nombreUsuario = result.nombre || usuario;
+            window.__rolUsuario    = result.rol || 'Admin';
             sessionStorage.setItem('sislab_auth', '1');
             sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
+            sessionStorage.setItem('sislab_rol', result.rol || 'Admin');
             const screen = document.getElementById('loginScreen');
             screen.style.opacity = '0';
             setTimeout(function() {
@@ -172,9 +175,13 @@
 
   function aplicarSaludo() {
     if (!window.__nombreUsuario) return;
+    const rol = window.__rolUsuario || 'Admin';
+    const badgeClass = rol === 'Supervisor' ? 'badge-supervisor'
+                     : rol === 'Ejecutivo'  ? 'badge-ejecutivo'
+                     : '';
     document.querySelectorAll('.welcome-text').forEach(function(el){
       el.innerHTML = 'Bienvenido ' + window.__nombreUsuario +
-        ' <span class="role-badge">Admin</span>';
+        ' <span class="role-badge ' + badgeClass + '">' + rol + '</span>';
     });
   }
 
@@ -197,6 +204,7 @@
       if (result.isConfirmed) {
         sessionStorage.removeItem('sislab_auth');
         sessionStorage.removeItem('sislab_usuario');
+        sessionStorage.removeItem('sislab_rol');
         document.getElementById('appContainer').style.display = 'none';
         const screen = document.getElementById('loginScreen');
         screen.style.opacity = '0';
