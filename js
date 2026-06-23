@@ -259,6 +259,11 @@
         /* columnas de encabezado en sub-paneles: tinte suave */
         'body:not(.dark) .rp-col-header { background: ' + softBg1 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .rp-col-header div { color: ' + colHeaderTxt + ' !important; }',
+        /* counter-cards: sincronizar borde izquierdo y punto con el tema */
+        'body:not(.dark) .counter-card { border-left-color: ' + hex + ' !important; }',
+        'body:not(.dark) .counter-card .card-dot { background: ' + hex + ' !important; }',
+        /* tarjetas de ejecutivos (bloque8Stack): degradado vívido del tema */
+        'body:not(.dark) #bloque8Stack > div[id^="ejec-card-"] { background: ' + vividGrad + ' !important; }',
         /* botón Descargar Base (regla general, sobreescrita por la de search-container arriba) */
         'body:not(.dark) #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
         /* botones de pestaña en Panel de Casos */
