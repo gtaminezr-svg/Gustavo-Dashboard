@@ -5586,11 +5586,16 @@ function mostrarFichaMedico(idx) {
   const bloque7 = document.getElementById('bloque7');
   if (!bloque7) return;
 
+  const hexTema    = (!esDark && sessionStorage.getItem('sislab_color')) || '';
   const divisor    = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
-  const textoVal   = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoVal   = esDark ? 'rgba(255,255,255,0.90)' : 'var(--text, #1e293b)';
   const textoLabel = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
-  const miniCardBg = esDark ? 'rgba(255,255,255,0.06)' : '#f8fafc';
-  const numRegClr  = esDark ? '#a5b4fc'                : '#2b1070';
+  const miniCardBg = esDark ? 'rgba(255,255,255,0.06)' : 'var(--bg, #f8fafc)';
+  const numRegClr  = esDark ? '#a5b4fc'                : 'var(--accent, #2b1070)';
+  const avatarBg   = hexTema ? ('linear-gradient(135deg,' + _colorDarken(hexTema,0.25) + ',' + hexTema + ')') : 'linear-gradient(135deg,#2b1070,#6d5bf0)';
+  const btnBg      = hexTema || '#2b1070';
+  const btnBgHvr   = hexTema ? _colorDarken(hexTema, 0.15) : '#3b238f';
+  const btnTxt     = hexTema ? ('var(--on-accent, white)') : 'white';
 
   bloque7.innerHTML = `
     <div style="padding:16px 18px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box; flex:1; min-height:0;">
@@ -5598,7 +5603,7 @@ function mostrarFichaMedico(idx) {
       <!-- Sección superior: avatar + datos -->
       <div style="display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; flex-direction:column; align-items:center; gap:7px; text-align:center;">
-          <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
+          <div style="width:56px; height:56px; border-radius:50%; background:${avatarBg}; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
           <div style="font-size:18px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre}</div>
           <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:3px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
         </div>
@@ -5644,7 +5649,7 @@ function mostrarFichaMedico(idx) {
       </div>
 
       <!-- Botón -->
-      <button onclick="verFichaMedico(${idx})" style="background:#2b1070; color:white; border:none; border-radius:10px; padding:12px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='#3b238f';" onmouseout="this.style.background='#2b1070';">
+      <button onclick="verFichaMedico(${idx})" style="background:${btnBg}; color:${btnTxt}; border:none; border-radius:10px; padding:12px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='${btnBgHvr}';" onmouseout="this.style.background='${btnBg}';">
         <i class="fas fa-id-card"></i> Ver Ficha
       </button>
 
