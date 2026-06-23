@@ -104,12 +104,23 @@
     }
   }
 
+  function _limpiarVisualColorTema() {
+    var root = document.documentElement;
+    ['--card-bg','--surface','--card-border','--bg','--dashboard-bg','--card-text',
+     '--accent','--accent-2','--accent-dk','--on-accent','--on-accent-2','--text','--text-soft']
+      .forEach(function(p){ root.style.removeProperty(p); });
+    var estilo = document.getElementById('_temaEstilo');
+    if (estilo) estilo.remove();
+  }
+
   // Lógica compartida de logout (sin confirmación): limpia sesión y vuelve al login
   function _ejecutarLogout() {
     clearTimeout(_inactividadTimer);
     sessionStorage.removeItem('sislab_auth');
     sessionStorage.removeItem('sislab_usuario');
     sessionStorage.removeItem('sislab_rol');
+    sessionStorage.removeItem('sislab_color');
+    _limpiarVisualColorTema();
     document.getElementById('appContainer').style.display = 'none';
     const screen = document.getElementById('loginScreen');
     screen.style.opacity = '0';
@@ -354,6 +365,9 @@
             if (result.colorTema) {
               sessionStorage.setItem('sislab_color', result.colorTema);
               aplicarColorTema(result.colorTema);
+            } else {
+              sessionStorage.removeItem('sislab_color');
+              _limpiarVisualColorTema();
             }
             const screen = document.getElementById('loginScreen');
             screen.style.opacity = '0';
