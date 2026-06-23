@@ -2226,7 +2226,7 @@ function mostrarVistaPanelCasos(){
             <i class="fas fa-search"></i>
           </button>
         </div>
-        <div style="position:relative; flex:0 0 auto;">
+        <div style="position:relative; flex:0 0 auto; ${(window.__rolUsuario||'').toLowerCase()==='ejecutivo' ? 'display:none;' : ''}">
           <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.14)':'var(--accent)'; this.style.color=d?'#ffffff':'var(--on-accent)';" onmouseout="var d=document.body.classList.contains('dark'); this.style.background='transparent'; this.style.color=d?'rgba(255,255,255,0.80)':'var(--accent)';">
             Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
           </button>
@@ -2249,6 +2249,7 @@ function mostrarVistaPanelCasos(){
     actualizarPildoraFechaPanel();
     renderizarPacientesJunio(); // Forzamos el renderizado al entrar
     setTimeout(function() { seleccionarTabPanelCasos('examenes'); }, 50);
+    _aplicarRestriccionesRol();
 }
 
 // -------------------------------------------------------------
