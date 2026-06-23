@@ -262,26 +262,36 @@ body.dark .saludo-icon{
   box-shadow:none;
 }
 
-/* Botones cápsula (Registro de Personal): se invierten según el modo */
+/* Botones cápsula (Registro de Personal): estilo outline igual a "Descargar Base" */
 .btn-capsula{
   display:flex;
   align-items:center;
   gap:8px;
-  border:none;
+  border:1.5px solid var(--accent);
   cursor:pointer;
-  padding:11px 22px;
-  border-radius:40px;
+  padding:9px 20px;
+  border-radius:50px;
   font-size:14px;
   font-weight:700;
   white-space:nowrap;
-  background:var(--accent);
-  color:var(--on-accent);
-  transition:background .2s ease, color .2s ease, transform .15s ease;
+  background:transparent;
+  color:var(--accent);
+  transition:background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
 }
 .btn-capsula:hover{
-  background:var(--accent-2);
-  color:var(--on-accent-2);
+  background:var(--accent);
+  color:var(--on-accent);
   transform:translateY(-1px);
+}
+body.dark .btn-capsula {
+  border-color: rgba(255,255,255,0.30);
+  color: rgba(255,255,255,0.80);
+  background: transparent;
+}
+body.dark .btn-capsula:hover {
+  background: rgba(255,255,255,0.10);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.50);
 }
 
 /* ==========================================================================
