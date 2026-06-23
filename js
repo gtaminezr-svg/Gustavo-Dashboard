@@ -8,6 +8,8 @@
   const registrosPorPagina = 10;
   let _notifData = { vencidos: 0, porVencer: 0, pendientes: 0, agendados: 0 };
   let _notifDismissed = false;
+  let _notifItems = [];
+  let _snapshot = { pacientes: -1, medicos: -1, ejecutivos: -1, programados: -1 };
   let examenesSeleccionados = []; 
   let dniFichaActual = "";
   let subEstadoSeleccionado = "";
@@ -27,10 +29,32 @@
     "recojo parcial": "#704214" // NUEVO SUB-ESTADO AGREGADO         
   };
 
+  function _autoRefreshSilente() {
+    cargarDatosDelServidor();
+    google.script.run
+      .withSuccessHandler(function(lista) {
+        const _prevProg = _snapshot.programados;
+        if (_prevProg >= 0 && lista.length > _prevProg) {
+          const n = lista.length - _prevProg;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario' : `Se agregaron ${n} eventos al calendario`, 'fas fa-calendar-plus');
+        }
+        _snapshot.programados = lista.length;
+        pacientesProgramados = lista;
+        const vistaCalendario = document.getElementById('vistaCalendario');
+        if (vistaCalendario && vistaCalendario.style.display !== 'none') {
+          renderizarCalendario();
+          renderizarProximosEventos();
+        }
+      })
+      .obtenerPacientesProgramados();
+    recargarListasGlobales(null);
+  }
+
   window.onload = function() {
     cargarListasDesplegables();
     generarBarraMesesDinamica();
     cargarNombreUsuario();
+    setInterval(_autoRefreshSilente, 5 * 60 * 1000);
 
     // (La barra lateral se contrae/expande solo con el botón hamburguesa)
   };
@@ -148,10 +172,27 @@
     }
   }
 
-  function limpiarNotificaciones() {
-    _notifDismissed = true;
+  function agregarNotificacion(msg, icono) {
+    const hora = new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    _notifItems.unshift({ msg, icono, hora });
+    if (_notifItems.length > 20) _notifItems.pop();
     const dot = document.getElementById('bellDot');
-    if (dot) dot.style.display = 'none';
+    if (dot) dot.style.display = 'block';
+    const btn = document.getElementById('btnCampana');
+    if (btn) {
+      btn.classList.add('bell-shake');
+      btn.addEventListener('animationend', () => btn.classList.remove('bell-shake'), { once: true });
+    }
+    const panel = document.getElementById('panelNotificaciones');
+    if (panel && panel.dataset.abierto === 'true') renderPanelNotificaciones();
+  }
+
+  function limpiarNotificaciones() {
+    _notifItems = [];
+    _notifDismissed = true;
+    const hayAlerta = _notifData.vencidos > 0 || _notifData.porVencer > 0;
+    const dot = document.getElementById('bellDot');
+    if (dot) dot.style.display = hayAlerta ? 'block' : 'none';
     renderPanelNotificaciones();
   }
 
@@ -159,25 +200,34 @@
     const body = document.getElementById('notifContenido');
     if (!body) return;
     const esDark = document.body.classList.contains('dark');
+    const borderColor = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+    let html = '';
 
-    if (_notifDismissed) {
-      body.innerHTML = `
-        <div class="notif-empty">
-          <i class="far fa-bell-slash" style="font-size:28px; opacity:0.35; display:block; margin-bottom:8px;"></i>
-          Sin notificaciones nuevas
-        </div>`;
-      return;
+    // Sección de actividad reciente
+    if (_notifItems.length > 0) {
+      html += `<div class="notif-section-label">Actividad Reciente</div>`;
+      html += _notifItems.map((item, i) => `
+        <div class="notif-item" style="${i < _notifItems.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
+          <div class="notif-item-icon" style="background:#004EE022; color:${esDark ? '#99CAFF' : '#004EE0'};">
+            <i class="${item.icono}"></i>
+          </div>
+          <div class="notif-item-text">
+            <span class="notif-item-label">${item.msg}</span>
+            <span class="notif-item-desc">${item.hora}</span>
+          </div>
+        </div>`).join('');
+      html += `<div style="height:1px; background:${borderColor}; margin:4px 0 0;"></div>`;
     }
 
-    const borderColor = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
-    const items = [
+    // Sección de resumen (siempre visible)
+    html += `<div class="notif-section-label">Resumen</div>`;
+    const stats = [
       { icon: 'fas fa-hourglass-half', bg: '#f59e0b', label: 'Pacientes Pendientes', count: _notifData.pendientes, desc: 'En espera de atención' },
       { icon: 'fas fa-exclamation-circle', bg: '#ef4444', label: 'Pacientes Vencidos', count: _notifData.vencidos, desc: 'Fecha límite superada' },
       { icon: 'fas fa-calendar-check', bg: '#10b981', label: 'Agendados en Calendario', count: _notifData.agendados, desc: 'Con programación activa' }
     ];
-
-    body.innerHTML = items.map((item, i) => `
-      <div class="notif-item" style="${i < items.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
+    html += stats.map((item, i) => `
+      <div class="notif-item" style="${i < stats.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
         <div class="notif-item-icon" style="background:${item.bg}22; color:${item.bg};">
           <i class="${item.icon}"></i>
         </div>
@@ -187,6 +237,8 @@
         </div>
         <span class="notif-item-badge" style="background:${item.bg}22; color:${item.bg};">${item.count}</span>
       </div>`).join('');
+
+    body.innerHTML = html;
   }
 
   function abrirPaletaColores() {
@@ -290,9 +342,15 @@
     mostrarCargandoTabla();
     google.script.run
       .withSuccessHandler(function(pacientes) {
+        const _prevPac = _snapshot.pacientes;
         bdPacientes = pacientes;
         console.log(bdPacientes);
-        
+        if (_prevPac >= 0 && pacientes.length > _prevPac) {
+          const n = pacientes.length - _prevPac;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo caso' : `Se agregaron ${n} nuevos casos`, 'fas fa-user-plus');
+        }
+        _snapshot.pacientes = pacientes.length;
+
         /* TOTAL PACIENTES */
         document.getElementById('numeroTotalAbsoluto').textContent = bdPacientes.length;
 
@@ -428,6 +486,8 @@
         selectMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
         medicosEspecialidades = listas.medicos;
         ejecutivosData = listas.ejecutivosConPin;
+        _snapshot.medicos = (listas.medicos || []).length;
+        _snapshot.ejecutivos = (listas.ejecutivosConPin || []).length;
         listas.medicos.forEach(m => {
           let opt = document.createElement('option');
           opt.value = m.nombre;
@@ -458,9 +518,21 @@
   function recargarListasGlobales(callback) {
     google.script.run
       .withSuccessHandler(function(listas) {
-        ejecutivosDatosPin = listas.ejecutivosConPin || [];
-        ejecutivosData = listas.ejecutivosConPin || [];
+        const _prevMed  = _snapshot.medicos;
+        const _prevEjec = _snapshot.ejecutivos;
+        ejecutivosDatosPin    = listas.ejecutivosConPin || [];
+        ejecutivosData        = listas.ejecutivosConPin || [];
         medicosEspecialidades = listas.medicos || [];
+        if (_prevMed >= 0 && medicosEspecialidades.length > _prevMed) {
+          const n = medicosEspecialidades.length - _prevMed;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo médico' : `Se agregaron ${n} nuevos médicos`, 'fas fa-user-md');
+        }
+        if (_prevEjec >= 0 && ejecutivosData.length > _prevEjec) {
+          const n = ejecutivosData.length - _prevEjec;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo ejecutivo' : `Se agregaron ${n} nuevos ejecutivos`, 'fas fa-briefcase');
+        }
+        _snapshot.medicos    = medicosEspecialidades.length;
+        _snapshot.ejecutivos = ejecutivosData.length;
 
         // Refrescar el desplegable "Ejecutivo que registra" del formulario de pacientes
         rellenarSelect('ejecutivo', listas.ejecutivos);
@@ -4015,6 +4087,12 @@ function iniciarCalendario() {
   actualizarFechaHoyCard();
   google.script.run
     .withSuccessHandler(function(lista) {
+      const _prevProg = _snapshot.programados;
+      if (_prevProg >= 0 && lista.length > _prevProg) {
+        const n = lista.length - _prevProg;
+        agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario' : `Se agregaron ${n} eventos al calendario`, 'fas fa-calendar-plus');
+      }
+      _snapshot.programados = lista.length;
       pacientesProgramados = lista;
       renderizarCalendario();
       renderizarProximosEventos();

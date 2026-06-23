@@ -2753,7 +2753,20 @@ body.dark #inputBuscarMedicoPersonal::placeholder {
   background: #fee2e2;
 }
 .notif-panel-body {
-  padding: 8px 0;
+  padding: 4px 0 8px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.notif-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  padding: 10px 18px 6px;
+}
+body.dark .notif-section-label {
+  color: rgba(255,255,255,0.35);
 }
 .notif-item {
   display: flex;
