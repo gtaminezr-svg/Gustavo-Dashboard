@@ -2938,19 +2938,15 @@ body.dark .user-dropdown-item:hover {
 }
 
 /* ================================================================
-   TRANSICIÓN SUAVE AL CAMBIAR DE TEMA
+   OVERLAY DE TRANSICIÓN DE TEMA
    ================================================================ */
-body.theme-transitioning,
-body.theme-transitioning *,
-body.theme-transitioning *::before,
-body.theme-transitioning *::after {
-  transition:
-    background 0.40s ease,
-    background-color 0.40s ease,
-    color 0.30s ease,
-    border-color 0.30s ease,
-    box-shadow 0.35s ease,
-    fill 0.30s ease !important;
+#themeOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.22s ease;
 }
 
 </style>

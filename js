@@ -292,28 +292,38 @@
   // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
   // el modo oscuro real se aplicará cuando definamos la paleta de colores)
   function toggleModoOscuro() {
-    document.body.classList.add('theme-transitioning');
-    setTimeout(function() { document.body.classList.remove('theme-transitioning'); }, 500);
+    const goingDark = !document.body.classList.contains('dark');
+    const overlay = document.getElementById('themeOverlay');
 
-    const t = document.querySelector('.theme-toggle');
-    if (t) t.classList.toggle('dark');
-    document.body.classList.toggle('dark');
+    // Fase 1: fade-in del overlay con el color del tema destino
+    if (overlay) {
+      overlay.style.background = goingDark ? '#021B4D' : '#f0f8ff';
+      overlay.style.opacity = '1';
+    }
 
-    // Los gráficos en canvas conservan los píxeles dibujados con los colores del
-    // tema anterior. Hay que redibujarlos para que tomen el nuevo tema.
-    if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
-      dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
-    }
-    if (typeof ultimosPacientesPanelCasos !== 'undefined' && ultimosPacientesPanelCasos) {
-      if (typeof dibujarDonutSegurosPanelCasos === 'function') dibujarDonutSegurosPanelCasos(ultimosPacientesPanelCasos);
-      if (typeof dibujarBarrasEjecutivosPanel === 'function') dibujarBarrasEjecutivosPanel(ultimosPacientesPanelCasos);
-      if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(ultimosPacientesPanelCasos);
-      if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
-    }
-    if (typeof renderizarCalendario === 'function') renderizarCalendario();
-    if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
-    if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
-    if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
+    // Fase 2: mientras el overlay tapa todo, hacemos el cambio (220ms)
+    setTimeout(function() {
+      const t = document.querySelector('.theme-toggle');
+      if (t) t.classList.toggle('dark');
+      document.body.classList.toggle('dark');
+
+      if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
+        dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
+      }
+      if (typeof ultimosPacientesPanelCasos !== 'undefined' && ultimosPacientesPanelCasos) {
+        if (typeof dibujarDonutSegurosPanelCasos === 'function') dibujarDonutSegurosPanelCasos(ultimosPacientesPanelCasos);
+        if (typeof dibujarBarrasEjecutivosPanel === 'function') dibujarBarrasEjecutivosPanel(ultimosPacientesPanelCasos);
+        if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(ultimosPacientesPanelCasos);
+        if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
+      }
+      if (typeof renderizarCalendario === 'function') renderizarCalendario();
+      if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
+      if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
+      if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
+
+      // Fase 3: fade-out del overlay revelando el nuevo tema
+      if (overlay) overlay.style.opacity = '0';
+    }, 220);
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
