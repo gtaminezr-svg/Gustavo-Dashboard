@@ -2455,6 +2455,11 @@ body.dark #iconoAtendidos,
 body.dark #iconoIngresos {
   display: none !important;
 }
+body:not(.dark) #iconoAtendidos,
+body:not(.dark) #iconoIngresos,
+body:not(.dark) #iconoSeguroTop {
+  display: none;
+}
 
 /* Botón "Descargar Base" — dark mode */
 body.dark #btnDescargarBase {
