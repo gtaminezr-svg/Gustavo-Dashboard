@@ -172,11 +172,12 @@
       var softBg2    = _colorLighten(hex, 0.68);
       var borderSoft = _colorLighten(hex, 0.52);
 
-      var lum        = _luminance(hex);
-      var onVivid    = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
-      var onVividSub = lum > 0.20 ? _colorDarken(hex, 0.50) : 'rgba(255,255,255,0.75)';
-      var btnOverBg  = lum > 0.20 ? 'rgba(0,0,0,0.13)' : 'rgba(255,255,255,0.20)';
-      var iconOverBg = lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)';
+      var lum          = _luminance(hex);
+      var onVivid      = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
+      var onVividSub   = lum > 0.20 ? _colorDarken(hex, 0.50) : 'rgba(255,255,255,0.75)';
+      var btnOverBg    = lum > 0.20 ? 'rgba(0,0,0,0.13)' : 'rgba(255,255,255,0.20)';
+      var iconOverBg   = lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)';
+      var colHeaderTxt = _colorDarken(hex, 0.55);
 
       var root = document.documentElement;
       root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
@@ -228,6 +229,17 @@
         'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
         'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
         'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + iconOverBg + ' !important; color: ' + onVivid + ' !important; }',
+        /* headers de sub-paneles Calendario: vívido (mismo patrón que la bandeja) */
+        'body:not(.dark) .cal-panel-header { background: ' + vividGrad + ' !important; border-bottom-color: ' + hex + ' !important; }',
+        'body:not(.dark) .cal-panel-header div { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .cal-panel-header span { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .cal-panel-header button { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
+        /* headers de sub-paneles Registro Personal: vívido */
+        'body:not(.dark) .rp-panel-header { background: ' + vividGrad + ' !important; padding: 12px 20px !important; border-bottom-color: ' + hex + ' !important; }',
+        'body:not(.dark) .rp-panel-header span { color: ' + onVivid + ' !important; }',
+        /* columnas de encabezado en sub-paneles: tinte suave */
+        'body:not(.dark) .rp-col-header { background: ' + softBg1 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-col-header div { color: ' + colHeaderTxt + ' !important; }',
         /* botón Descargar Base */
         'body:not(.dark) #btnDescargarBase { color: ' + hex + ' !important; border-color: ' + hex + ' !important; }',
         /* botones de pestaña en Panel de Casos */
