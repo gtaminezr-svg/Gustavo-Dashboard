@@ -804,11 +804,11 @@ function validarCredenciales(usuario, pin) {
   }
 }
 
-////////////// Generar Excel con Top Exámenes y gráfico de barras //////////////
-function crearTopExamenesExcel(filas) {
+////////////// Generar Excel con Top Exámenes y gráfico de columnas //////////////
+function crearTopExamenesExcel(filas, etiquetaMes) {
   try {
-    var hoy = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
-    var ss = SpreadsheetApp.create('Top Exámenes ' + hoy);
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Top Exámenes - ' + label);
     var sheet = ss.getActiveSheet();
     sheet.setName('Top Exámenes');
 
@@ -820,10 +820,9 @@ function crearTopExamenesExcel(filas) {
     header.setFontColor('#FFFFFF');
     header.setHorizontalAlignment('center');
 
-    // Datos
+    // Datos con filas alternadas
     if (filas.length > 0) {
       sheet.getRange(2, 1, filas.length, 3).setValues(filas);
-      // Alternar color de filas
       for (var i = 0; i < filas.length; i++) {
         if (i % 2 === 1) {
           sheet.getRange(i + 2, 1, 1, 3).setBackground('#EEF4FF');
@@ -837,20 +836,27 @@ function crearTopExamenesExcel(filas) {
     sheet.setColumnWidth(3, 100);
     sheet.setFrozenRows(1);
 
+    // Paleta multicolor para las columnas
+    var colores = [
+      '#004EE0','#E03A00','#00A86B','#9B00E0','#E0A800',
+      '#00C4E0','#E05C00','#0094E0','#C4E000','#E000A8'
+    ];
+
     // Gráfico de columnas (Examen vs Cantidad)
     var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
     var chart = sheet.newChart()
       .setChartType(Charts.ChartType.COLUMN)
       .addRange(dataRange)
       .setPosition(2, 5, 0, 0)
-      .setOption('title', 'Top Exámenes Más Usados')
+      .setOption('title', 'Top Exámenes — ' + label)
+      .setOption('titleTextStyle', { fontSize: 16, bold: true, color: '#1e293b' })
       .setOption('isStacked', false)
-      .setOption('legend', { position: 'top', textStyle: { fontSize: 12 } })
-      .setOption('hAxis', { title: 'Examen', slantedText: true, slantedTextAngle: 45 })
-      .setOption('vAxis', { title: 'Cantidad de usos', minValue: 0 })
-      .setOption('colors', ['#004EE0'])
-      .setOption('width', 680)
-      .setOption('height', 420)
+      .setOption('legend', { position: 'labeled', textStyle: { fontSize: 11 } })
+      .setOption('hAxis', { title: 'Examen', slantedText: true, slantedTextAngle: 45, textStyle: { fontSize: 11 } })
+      .setOption('vAxis', { title: 'Cantidad de usos', minValue: 0, textStyle: { fontSize: 11 } })
+      .setOption('colors', colores)
+      .setOption('width', 820)
+      .setOption('height', 520)
       .build();
     sheet.insertChart(chart);
 

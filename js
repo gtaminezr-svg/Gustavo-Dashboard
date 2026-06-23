@@ -2244,8 +2244,34 @@ function descargarTopExamenes() {
     return;
   }
 
+  // Filtrar pacientes del mes/año seleccionado en el panel
+  const mesBuscado = mesPanelSeleccionado + 1;
+  const anioBuscado = anioPanelSeleccionado;
+  const nombresMesesTop = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const etiquetaMes = nombresMesesTop[mesPanelSeleccionado] + ' ' + anioBuscado;
+
+  const pacientesMes = bdPacientes.filter(function(p) {
+    if (!p.fechaCreacion) return false;
+    const fc = p.fechaCreacion.toString();
+    if (fc.includes('/')) {
+      const partes = fc.split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[2].split(' ')[0], 10) === anioBuscado;
+    } else if (fc.includes('-')) {
+      const partes = fc.split('T')[0].split('-');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[0], 10) === anioBuscado;
+    }
+    return false;
+  });
+
+  if (pacientesMes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin registros', text: 'No hay pacientes registrados en ' + etiquetaMes + '.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
   const conteo = {};
-  bdPacientes.forEach(function(p) {
+  pacientesMes.forEach(function(p) {
     if (!p.listaExamenes || !Array.isArray(p.listaExamenes)) return;
     p.listaExamenes.forEach(function(ex) {
       const nombre = (ex || '').toString().trim();
@@ -2256,13 +2282,13 @@ function descargarTopExamenes() {
 
   const ordenado = Object.entries(conteo).sort(function(a, b) { return b[1] - a[1]; });
   if (ordenado.length === 0) {
-    Swal.fire({ icon: 'info', title: 'Sin exámenes', text: 'Los pacientes cargados no tienen exámenes registrados.', confirmButtonColor: '#004EE0' });
+    Swal.fire({ icon: 'info', title: 'Sin exámenes', text: 'Los pacientes de ' + etiquetaMes + ' no tienen exámenes registrados.', confirmButtonColor: '#004EE0' });
     return;
   }
 
   Swal.fire({
     title: 'Generando Excel...',
-    text: 'Creando archivo con gráfico de barras, espera un momento.',
+    text: 'Creando reporte de ' + etiquetaMes + ', espera un momento.',
     allowOutsideClick: false,
     didOpen: function() { Swal.showLoading(); }
   });
@@ -2285,7 +2311,7 @@ function descargarTopExamenes() {
       Swal.close();
       Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
     })
-    .crearTopExamenesExcel(filas);
+    .crearTopExamenesExcel(filas, etiquetaMes);
 }
 
 function _csvEscape(val) {
