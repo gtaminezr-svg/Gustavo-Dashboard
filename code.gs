@@ -805,9 +805,10 @@ function validarCredenciales(usuario, pin) {
 }
 
 ////////////// Generar Excel con Top Exámenes y gráfico de barras //////////////
-function generarTopExamenesExcel(filas) {
+function crearTopExamenesExcel(filas) {
   try {
-    var ss = SpreadsheetApp.create('__topexamenes_tmp__');
+    var hoy = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    var ss = SpreadsheetApp.create('Top Exámenes ' + hoy);
     var sheet = ss.getActiveSheet();
     sheet.setName('Top Exámenes');
 
@@ -817,19 +818,28 @@ function generarTopExamenesExcel(filas) {
     header.setFontWeight('bold');
     header.setBackground('#004EE0');
     header.setFontColor('#FFFFFF');
+    header.setHorizontalAlignment('center');
 
     // Datos
     if (filas.length > 0) {
       sheet.getRange(2, 1, filas.length, 3).setValues(filas);
+      // Alternar color de filas
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, 3).setBackground('#EEF4FF');
+        }
+      }
     }
 
     // Anchos de columna
     sheet.setColumnWidth(1, 80);
     sheet.setColumnWidth(2, 300);
     sheet.setColumnWidth(3, 100);
+    sheet.setFrozenRows(1);
 
     // Gráfico de barras horizontales (Examen vs Cantidad)
     var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
+    var chartHeight = Math.max(300, Math.min(700, 80 + filas.length * 24));
     var chart = sheet.newChart()
       .setChartType(Charts.ChartType.BAR)
       .addRange(dataRange)
@@ -840,21 +850,14 @@ function generarTopExamenesExcel(filas) {
       .setOption('vAxis', { title: 'Examen' })
       .setOption('colors', ['#004EE0'])
       .setOption('width', 620)
-      .setOption('height', Math.max(300, Math.min(600, 60 + filas.length * 22)))
+      .setOption('height', chartHeight)
       .build();
     sheet.insertChart(chart);
 
-    // Exportar como .xlsx usando DriveApp (no requiere UrlFetchApp)
-    var fileId = ss.getId();
-    var xlsxBlob = DriveApp.getFileById(fileId)
-      .getAs('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-
-    // Borrar la hoja temporal
-    DriveApp.getFileById(fileId).setTrashed(true);
-
-    return Utilities.base64Encode(xlsxBlob.getBytes());
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
   } catch (e) {
-    Logger.log('Error generarTopExamenesExcel: ' + e);
-    throw new Error(e.message || 'No se pudo generar el archivo Excel.');
+    Logger.log('Error crearTopExamenesExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
   }
 }

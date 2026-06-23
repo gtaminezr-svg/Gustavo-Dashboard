@@ -2244,7 +2244,6 @@ function descargarTopExamenes() {
     return;
   }
 
-  // Contar cada examen de todos los pacientes
   const conteo = {};
   bdPacientes.forEach(function(p) {
     if (!p.listaExamenes || !Array.isArray(p.listaExamenes)) return;
@@ -2261,68 +2260,32 @@ function descargarTopExamenes() {
     return;
   }
 
-  try {
-    const wb = XLSX.utils.book_new();
+  Swal.fire({
+    title: 'Generando Excel...',
+    text: 'Creando archivo con gráfico de barras, espera un momento.',
+    allowOutsideClick: false,
+    didOpen: function() { Swal.showLoading(); }
+  });
 
-    // ── Hoja 1: Datos ──────────────────────────────────────────────────────
-    const maxCant = ordenado[0][1];
-    const BAR_MAX = 30; // celdas de ancho máximo para la barra visual
+  const filas = ordenado.map(function(entry, idx) {
+    return [idx + 1, entry[0], entry[1]];
+  });
 
-    const wsData = [['Posición', 'Examen', 'Cantidad', 'Distribución visual']];
-    ordenado.forEach(function(entry, idx) {
-      const barLen = Math.max(1, Math.round((entry[1] / maxCant) * BAR_MAX));
-      wsData.push([idx + 1, entry[0], entry[1], '█'.repeat(barLen)]);
-    });
-
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-    // Estilos del encabezado (requiere xlsx-style o SheetJS Pro;
-    // con xlsx@0.18 community los estilos se declaran en !cols y cellStyles)
-    ws['!cols'] = [{ wch: 10 }, { wch: 40 }, { wch: 12 }, { wch: BAR_MAX + 2 }];
-
-    // Color de celda en encabezado via s (style) — soportado por xlsx community al escribir
-    const headerStyle = { font: { bold: true, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '004EE0' } }, alignment: { horizontal: 'center' } };
-    ['A1','B1','C1','D1'].forEach(function(ref) {
-      if (ws[ref]) ws[ref].s = headerStyle;
-    });
-
-    // Color barra visual (azul claro)
-    for (var r = 1; r < wsData.length; r++) {
-      var ref = 'D' + (r + 1);
-      if (ws[ref]) ws[ref].s = { font: { color: { rgb: '004EE0' } } };
-      // Filas alternadas
-      ['A','B','C','D'].forEach(function(col) {
-        var cell = ws[col + (r + 1)];
-        if (cell && r % 2 === 0) {
-          cell.s = Object.assign({}, cell.s || {}, { fill: { fgColor: { rgb: 'EEF4FF' } } });
-        }
-      });
-    }
-
-    ws['!freeze'] = { xSplit: 0, ySplit: 1 }; // congelar primera fila
-    XLSX.utils.book_append_sheet(wb, ws, 'Top Exámenes');
-
-    // ── Hoja 2: Instrucciones para crear gráfico ───────────────────────────
-    const wsGuia = XLSX.utils.aoa_to_sheet([
-      ['Cómo crear el gráfico de barras en Excel:'],
-      [''],
-      ['1. Ve a la hoja "Top Exámenes"'],
-      ['2. Selecciona las columnas B (Examen) y C (Cantidad)'],
-      ['3. En el menú Insertar → Gráfico → Barra agrupada'],
-      ['4. Personaliza el título y colores a tu gusto'],
-      [''],
-      ['Tip: La columna D ya muestra una barra visual proporcional para referencia rápida.']
-    ]);
-    wsGuia['!cols'] = [{ wch: 70 }];
-    if (wsGuia['A1']) wsGuia['A1'].s = { font: { bold: true, sz: 13, color: { rgb: '004EE0' } } };
-    XLSX.utils.book_append_sheet(wb, wsGuia, 'Instrucciones');
-
-    // ── Descargar ──────────────────────────────────────────────────────────
-    XLSX.writeFile(wb, 'top_examenes_' + _csvFechaHoy() + '.xlsx');
-
-  } catch(e) {
-    Swal.fire({ icon: 'error', title: 'Error al generar Excel', text: e.message, confirmButtonColor: '#004EE0' });
-  }
+  google.script.run
+    .withSuccessHandler(function(result) {
+      Swal.close();
+      if (!result || !result.ok) {
+        Swal.fire({ icon: 'error', title: 'Error al generar', text: (result && result.error) || 'No se pudo crear el archivo.', confirmButtonColor: '#004EE0' });
+        return;
+      }
+      const exportUrl = 'https://docs.google.com/spreadsheets/d/' + result.fileId + '/export?format=xlsx';
+      window.open(exportUrl, '_blank');
+    })
+    .withFailureHandler(function(err) {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
+    })
+    .crearTopExamenesExcel(filas);
 }
 
 function _csvEscape(val) {
