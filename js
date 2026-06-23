@@ -89,6 +89,7 @@
       if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(ultimosPacientesPanelCasos);
       if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
     }
+    if (typeof renderizarCalendario === 'function') renderizarCalendario();
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
@@ -3893,15 +3894,34 @@ function renderizarCalendario() {
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
 
+  const esDark = document.body.classList.contains('dark');
+
   const hoy = new Date();
   hoy.setHours(0,0,0,0);
 
   const primerDia = new Date(calAnio, calMes, 1).getDay();
   const diasEnMes = new Date(calAnio, calMes + 1, 0).getDate();
 
+  // Tokens de color según el tema
+  const borde       = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const bgVacia     = esDark ? 'rgba(0,0,0,0.15)'       : '#fafafa';
+  const bgNormal    = esDark ? 'rgba(255,255,255,0.03)'  : 'white';
+  const bgHoy       = esDark ? 'rgba(99,102,241,0.18)'   : '#faf5ff';
+  const bgHoverNorm = esDark ? 'rgba(255,255,255,0.08)'  : '#f8fafc';
+  const bgHoverHoy  = esDark ? 'rgba(99,102,241,0.28)'   : '#f3e8ff';
+  const circHoyBg   = esDark ? '#818cf8'                 : '#2b1070';
+  const numHoy      = 'white';
+  const numPasado   = esDark ? 'rgba(255,255,255,0.28)'  : '#94a3b8';
+  const numFuturo   = esDark ? 'rgba(255,255,255,0.85)'  : '#1e293b';
+  const chipRegBg   = esDark ? 'rgba(139,92,246,0.22)'   : '#ede9fe';
+  const chipRegClr  = esDark ? '#c4b5fd'                 : '#2b1070';
+  const chipProgBg  = esDark ? 'rgba(16,185,129,0.20)'   : '#dcfce7';
+  const chipProgClr = esDark ? '#6ee7b7'                 : '#166534';
+  const masClr      = esDark ? 'rgba(255,255,255,0.40)'  : '#94a3b8';
+
   // Celdas vacías antes del primer día
   for (let i = 0; i < primerDia; i++) {
-    grid.innerHTML += `<div style="border:1px solid #f1f5f9; background:#fafafa; overflow:hidden;"></div>`;
+    grid.innerHTML += `<div style="border:1px solid ${borde}; background:${bgVacia}; overflow:hidden;"></div>`;
   }
   // Actualizar contadores del encabezado
   const elProg = document.getElementById('calTotalProgramados');
@@ -3919,6 +3939,10 @@ function renderizarCalendario() {
     const esHoy = fechaDia.getTime() === hoy.getTime();
     const esPasado = fechaDia < hoy;
 
+    const bgBase  = esHoy ? bgHoy    : bgNormal;
+    const bgHover = esHoy ? bgHoverHoy : bgHoverNorm;
+    const numColor = esHoy ? numHoy : (esPasado ? numPasado : numFuturo);
+
     // Pacientes registrados ese día
     const registrados = bdPacientes.filter(p => {
       if (!p.fechaCreacion) return false;
@@ -3933,39 +3957,39 @@ function renderizarCalendario() {
 
     let eventosHTML = '';
     registrados.slice(0, 2).forEach(p => {
-      eventosHTML += `<div style="background:#ede9fe; color:#2b1070; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre}</div>`;
+      eventosHTML += `<div style="background:${chipRegBg}; color:${chipRegClr}; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre}</div>`;
     });
     programados.slice(0, 2).forEach(p => {
-      eventosHTML += `<div style="background:#dcfce7; color:#166534; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre}</div>`;
+      eventosHTML += `<div style="background:${chipProgBg}; color:${chipProgClr}; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre}</div>`;
     });
 
     const totalExtra = (registrados.length + programados.length) - 4;
 
     grid.innerHTML += `
       <div onclick="calClickDia('${fechaStr}', ${esPasado})" style="
-        border:1px solid #f1f5f9;
+        border:1px solid ${borde};
         padding:8px;
         cursor:pointer;
-        background:${esHoy ? '#faf5ff' : 'white'};
+        background:${bgBase};
         transition:background 0.15s;
         position:relative;
         overflow:hidden;
         box-sizing:border-box;
       "
-      onmouseover="this.style.background='${esHoy ? '#f3e8ff' : '#f8fafc'}'"
-      onmouseout="this.style.background='${esHoy ? '#faf5ff' : 'white'}'">
+      onmouseover="this.style.background='${bgHover}'"
+      onmouseout="this.style.background='${bgBase}'">
         <div style="
           width:26px; height:26px;
           border-radius:50%;
-          background:${esHoy ? '#2b1070' : 'transparent'};
-          color:${esHoy ? 'white' : esPasado ? '#94a3b8' : '#1e293b'};
+          background:${esHoy ? circHoyBg : 'transparent'};
+          color:${numColor};
           font-size:13px;
           font-weight:${esHoy ? '700' : '500'};
           display:flex; align-items:center; justify-content:center;
           margin-bottom:4px;
         ">${d}</div>
         ${eventosHTML}
-        ${totalExtra > 0 ? `<div style="font-size:10px; color:#94a3b8; font-weight:600;">+${totalExtra} más</div>` : ''}
+        ${totalExtra > 0 ? `<div style="font-size:10px; color:${masClr}; font-weight:600;">+${totalExtra} más</div>` : ''}
       </div>
     `;
   }
