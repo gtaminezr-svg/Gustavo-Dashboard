@@ -783,24 +783,46 @@ function validarCredenciales(usuario, pin) {
     const hoja = ss.getSheetByName("Ejecutivos");
     if (!hoja || hoja.getLastRow() < 2) return { ok: false };
 
-    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol
-    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 6).getValues();
+    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol, G=ColorTema
+    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 7).getValues();
 
     for (var i = 0; i < data.length; i++) {
       var usuarioHoja = (data[i][4] || "").toString().trim();
       var pinHoja     = (data[i][1] || "").toString().trim();
       var nombreHoja  = (data[i][0] || "").toString().trim();
       var rolHoja     = (data[i][5] || "Admin").toString().trim();
+      var colorTema   = (data[i][6] || "").toString().trim();
 
       if (usuarioHoja.toLowerCase() === usuario.toLowerCase().trim()
           && pinHoja === pin.toString().trim()) {
-        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja };
+        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja, colorTema: colorTema };
       }
     }
     return { ok: false };
   } catch (e) {
     Logger.log("Error en validarCredenciales: " + e);
     return { ok: false };
+  }
+}
+
+////////////// Guardar color de tema del usuario //////////////
+function guardarColorTema(usuario, color) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Ejecutivos");
+    if (!hoja || hoja.getLastRow() < 2) return { ok: false };
+
+    const data = hoja.getRange(2, 5, hoja.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < data.length; i++) {
+      if ((data[i][0] || "").toString().trim().toLowerCase() === usuario.toString().trim().toLowerCase()) {
+        hoja.getRange(i + 2, 7).setValue(color); // Col G
+        return { ok: true };
+      }
+    }
+    return { ok: false, error: 'Usuario no encontrado.' };
+  } catch (e) {
+    Logger.log("Error en guardarColorTema: " + e);
+    return { ok: false, error: e.message };
   }
 }
 

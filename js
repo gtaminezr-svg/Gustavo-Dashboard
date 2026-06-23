@@ -142,6 +142,8 @@
     if (sessionStorage.getItem('sislab_auth') === '1') {
       window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
       window.__rolUsuario    = sessionStorage.getItem('sislab_rol') || 'Admin';
+      const colorGuardado = sessionStorage.getItem('sislab_color');
+      if (colorGuardado) aplicarColorTema(colorGuardado);
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'flex';
       _iniciarApp();
@@ -189,6 +191,10 @@
             sessionStorage.setItem('sislab_auth', '1');
             sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
             sessionStorage.setItem('sislab_rol', result.rol || 'Admin');
+            if (result.colorTema) {
+              sessionStorage.setItem('sislab_color', result.colorTema);
+              aplicarColorTema(result.colorTema);
+            }
             const screen = document.getElementById('loginScreen');
             screen.style.opacity = '0';
             setTimeout(function() {
@@ -416,39 +422,105 @@
   function abrirPaletaColores() {
     cerrarMenuUsuario();
     const esDark = document.body.classList.contains('dark');
-    const colores = esDark
-      ? [
-          { nombre: 'Fondo Principal', valor: '#021B4D' },
-          { nombre: 'Acento Primario', valor: '#004EE0' },
-          { nombre: 'Card / Surface', valor: '#1a3a6e → #0a1220' },
-          { nombre: 'Texto Principal', valor: '#e2e8f0' },
-          { nombre: 'Texto Secundario', valor: 'rgba(255,255,255,0.65)' },
-          { nombre: 'Borde', valor: 'rgba(255,255,255,0.12)' }
-        ]
-      : [
-          { nombre: 'Fondo Principal', valor: '#f0f8ff' },
-          { nombre: 'Acento Primario', valor: '#004EE0' },
-          { nombre: 'Surface / Card', valor: '#f8f8fa → #f5f5f5' },
-          { nombre: 'Texto Principal', valor: '#1e293b' },
-          { nombre: 'Texto Secundario', valor: '#94a3b8' },
-          { nombre: 'Borde', valor: '#e2e8f0' }
-        ];
+    const colorActual = sessionStorage.getItem('sislab_color') || '';
 
-    const htmlColores = colores.map(c => `
-      <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid ${esDark ? 'rgba(255,255,255,0.10)' : '#e2e8f0'};">
-        <span style="font-size:13px; font-weight:600; color:${esDark ? 'rgba(255,255,255,0.75)' : '#475569'};">${c.nombre}</span>
-        <span style="font-size:12px; font-family:monospace; background:${esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9'}; color:${esDark ? '#99CAFF' : '#004EE0'}; padding:3px 8px; border-radius:6px;">${c.valor}</span>
-      </div>`).join('');
+    const presets = [
+      { nombre: 'Azul (defecto)', hex: '#004EE0', light: '#99CAFF' },
+      { nombre: 'Bosque',         hex: '#2d6a4f', light: '#74c69d' },
+      { nombre: 'Esmeralda',      hex: '#40916c', light: '#95d5b2' },
+      { nombre: 'Jade',           hex: '#52b788', light: '#b7e4c7' },
+      { nombre: 'Menta',          hex: '#74c69d', light: '#d8f3dc' },
+      { nombre: 'Morado',         hex: '#7c3aed', light: '#c4b5fd' },
+      { nombre: 'Granate',        hex: '#be123c', light: '#fda4af' },
+      { nombre: 'Naranja',        hex: '#ea580c', light: '#fdba74' },
+      { nombre: 'Petróleo',       hex: '#0f766e', light: '#5eead4' },
+      { nombre: 'Índigo',         hex: '#4338ca', light: '#a5b4fc' },
+    ];
+
+    const htmlPresets = presets.map(function(p) {
+      const sel = (colorActual === p.hex) ? 'outline:3px solid #042E7B; outline-offset:2px;' : '';
+      return `<div onclick="_elegirColorTema('${p.hex}','${p.light}')" title="${p.nombre}"
+        style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${p.light},${p.hex});cursor:pointer;${sel}flex-shrink:0;transition:transform 0.15s;"
+        onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"></div>`;
+    }).join('');
 
     Swal.fire({
-      title: esDark ? '🎨 Paleta Modo Oscuro' : '🎨 Paleta Modo Claro',
-      html: `<div style="text-align:left;">${htmlColores}</div>`,
+      title: '🎨 Color del Dashboard',
+      html: `
+        <div style="text-align:left;">
+          <p style="font-size:13px;color:#64748b;margin-bottom:14px;">Elige un color para personalizar tus tarjetas y paneles en modo claro. Se guarda en tu cuenta.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;">${htmlPresets}</div>
+          <div style="display:flex;align-items:center;gap:10px;padding-top:14px;border-top:1px solid #e2e8f0;">
+            <label style="font-size:13px;font-weight:600;color:#475569;white-space:nowrap;">Color libre:</label>
+            <input type="color" id="colorLibre" value="${colorActual || '#004EE0'}"
+              style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;">
+            <button onclick="_elegirColorTema(document.getElementById('colorLibre').value, null)"
+              style="background:#004EE0;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">
+              Aplicar
+            </button>
+          </div>
+          <div style="margin-top:14px;">
+            <button onclick="_restablecerColorTema()"
+              style="background:transparent;color:#94a3b8;border:1px solid #e2e8f0;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;width:100%;">
+              Restablecer color por defecto
+            </button>
+          </div>
+        </div>`,
       confirmButtonText: 'Cerrar',
       confirmButtonColor: '#004EE0',
       background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
       color: esDark ? '#e2e8f0' : '#1e293b',
-      width: 400
+      width: 420
     });
+  }
+
+  function _colorLighten(hex, amount) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255, Math.round(r + (255-r)*amount));
+    g = Math.min(255, Math.round(g + (255-g)*amount));
+    b = Math.min(255, Math.round(b + (255-b)*amount));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
+  function aplicarColorTema(hex, light) {
+    if (!hex) return;
+    const lightHex = light || _colorLighten(hex, 0.45);
+    const bgHex    = _colorLighten(hex, 0.80);
+    const root = document.documentElement;
+    root.style.setProperty('--card-bg',     'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+    root.style.setProperty('--surface',     'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+    root.style.setProperty('--card-border', hex);
+    root.style.setProperty('--bg',          bgHex);
+    root.style.setProperty('--dashboard-bg', bgHex);
+  }
+
+  function _elegirColorTema(hex, light) {
+    aplicarColorTema(hex, light);
+    sessionStorage.setItem('sislab_color', hex);
+    const usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, hex);
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color guardado', text: 'El color se aplicó y se guardó en tu cuenta.', timer: 1800, showConfirmButton: false, timerProgressBar: true });
+  }
+
+  function _restablecerColorTema() {
+    const root = document.documentElement;
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--surface');
+    root.style.removeProperty('--card-border');
+    root.style.removeProperty('--bg');
+    root.style.removeProperty('--dashboard-bg');
+    sessionStorage.removeItem('sislab_color');
+    const usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, '');
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
   }
 
   // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
