@@ -771,3 +771,30 @@ function PRUEBA_medicos() {
   Logger.log("Cantidad de médicos: " + r.medicos.length);
   Logger.log(JSON.stringify(r.medicos));
 }
+
+////////////// Autenticación de usuarios //////////////
+function validarCredenciales(usuario, pin) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Ejecutivos");
+    if (!hoja || hoja.getLastRow() < 2) return { ok: false };
+
+    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios
+    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 5).getValues();
+
+    for (var i = 0; i < data.length; i++) {
+      var usuarioHoja = (data[i][4] || "").toString().trim();
+      var pinHoja     = (data[i][1] || "").toString().trim();
+      var nombreHoja  = (data[i][0] || "").toString().trim();
+
+      if (usuarioHoja.toLowerCase() === usuario.toLowerCase().trim()
+          && pinHoja === pin.toString().trim()) {
+        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja };
+      }
+    }
+    return { ok: false };
+  } catch (e) {
+    Logger.log("Error en validarCredenciales: " + e);
+    return { ok: false };
+  }
+}

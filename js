@@ -50,14 +50,67 @@
     recargarListasGlobales(null);
   }
 
-  window.onload = function() {
+  function _iniciarApp() {
     cargarListasDesplegables();
     generarBarraMesesDinamica();
     cargarNombreUsuario();
     setInterval(_autoRefreshSilente, 5 * 60 * 1000);
+  }
 
-    // (La barra lateral se contrae/expande solo con el botón hamburguesa)
+  window.onload = function() {
+    if (sessionStorage.getItem('sislab_auth') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'flex';
+      _iniciarApp();
+    }
+    // Si no hay sesión, la loginScreen ya es visible por defecto
   };
+
+  function intentarLogin() {
+    const usuario = (document.getElementById('loginUsuario').value || '').trim();
+    const pin     = (document.getElementById('loginPin').value || '').trim();
+    const errEl   = document.getElementById('loginError');
+    errEl.style.display = 'none';
+
+    if (!usuario || !pin) {
+      errEl.textContent = 'Por favor ingresa usuario y PIN.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Verificando...';
+
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.ok) {
+          sessionStorage.setItem('sislab_auth', '1');
+          sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
+          const screen = document.getElementById('loginScreen');
+          screen.style.opacity = '0';
+          setTimeout(function() {
+            screen.style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            _iniciarApp();
+          }, 420);
+        } else {
+          btn.disabled = false;
+          btn.innerHTML = 'Iniciar Sesión';
+          errEl.textContent = 'Usuario o PIN incorrecto. Inténtalo de nuevo.';
+          errEl.style.display = 'block';
+          document.getElementById('loginPin').value = '';
+          document.getElementById('loginPin').focus();
+        }
+      })
+      .withFailureHandler(function() {
+        btn.disabled = false;
+        btn.innerHTML = 'Iniciar Sesión';
+        errEl.textContent = 'Error de conexión. Inténtalo de nuevo.';
+        errEl.style.display = 'block';
+      })
+      .validarCredenciales(usuario, pin);
+  }
 
   // Saludo personalizado: obtiene el nombre del usuario (admin) desde el backend
   function cargarNombreUsuario() {
@@ -96,7 +149,18 @@
       color: esDark ? '#e2e8f0' : '#1e293b'
     }).then(result => {
       if (result.isConfirmed) {
-        window.location.reload();
+        sessionStorage.removeItem('sislab_auth');
+        sessionStorage.removeItem('sislab_usuario');
+        document.getElementById('appContainer').style.display = 'none';
+        const screen = document.getElementById('loginScreen');
+        screen.style.opacity = '0';
+        screen.style.display = 'flex';
+        document.getElementById('loginUsuario').value = '';
+        document.getElementById('loginPin').value = '';
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('btnLogin').disabled = false;
+        document.getElementById('btnLogin').innerHTML = 'Iniciar Sesión';
+        setTimeout(function() { screen.style.opacity = '1'; }, 20);
       }
     });
   }
