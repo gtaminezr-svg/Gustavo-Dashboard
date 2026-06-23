@@ -12,7 +12,7 @@
 :root{
   /* Paleta gris neutro (modo claro) */
   --bg:        #f0f8ff;
-  --surface:   #FFFFFF;
+  --surface:   #f8f8fa;
   --accent:    #004EE0;
   --accent-2:  #99CAFF;
   --accent-dk: #042E7B;
@@ -21,7 +21,7 @@
   --text:      #042E7B;
   --text-soft: #004EE0;
   /* Tarjetas (counter cards) */
-  --card-bg:    #ffffff;
+  --card-bg:    #f8f8fa;
   --card-border: #E9ECEF;
   --card-text:  #042E7B;
   --card-soft:  #64748b;
@@ -349,7 +349,7 @@ body.dark .btn-capsula:hover {
 }
 
 .btn-refresh {
-  background: white;
+  background: #f8f8fa;
   color: #2d1b69;
   border: 1px solid #e2e8f0;
   padding: 10px 14px;
@@ -609,7 +609,7 @@ body.dark .btn-capsula:hover {
 .btn-nav {
   padding: 8px 16px;
   border: 1px solid #e2e8f0;
-  background: white;
+  background: #f8f8fa;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -664,7 +664,7 @@ body.dark .btn-capsula:hover {
 }
 
 .modal-content {
-  background: white;
+  background: #f8f8fa;
   width: 780px;
   max-width: 95%;
   border-radius: 16px;
@@ -739,7 +739,7 @@ body.dark .btn-capsula:hover {
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  background: #ffffff;
+  background: #f8f8fa;
   border-color: #2d1b69;
 }
 
@@ -1097,7 +1097,7 @@ body .swal2-container {
 }
 
 .stats-card{
-  background:#ffffff;
+  background:#f8f8fa;
   border-radius:18px;
   padding:18px 22px;
   min-width:240px;
@@ -1146,7 +1146,7 @@ body .swal2-container {
 
 .stats-chart-card{
   margin-top:28px;
-  background:#ffffff;
+  background:#f8f8fa;
   border-radius:20px;
   padding:24px;
   border:1px solid #eef2f7;
@@ -1256,7 +1256,7 @@ body .swal2-container {
   content:'';
   width:120px;
   height:120px;
-  background:white;
+  background:#f8f8fa;
   border-radius:50%;
   position:absolute;
 }
@@ -1329,7 +1329,7 @@ body .swal2-container {
 }
 
 .stats-card-demo{
-  background:white;
+  background:#f8f8fa;
   border:1px solid #e5e7eb;
   border-radius:14px;
   min-height:90px;
@@ -1356,7 +1356,7 @@ body .swal2-container {
 .stats-box-calendar,
 .stats-box-traffic{
 
-  background:white;
+  background:#f8f8fa;
   border:1px solid #e5e7eb;
   border-radius:14px;
 
@@ -1404,7 +1404,7 @@ body .swal2-container {
 
 .month-selector {
   display: flex;
-  background: #ffffff; /* Fondo blanco del contenedor */
+  background: #f8f8fa; /* Fondo blanco del contenedor */
   border: 1px solid #e2e8f0;
   border-radius: 50px; /* Borde totalmente redondeado (píldora) */
   padding: 4px; /* Espacio interior para que la selección no toque el borde */
@@ -1579,7 +1579,7 @@ body.dark .search-container {
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 body:not(.dark) .search-container {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border-bottom: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
@@ -2144,7 +2144,7 @@ body.dark .carrusel-controles .carrusel-flecha:hover { background: rgba(255,255,
 
 /* Tarjetas del carrusel en modo CLARO: tarjeta flotante sobre el bloque */
 body:not(.dark) .carrusel-card {
-  background: #FFFFFF !important;
+  background: #f8f8fa !important;
   border: 1px solid #E9ECEF !important;
   box-shadow: 0 4px 16px rgba(15,23,42,0.07) !important;
   border-radius: 16px !important;
@@ -2191,7 +2191,7 @@ body.dark #barraMesesDinamica .month-item:hover:not(.active) {
 
 /* Cards de Estadísticas en modo CLARO: mismo diseño que counter-cards */
 body:not(.dark) .stats-card-demo {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
   text-align: left !important;
@@ -2231,7 +2231,7 @@ body:not(.dark) .stats-card-demo > div:last-child {
 
 /* Bloques Estadísticas en modo CLARO: paleta gris neutro */
 body:not(.dark) .dash-block {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
@@ -2242,14 +2242,14 @@ body:not(.dark) .dash-block {
 
 /* Sidebar */
 body:not(.dark) .sidebar {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border-right: 1px solid #e2e8f0 !important;
   box-shadow: none !important;
 }
 
 /* Barra de título / saludo */
 body:not(.dark) .section-header-bar {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
@@ -2263,26 +2263,26 @@ body.dark .section-header-bar {
 /* Todos los bloques sin clase específica en vistaRegistroPersonal */
 body:not(.dark) #vistaRegistroPersonal [style*="background:white"],
 body:not(.dark) #vistaRegistroPersonal [style*="background: white"] {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 
 /* Bloque 7 (ficha médico) por ID */
 body:not(.dark) #bloque7 {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 12px rgba(15,23,42,0.04) !important;
 }
 
 /* Thead de la tabla principal en modo claro */
 body:not(.dark) .table-card {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
 }
 body:not(.dark) .table-card thead[style*="background: white"],
 body:not(.dark) .table-card thead[style*="background:white"] {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   box-shadow: 0 1px 0 #E9ECEF !important;
 }
 
@@ -2302,7 +2302,7 @@ body.dark .dash-block[style*="grid-column: 3; grid-row: 2 / span 2"] {
 
 /* Panel de Casos en modo CLARO: paleta gris neutro */
 body:not(.dark) .panel-casos-block {
-  background: #ffffff !important;
+  background: #f8f8fa !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 6px 18px rgba(15,23,42,0.05) !important;
 }
@@ -2641,7 +2641,7 @@ body.dark #proximosBadge {
    ================================================================ */
 
 /* Default row background (CSS controls it; no inline bg needed) */
-#listaMedicosPersonal > div { background: white; }
+#listaMedicosPersonal > div { background: #f8f8fa; }
 body.dark #listaMedicosPersonal > div { background: transparent; }
 
 /* Hover via CSS so it can't be broken by stale inline handlers */
