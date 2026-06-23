@@ -75,7 +75,7 @@ function obtenerListasDesplegables() {
     let ejecutivosConPin = [];
 
     if (hojaEjecutivos && hojaEjecutivos.getLastRow() >= 2) {
-      let dataEjec = hojaEjecutivos.getRange(2, 1, hojaEjecutivos.getLastRow() - 1, 4).getValues();
+      let dataEjec = hojaEjecutivos.getRange(2, 1, hojaEjecutivos.getLastRow() - 1, 6).getValues();
       ejecutivos = dataEjec.map(fila => fila[0].toString().trim()).filter(String);
       ejecutivosConPin = dataEjec.filter(fila => fila[0].toString().trim() !== "").map(fila => {
         let fechaEjec = "—";
@@ -84,7 +84,7 @@ function obtenerListasDesplegables() {
             ? Utilities.formatDate(fila[3], Session.getScriptTimeZone(), "dd/MM/yyyy")
             : fila[3].toString().trim();
         }
-        return { nombre: fila[0].toString().trim(), pin: fila[1] ? fila[1].toString().trim() : "", tipoRegistro: fila[2] ? fila[2].toString().trim() : "", fechaRegistro: fechaEjec };
+        return { nombre: fila[0].toString().trim(), pin: fila[1] ? fila[1].toString().trim() : "", tipoRegistro: fila[2] ? fila[2].toString().trim() : "", fechaRegistro: fechaEjec, rol: fila[5] ? fila[5].toString().trim() : "Ejecutivo" };
       });
     }
 
@@ -568,15 +568,16 @@ function registrarEjecutivo(datos) {
     if (!hojaEjecutivos) throw new Error('No se encontró la hoja "Ejecutivos".');
 
     const nombre = (datos.nombre || "").toString().trim();
-    const pin = (datos.pin || "").toString().trim();
+    const pin    = (datos.pin    || "").toString().trim();
+    const tipo   = (datos.tipo   || "Ejecutivo").toString().trim();
     if (!nombre) throw new Error("El nombre del ejecutivo es obligatorio.");
-    if (!pin) throw new Error("El PIN de seguridad es obligatorio.");
+    if (!pin)    throw new Error("El PIN de seguridad es obligatorio.");
 
     // Fecha de registro automática
     const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy");
 
-    // Columnas: A=Nombre, B=PIN, C=Tipo de Registro, D=Fecha de Registro
-    hojaEjecutivos.appendRow([nombre, pin, "", fecha]);
+    // Columnas: A=Nombre, B=PIN, C=legacy, D=Fecha, E=Usuario(vacío), F=Rol
+    hojaEjecutivos.appendRow([nombre, pin, "", fecha, "", tipo]);
 
     return "Ejecutivo registrado correctamente.";
   } catch (error) {

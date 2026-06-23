@@ -5686,10 +5686,22 @@ function abrirModalEjecutivos() {
 
 var ejecutivosModalData = [];
 
+function _toggleAuthPinField() {
+  var tipo = document.getElementById('swalEjecTipo');
+  var wrap = document.getElementById('swalAuthPinWrap');
+  if (!tipo || !wrap) return;
+  wrap.style.display = tipo.value === 'Supervisor' ? 'block' : 'none';
+  if (tipo.value !== 'Supervisor') {
+    var ap = document.getElementById('swalAuthPin');
+    if (ap) ap.value = '';
+  }
+}
+
 function abrirModalNuevoEjecutivo(ejec) {
   const esEdicion = !!ejec;
   const nombreVal = esEdicion ? (ejec.nombre || '').replace(/"/g, '&quot;') : '';
-  const pinVal = esEdicion ? (ejec.pin || '').replace(/"/g, '&quot;') : '';
+  const pinVal    = esEdicion ? (ejec.pin    || '').replace(/"/g, '&quot;') : '';
+  const tipoVal   = esEdicion ? (ejec.rol    || '') : '';
 
   Swal.fire({
     title: '<span style="font-size:18px; font-weight:800; color:#2b1070;">' + (esEdicion ? 'Editar Ejecutivo' : 'Registrar Ejecutivo') + '</span>',
@@ -5705,10 +5717,18 @@ function abrirModalNuevoEjecutivo(ejec) {
           <input id="swalEjecPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="••••••" value="` + pinVal + `">
         </div>
         <div>
-          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Usuario</label>
-          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" disabled>
-            <option value="">Próximamente...</option>
+          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Registro</label>
+          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" onchange="_toggleAuthPinField()">
+            <option value="">-- Seleccionar --</option>
+            <option value="Ejecutivo"  ` + (tipoVal === 'Ejecutivo'  ? 'selected' : '') + `>Ejecutivo</option>
+            <option value="Supervisor" ` + (tipoVal === 'Supervisor' ? 'selected' : '') + `>Supervisor</option>
           </select>
+        </div>
+        <div id="swalAuthPinWrap" style="display:none;">
+          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">
+            PIN de Autorización <span style="color:#ef4444; font-size:11px;">(Solo Admin o Supervisor)</span>
+          </label>
+          <input id="swalAuthPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="PIN de Admin o Supervisor">
         </div>
       </div>
     `,
@@ -5718,19 +5738,42 @@ function abrirModalNuevoEjecutivo(ejec) {
     confirmButtonColor: '#2b1070',
     cancelButtonColor: '#64748b',
     reverseButtons: true,
+    didOpen: function() {
+      // Si ya es Supervisor en edición, mostrar el campo de auth pin
+      if (tipoVal === 'Supervisor') _toggleAuthPinField();
+    },
     preConfirm: () => {
       const nombre = document.getElementById('swalEjecNombre').value.trim();
-      const pin = document.getElementById('swalEjecPin').value.trim();
+      const pin    = document.getElementById('swalEjecPin').value.trim();
+      const tipo   = document.getElementById('swalEjecTipo').value;
       if (!nombre || !pin) {
         Swal.showValidationMessage('Ingresa el nombre y el PIN de seguridad.');
         return false;
       }
-      return { nombre: nombre, pin: pin };
+      if (!tipo) {
+        Swal.showValidationMessage('Selecciona el Tipo de Registro.');
+        return false;
+      }
+      if (tipo === 'Supervisor') {
+        const authPin = document.getElementById('swalAuthPin').value.trim();
+        if (!authPin) {
+          Swal.showValidationMessage('Ingresa el PIN de autorización para registrar un Supervisor.');
+          return false;
+        }
+        const autorizado = (ejecutivosDatosPin || []).some(function(e) {
+          return e.pin === authPin && (e.rol === 'Admin' || e.rol === 'Supervisor');
+        });
+        if (!autorizado) {
+          Swal.showValidationMessage('PIN de autorización incorrecto o sin permisos suficientes.');
+          return false;
+        }
+      }
+      return { nombre: nombre, pin: pin, tipo: tipo };
     }
   }).then(result => {
     if (!result.isConfirmed) return;
     if (esEdicion) {
-      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin });
+      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin, tipo: result.value.tipo });
     } else {
       guardarEjecutivo(result.value);
     }
