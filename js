@@ -65,7 +65,63 @@
       .withFailureHandler(function(){})
       .obtenerPacientesProgramados();
     setTimeout(_abrirPanelNotificaciones, 600);
+    _iniciarControlInactividad();
   }
+
+  // ===== Cierre de sesión automático por inactividad (30 min) =====
+  let _inactividadTimer = null;
+  const _INACTIVIDAD_MS = 30 * 60 * 1000; // 30 minutos
+
+  function _reiniciarTimerInactividad() {
+    if (sessionStorage.getItem('sislab_auth') !== '1') return;
+    clearTimeout(_inactividadTimer);
+    _inactividadTimer = setTimeout(_cerrarSesionPorInactividad, _INACTIVIDAD_MS);
+  }
+
+  function _iniciarControlInactividad() {
+    const eventos = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    eventos.forEach(function(ev) {
+      document.addEventListener(ev, _reiniciarTimerInactividad, { passive: true });
+    });
+    _reiniciarTimerInactividad();
+  }
+
+  function _cerrarSesionPorInactividad() {
+    if (sessionStorage.getItem('sislab_auth') !== '1') return;
+    clearTimeout(_inactividadTimer);
+    _ejecutarLogout();
+    if (typeof Swal !== 'undefined') {
+      const esDark = document.body.classList.contains('dark');
+      Swal.fire({
+        icon: 'info',
+        title: 'Sesión cerrada',
+        text: 'Tu sesión se cerró automáticamente por inactividad.',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#004EE0',
+        background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+        color: esDark ? '#e2e8f0' : '#1e293b'
+      });
+    }
+  }
+
+  // Lógica compartida de logout (sin confirmación): limpia sesión y vuelve al login
+  function _ejecutarLogout() {
+    clearTimeout(_inactividadTimer);
+    sessionStorage.removeItem('sislab_auth');
+    sessionStorage.removeItem('sislab_usuario');
+    sessionStorage.removeItem('sislab_rol');
+    document.getElementById('appContainer').style.display = 'none';
+    const screen = document.getElementById('loginScreen');
+    screen.style.opacity = '0';
+    screen.style.display = 'flex';
+    document.getElementById('loginUsuario').value = '';
+    document.getElementById('loginPin').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').innerHTML = 'Iniciar Sesión';
+    setTimeout(function() { screen.style.opacity = '1'; }, 20);
+  }
+
 
   function _abrirPanelNotificaciones() {
     const panel = document.getElementById('panelNotificaciones');
@@ -202,19 +258,7 @@
       color: esDark ? '#e2e8f0' : '#1e293b'
     }).then(result => {
       if (result.isConfirmed) {
-        sessionStorage.removeItem('sislab_auth');
-        sessionStorage.removeItem('sislab_usuario');
-        sessionStorage.removeItem('sislab_rol');
-        document.getElementById('appContainer').style.display = 'none';
-        const screen = document.getElementById('loginScreen');
-        screen.style.opacity = '0';
-        screen.style.display = 'flex';
-        document.getElementById('loginUsuario').value = '';
-        document.getElementById('loginPin').value = '';
-        document.getElementById('loginError').style.display = 'none';
-        document.getElementById('btnLogin').disabled = false;
-        document.getElementById('btnLogin').innerHTML = 'Iniciar Sesión';
-        setTimeout(function() { screen.style.opacity = '1'; }, 20);
+        _ejecutarLogout();
       }
     });
   }
