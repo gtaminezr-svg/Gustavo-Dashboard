@@ -229,6 +229,9 @@
         'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
         'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
         'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + iconOverBg + ' !important; color: ' + onVivid + ' !important; }',
+        /* botones cápsula dentro de la barra de saludo vívida */
+        'body:not(.dark) .section-header-bar .btn-capsula { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; background: ' + btnOverBg + ' !important; }',
+        'body:not(.dark) .section-header-bar .btn-capsula:hover { background: ' + (lum > 0.20 ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.30)') + ' !important; }',
         /* headers de sub-paneles Calendario: vívido (mismo patrón que la bandeja) */
         'body:not(.dark) .cal-panel-header { background: ' + vividGrad + ' !important; border-bottom-color: ' + hex + ' !important; }',
         'body:not(.dark) .cal-panel-header div { color: ' + onVivid + ' !important; }',
