@@ -563,6 +563,29 @@ function obtenerConteoMedicos() {
   }
 }
 
+////////////// Generar Usuario Automático //////////////
+function _generarUsuario_(nombre, hoja) {
+  var partes = nombre.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z\s]/g, "").trim().split(/\s+/);
+  if (partes.length === 0 || !partes[0]) return "";
+  if (partes.length === 1) return partes[0];
+  var apellido = partes[partes.length - 1];
+  var prefijo  = partes.slice(0, -1).map(function(p){ return p[0]; }).join('');
+  var base     = prefijo + apellido;
+  var existentes = [];
+  var lastRow = hoja.getLastRow();
+  if (lastRow >= 2) {
+    existentes = hoja.getRange(2, 5, lastRow - 1, 1).getValues()
+      .map(function(r){ return r[0].toString().trim().toLowerCase(); })
+      .filter(function(v){ return v !== ""; });
+  }
+  if (existentes.indexOf(base) === -1) return base;
+  var i = 2;
+  while (existentes.indexOf(base + i) !== -1) i++;
+  return base + i;
+}
+
 ////////////// Registrar Nuevo Ejecutivo //////////////
 function registrarEjecutivo(datos) {
   try {
@@ -579,8 +602,11 @@ function registrarEjecutivo(datos) {
     // Fecha de registro automática
     const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy");
 
-    // Columnas: A=Nombre, B=PIN, C=legacy, D=Fecha, E=Usuario(vacío), F=Rol
-    hojaEjecutivos.appendRow([nombre, pin, "", fecha, "", tipo]);
+    // Generar usuario automáticamente: inicial(es) + apellido completo
+    const usuario = _generarUsuario_(nombre, hojaEjecutivos);
+
+    // Columnas: A=Nombre, B=PIN, C=legacy, D=Fecha, E=Usuario, F=Rol
+    hojaEjecutivos.appendRow([nombre, pin, "", fecha, usuario, tipo]);
 
     return "Ejecutivo registrado correctamente.";
   } catch (error) {
