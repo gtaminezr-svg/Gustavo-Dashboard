@@ -154,35 +154,44 @@
     return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
   }
 
+  function _luminance(hex) {
+    var r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+    r = r <= 0.03928 ? r/12.92 : Math.pow((r+0.055)/1.055, 2.4);
+    g = g <= 0.03928 ? g/12.92 : Math.pow((g+0.055)/1.055, 2.4);
+    b = b <= 0.03928 ? b/12.92 : Math.pow((b+0.055)/1.055, 2.4);
+    return 0.2126*r + 0.7152*g + 0.0722*b;
+  }
+
   function aplicarColorTema(hex, light) {
     try {
       if (!hex) return;
-      var lightHex = light || _colorLighten(hex, 0.45);
-      var bgHex    = _colorLighten(hex, 0.84);
-      var dkHex    = _colorDarken(hex, 0.25);
-      var softBg1  = _colorLighten(hex, 0.84);
-      var softBg2  = _colorLighten(hex, 0.68);
+      var lightHex   = light || _colorLighten(hex, 0.45);
+      var bgHex      = _colorLighten(hex, 0.84);
+      var dkHex      = _colorDarken(hex, 0.25);
+      var softBg1    = _colorLighten(hex, 0.84);
+      var softBg2    = _colorLighten(hex, 0.68);
       var borderSoft = _colorLighten(hex, 0.52);
-      var root = document.documentElement;
 
-      // Fondos y superficie
+      var lum      = _luminance(hex);
+      var onVivid  = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
+      var onSoft   = _colorDarken(hex, 0.65);
+      var onVividSub = lum > 0.20 ? _colorDarken(hex, 0.50) : 'rgba(255,255,255,0.75)';
+
+      var root = document.documentElement;
       root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
       root.style.setProperty('--surface',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
       root.style.setProperty('--card-border',  hex);
       root.style.setProperty('--bg',           bgHex);
       root.style.setProperty('--dashboard-bg', bgHex);
-      root.style.setProperty('--card-text',    '#ffffff');
-
-      // Colores de acento (botones, menú activo, badges, etc.)
+      root.style.setProperty('--card-text',    onVivid);
       root.style.setProperty('--accent',       hex);
       root.style.setProperty('--accent-2',     lightHex);
       root.style.setProperty('--accent-dk',    dkHex);
-      root.style.setProperty('--on-accent',    '#ffffff');
+      root.style.setProperty('--on-accent',    onVivid);
       root.style.setProperty('--on-accent-2',  dkHex);
       root.style.setProperty('--text',         dkHex);
       root.style.setProperty('--text-soft',    hex);
 
-      // Inyectar CSS para cards con background:white hardcodeado (inline style)
       var estilo = document.getElementById('_temaEstilo');
       if (!estilo) {
         estilo = document.createElement('style');
@@ -192,14 +201,32 @@
       var softGrad  = 'linear-gradient(145deg, ' + softBg1 + ', ' + softBg2 + ')';
       var vividGrad = 'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')';
       estilo.textContent = [
+        /* cards y bloques suaves */
         'body:not(.dark) .stats-card-demo { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .dash-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .panel-casos-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        'body:not(.dark) .cal-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .rp-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .rp-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        'body:not(.dark) .table-card { background: ' + softGrad + ' !important; }',
+        'body:not(.dark) .carrusel-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* .cal-panel: solo los blancos (excluir el panel oscuro de fecha actual) */
+        'body:not(.dark) .cal-panel:not([style*="#1e293b"]) { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* bloques que no tienen clase: por ID */
+        'body:not(.dark) #bloque7 { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* table-card y search-container: degradado vívido */
+        'body:not(.dark) .table-card { background: ' + vividGrad + ' !important; }',
         'body:not(.dark) .search-container { background: ' + vividGrad + ' !important; }',
+        /* barras de saludo de bienvenida */
+        'body:not(.dark) .section-header-bar { background: ' + vividGrad + ' !important; }',
+        /* contraste de texto en zonas vívidas */
+        'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
+        'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + (lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)') + ' !important; color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .table-card * { color: ' + onVivid + ' !important; }',
+        /* botón Descargar Base */
+        'body:not(.dark) #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVivid + ' !important; }',
+        /* botones de pestaña en Panel de Casos */
+        'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
+        'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
       ].join('\n');
     } catch(e) {}
   }
