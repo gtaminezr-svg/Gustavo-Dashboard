@@ -2004,7 +2004,7 @@ function mostrarVistaPanelCasos(){
             Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
           </button>
           <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
-            <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Top Exámenes</div>
+            <div onclick="cerrarMenuDescargarBase(); descargarTopExamenes();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Top Exámenes</div>
             <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
             <div onclick="cerrarMenuDescargarBase()" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Base del Mes</div>
           </div>
@@ -2236,6 +2236,60 @@ function cerrarMenuDescargarBaseFuera(e) {
   if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
     cerrarMenuDescargarBase();
   }
+}
+
+function descargarTopExamenes() {
+  if (!bdPacientes || bdPacientes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay pacientes cargados para generar el reporte.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  // Contar cada examen de todos los pacientes
+  const conteo = {};
+  bdPacientes.forEach(function(p) {
+    if (!p.listaExamenes || !Array.isArray(p.listaExamenes)) return;
+    p.listaExamenes.forEach(function(ex) {
+      const nombre = (ex || '').toString().trim();
+      if (!nombre) return;
+      conteo[nombre] = (conteo[nombre] || 0) + 1;
+    });
+  });
+
+  const filas = Object.entries(conteo)
+    .sort(function(a, b) { return b[1] - a[1]; })
+    .map(function(entry, idx) {
+      return (idx + 1) + ',' + _csvEscape(entry[0]) + ',' + entry[1];
+    });
+
+  if (filas.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin exámenes', text: 'Los pacientes cargados no tienen exámenes registrados.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const csv = '﻿' + 'Posición,Examen,Cantidad\n' + filas.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'top_examenes_' + _csvFechaHoy() + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function _csvEscape(val) {
+  const s = (val || '').toString();
+  return s.includes(',') || s.includes('"') || s.includes('\n')
+    ? '"' + s.replace(/"/g, '""') + '"'
+    : s;
+}
+
+function _csvFechaHoy() {
+  const d = new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
 }
 
 function abrirSelectorFechaPanel() {
