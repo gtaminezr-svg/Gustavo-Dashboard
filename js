@@ -54,6 +54,8 @@
   }
 
   function cerrarSesion() {
+    cerrarMenuUsuario();
+    const esDark = document.body.classList.contains('dark');
     Swal.fire({
       icon: 'question',
       title: '¿Cerrar sesión?',
@@ -63,12 +65,85 @@
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#64748b',
-      reverseButtons: true
+      reverseButtons: true,
+      background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+      color: esDark ? '#e2e8f0' : '#1e293b'
     }).then(result => {
       if (result.isConfirmed) {
-        // Placeholder: recarga la app. Aquí puedes redirigir a tu página de login si la tienes.
         window.location.reload();
       }
+    });
+  }
+
+  function toggleMenuUsuario(event) {
+    event.stopPropagation();
+    const icon = event.currentTarget;
+    const menu = document.getElementById('menuUsuario');
+    if (!menu) return;
+    if (menu.dataset.abierto === 'true') {
+      cerrarMenuUsuario();
+    } else {
+      const rect = icon.getBoundingClientRect();
+      menu.style.top = (rect.bottom + 8) + 'px';
+      menu.style.left = rect.left + 'px';
+      menu.style.maxHeight = '200px';
+      menu.style.opacity = '1';
+      menu.dataset.abierto = 'true';
+      setTimeout(function() { document.addEventListener('click', cerrarMenuUsuarioFuera); }, 0);
+    }
+  }
+
+  function cerrarMenuUsuario() {
+    const menu = document.getElementById('menuUsuario');
+    if (!menu) return;
+    menu.style.maxHeight = '0';
+    menu.style.opacity = '0';
+    menu.dataset.abierto = 'false';
+    document.removeEventListener('click', cerrarMenuUsuarioFuera);
+  }
+
+  function cerrarMenuUsuarioFuera(e) {
+    const menu = document.getElementById('menuUsuario');
+    if (menu && !menu.contains(e.target)) {
+      cerrarMenuUsuario();
+    }
+  }
+
+  function abrirPaletaColores() {
+    cerrarMenuUsuario();
+    const esDark = document.body.classList.contains('dark');
+    const colores = esDark
+      ? [
+          { nombre: 'Fondo Principal', valor: '#021B4D' },
+          { nombre: 'Acento Primario', valor: '#004EE0' },
+          { nombre: 'Card / Surface', valor: '#1a3a6e → #0a1220' },
+          { nombre: 'Texto Principal', valor: '#e2e8f0' },
+          { nombre: 'Texto Secundario', valor: 'rgba(255,255,255,0.65)' },
+          { nombre: 'Borde', valor: 'rgba(255,255,255,0.12)' }
+        ]
+      : [
+          { nombre: 'Fondo Principal', valor: '#f0f8ff' },
+          { nombre: 'Acento Primario', valor: '#004EE0' },
+          { nombre: 'Surface / Card', valor: '#f8f8fa → #f5f5f5' },
+          { nombre: 'Texto Principal', valor: '#1e293b' },
+          { nombre: 'Texto Secundario', valor: '#94a3b8' },
+          { nombre: 'Borde', valor: '#e2e8f0' }
+        ];
+
+    const htmlColores = colores.map(c => `
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid ${esDark ? 'rgba(255,255,255,0.10)' : '#e2e8f0'};">
+        <span style="font-size:13px; font-weight:600; color:${esDark ? 'rgba(255,255,255,0.75)' : '#475569'};">${c.nombre}</span>
+        <span style="font-size:12px; font-family:monospace; background:${esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9'}; color:${esDark ? '#99CAFF' : '#004EE0'}; padding:3px 8px; border-radius:6px;">${c.valor}</span>
+      </div>`).join('');
+
+    Swal.fire({
+      title: esDark ? '🎨 Paleta Modo Oscuro' : '🎨 Paleta Modo Claro',
+      html: `<div style="text-align:left;">${htmlColores}</div>`,
+      confirmButtonText: 'Cerrar',
+      confirmButtonColor: '#004EE0',
+      background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+      color: esDark ? '#e2e8f0' : '#1e293b',
+      width: 400
     });
   }
 
@@ -494,7 +569,7 @@
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
         <div class="saludo-bloque">
-          <div class="saludo-icon"><i class="far fa-user"></i></div>
+          <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
           <div class="saludo-texts">
             <span class="welcome-text">Bienvenido</span>
             <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
@@ -1501,7 +1576,7 @@
     const colorIndicador = esDark ? '#99CAFF' : '#004EE0';
     searchContainer.innerHTML = `
       <div class="saludo-bloque">
-        <div class="saludo-icon"><i class="far fa-user"></i></div>
+        <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
         <div class="saludo-texts">
           <span class="welcome-text">Bienvenido</span>
           <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
@@ -1557,7 +1632,7 @@ function mostrarVistaPanelCasos(){
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
       <div class="saludo-bloque">
-        <div class="saludo-icon"><i class="far fa-user"></i></div>
+        <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
         <div class="saludo-texts">
           <span class="welcome-text">Bienvenido</span>
           <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>

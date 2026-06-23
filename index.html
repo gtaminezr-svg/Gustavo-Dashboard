@@ -43,7 +43,6 @@
           <span class="theme-ico theme-sun"><i class="fas fa-sun"></i></span>
           <span class="theme-ico theme-moon"><i class="fas fa-moon"></i></span>
         </div>
-        <div class="menu-item logout" id="menu-CerrarSesion" onclick="cerrarSesion()" title="Cerrar Sesión"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></div>
 
         <!-- Barra de progreso de casos cerrados -->
         <div id="progresoCasosWrap" style="padding:14px 16px 10px; white-space:nowrap; overflow:hidden;">
@@ -437,7 +436,7 @@
       <!-- Encabezado del Calendario -->
       <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center; margin:0 0 24px 0; flex-shrink:0; border-radius:8px; height:80px; padding:0 24px; box-sizing:border-box; position:relative;">
         <div class="saludo-bloque">
-          <div class="saludo-icon"><i class="far fa-user"></i></div>
+          <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
           <div class="saludo-texts">
             <span class="welcome-text">Bienvenido</span>
             <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
@@ -547,7 +546,7 @@
   <!-- Fila 1: Título + Barra de acciones -->
   <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0; margin:0 0 24px 0; border-radius:8px; height:80px; padding:0 24px; box-sizing:border-box;">
   <div class="saludo-bloque">
-    <div class="saludo-icon"><i class="far fa-user"></i></div>
+    <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
     <div class="saludo-texts">
       <span class="welcome-text">Bienvenido</span>
       <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
@@ -823,6 +822,16 @@
           </div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Menú desplegable del usuario (global, posicionado por JS) -->
+  <div id="menuUsuario" class="user-dropdown" data-abierto="false">
+    <div class="user-dropdown-item" onclick="abrirPaletaColores()">
+      <i class="fas fa-palette"></i> Paleta de Colores
+    </div>
+    <div class="user-dropdown-item" onclick="cerrarSesion()">
+      <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
     </div>
   </div>
 
