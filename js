@@ -4727,53 +4727,53 @@ function mostrarFichaMedico(idx) {
   const numRegClr  = esDark ? '#a5b4fc'                : '#2b1070';
 
   bloque7.innerHTML = `
-    <div style="padding:24px; display:flex; flex-direction:column; gap:18px; box-sizing:border-box; overflow-y:auto; flex:1; min-height:0;">
+    <div style="padding:14px 16px; display:flex; flex-direction:column; gap:10px; box-sizing:border-box;">
 
-      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
-        <div style="width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
-        <div style="font-size:20px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre}</div>
-        <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;">
+        <div style="width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
+        <div style="font-size:16px; font-weight:900; color:${textoVal}; line-height:1.15;">${m.nombre}</div>
+        <span style="background:${espBg}; color:${espColor}; font-size:10px; font-weight:700; padding:3px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
       </div>
 
       <div style="border-top:1px solid ${divisor};"></div>
 
-      <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; flex-direction:column; gap:7px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:${textoLabel};">CMP</span>
-          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
+          <span style="font-size:11px; font-weight:600; color:${textoLabel};">CMP</span>
+          <span style="font-size:12px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
-          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
+          <span style="font-size:11px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
+          <span style="font-size:12px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
-          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
+          <span style="font-size:11px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
+          <span style="font-size:12px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
-          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
+          <span style="font-size:11px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
+          <span style="font-size:12px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:${textoLabel};">Edad</span>
-          <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
+          <span style="font-size:11px; font-weight:600; color:${textoLabel};">Edad</span>
+          <span style="font-size:12px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
         </div>
       </div>
 
       <div style="border-top:1px solid ${divisor};"></div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div style="background:${miniCardBg}; border-radius:12px; padding:16px; text-align:center;">
-          <div style="font-size:30px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
-          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px; line-height:1.4;">Pacientes<br>Registrados</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div style="background:${miniCardBg}; border-radius:10px; padding:8px; text-align:center;">
+          <div style="font-size:22px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
+          <div style="font-size:10px; font-weight:600; color:${textoLabel}; margin-top:3px; line-height:1.3;">Pacientes Registrados</div>
         </div>
-        <div style="background:${miniCardBg}; border-radius:12px; padding:16px; text-align:center;">
-          <div style="font-size:30px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
-          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px; line-height:1.4;">Pacientes<br>Leídos</div>
+        <div style="background:${miniCardBg}; border-radius:10px; padding:8px; text-align:center;">
+          <div style="font-size:22px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
+          <div style="font-size:10px; font-weight:600; color:${textoLabel}; margin-top:3px; line-height:1.3;">Pacientes Leídos</div>
         </div>
       </div>
 
-      <button onclick="verFichaMedico(${idx})" style="background:#2b1070; color:white; border:none; border-radius:12px; padding:13px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='#3b238f';" onmouseout="this.style.background='#2b1070';">
+      <button onclick="verFichaMedico(${idx})" style="background:#2b1070; color:white; border:none; border-radius:10px; padding:10px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='#3b238f';" onmouseout="this.style.background='#2b1070';">
         <i class="fas fa-id-card"></i> Ver Ficha
       </button>
 
@@ -5274,16 +5274,26 @@ function eliminarMedicoModal(idx) {
 }
 
 function abrirModalEjecutivos() {
+  const esDark = document.body.classList.contains('dark');
+  const swalBg      = esDark ? '#0f1e3d'                  : '#ffffff';
+  const titleColor  = esDark ? '#a5b4fc'                  : '#2b1070';
+  const emptyColor  = esDark ? 'rgba(255,255,255,0.35)'   : '#94a3b8';
+  const addBtnBg    = esDark ? 'rgba(255,255,255,0.05)'   : '#f5f3ff';
+  const addBtnBgHov = esDark ? 'rgba(255,255,255,0.10)'   : '#ede9fe';
+  const addBtnBrd   = esDark ? 'rgba(255,255,255,0.18)'   : '#c7d2fe';
+  const addBtnClr   = esDark ? 'rgba(255,255,255,0.85)'   : '#2b1070';
+
   Swal.fire({
-    title: '<span style="font-size:18px; font-weight:800; color:#2b1070;">Ejecutivos Registrados</span>',
+    title: `<span style="font-size:18px; font-weight:800; color:${titleColor};">Ejecutivos Registrados</span>`,
+    background: swalBg,
+    color: esDark ? 'rgba(255,255,255,0.85)' : '#1e293b',
     width: 440,
     html: ''
-      + '<div id="swalEjecLista" style="text-align:center; color:#94a3b8; font-size:13px; padding:24px;">Cargando...</div>'
-      + '<button onclick="abrirModalNuevoEjecutivo()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:11px; border:2px dashed #c7d2fe; background:#f5f3ff; color:#2b1070; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#ede9fe\';" onmouseout="this.style.background=\'#f5f3ff\';"><i class="fas fa-plus"></i> Add Ejecutivo</button>',
+      + `<div id="swalEjecLista" style="text-align:center; color:${emptyColor}; font-size:13px; padding:24px;">Cargando...</div>`
+      + `<button onclick="abrirModalNuevoEjecutivo()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:11px; border:2px dashed ${addBtnBrd}; background:${addBtnBg}; color:${addBtnClr}; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='${addBtnBgHov}';" onmouseout="this.style.background='${addBtnBg}';"><i class="fas fa-plus"></i> Add Ejecutivo</button>`,
     showConfirmButton: false,
     showCloseButton: true,
     didOpen: () => {
-      // Render instantáneo desde la caché cargada al iniciar
       renderModalEjecutivos({ ejecutivosConPin: ejecutivosDatosPin || [] });
     }
   });
@@ -5382,20 +5392,25 @@ function renderModalEjecutivos(listas) {
     return;
   }
 
+  const esDark = document.body.classList.contains('dark');
+  const rowBrd  = esDark ? 'rgba(255,255,255,0.09)' : '#eef2f7';
+  const avBg    = esDark ? 'rgba(99,102,241,0.22)'  : '#ede9fe';
+  const avClr   = esDark ? '#a5b4fc'                : '#2b1070';
+  const nameClr = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const dotClr  = esDark ? 'rgba(255,255,255,0.30)' : '#475569';
+
   const filas = ejecutivos.map(function(e, i) {
     const inicial = (e.nombre || '?').charAt(0).toUpperCase();
     return ''
-      + '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; border:1px solid #eef2f7; border-radius:12px; margin-bottom:8px;">'
+      + `<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; border:1px solid ${rowBrd}; border-radius:12px; margin-bottom:8px;">`
       +   '<div style="display:flex; align-items:center; gap:10px; min-width:0;">'
-      +     '<div style="width:34px; height:34px; border-radius:50%; background:#ede9fe; color:#2b1070; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' + inicial + '</div>'
-      +     '<span style="font-size:14px; font-weight:600; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (e.nombre || '') + '</span>'
+      +     `<div style="width:34px; height:34px; border-radius:50%; background:${avBg}; color:${avClr}; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${inicial}</div>`
+      +     `<span style="font-size:14px; font-weight:600; color:${nameClr}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.nombre || ''}</span>`
       +   '</div>'
       +   '<div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">'
-      +     '<span style="font-family:monospace; font-size:14px; font-weight:700; color:#475569; letter-spacing:2px; text-align:right;">'
-      +       '••••••'
-      +     '</span>'
-      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#004EE0; font-size:13px; width:18px; text-align:center;"></i>'
-      +     '<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>'
+      +     `<span style="font-family:monospace; font-size:14px; font-weight:700; color:${dotClr}; letter-spacing:2px; text-align:right;">••••••</span>`
+      +     `<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(${i})" style="cursor:pointer; color:#004EE0; font-size:13px; width:18px; text-align:center;"></i>`
+      +     `<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(${i})" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>`
       +   '</div>'
       + '</div>';
   }).join('');
