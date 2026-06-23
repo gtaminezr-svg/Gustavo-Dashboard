@@ -570,31 +570,31 @@
       <!-- Fila 1: 3 tarjetas pequeñas -->
       <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;">
         <!-- BLOQUE 1 -->
-      <div class="rp-card" style="background:white; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:16px 18px; position:relative;">
-        <span style="font-size:10px; font-weight:700; color:#c7d0e0; letter-spacing:1px;">BLOQUE 1</span>
-        <div style="display:flex; flex-direction:column; gap:2px;">
-          <span id="conteoMedicosGenerales" style="font-size:36px; font-weight:800; color:#2b1070; line-height:1;">—</span>
-          <span style="font-size:11px; font-weight:600; color:#94a3b8;">Médicos Generales</span>
-        </div>
-      </div>
-        
-        <!-- BLOQUE 2 -->
-        <div class="rp-card" style="background:white; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:16px 18px; position:relative;">
-          <span style="font-size:10px; font-weight:700; color:#c7d0e0; letter-spacing:1px;">BLOQUE 2</span>
-          <div style="display:flex; flex-direction:column; gap:2px;">
-            <span id="conteoMedicosPediatras" style="font-size:36px; font-weight:800; color:#2b1070; line-height:1;">—</span>
-            <span style="font-size:11px; font-weight:600; color:#94a3b8;">Médicos Pediatras</span>
+        <div class="counter-card border-left-resultados">
+          <div class="card-top-row">
+            <div class="card-dot"></div>
+            <span class="counter-label">Médicos Generales</span>
           </div>
+          <div class="counter-number" id="conteoMedicosGenerales">—</div>
+        </div>
+
+        <!-- BLOQUE 2 -->
+        <div class="counter-card border-left-mes">
+          <div class="card-top-row">
+            <div class="card-dot"></div>
+            <span class="counter-label">Médicos Pediatras</span>
+          </div>
+          <div class="counter-number" id="conteoMedicosPediatras">—</div>
         </div>
 
         <!-- BLOQUE 3 -->
-      <div class="rp-card" style="background:white; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.05); display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; padding:16px 18px; position:relative;">
-        <span style="font-size:10px; font-weight:700; color:#c7d0e0; letter-spacing:1px;">BLOQUE 3</span>
-        <div style="display:flex; flex-direction:column; gap:2px;">
-          <span id="conteoEjecutivos" style="font-size:36px; font-weight:800; color:#2b1070; line-height:1;">—</span>
-          <span style="font-size:11px; font-weight:600; color:#94a3b8;">Ejecutivos</span>
+        <div class="counter-card border-left-total">
+          <div class="card-top-row">
+            <div class="card-dot"></div>
+            <span class="counter-label">Ejecutivos</span>
+          </div>
+          <div class="counter-number" id="conteoEjecutivos">—</div>
         </div>
-      </div>
     </div> 
 
       <!-- Fila 2: tarjeta ancha (crece para llenar) -->

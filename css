@@ -2627,10 +2627,26 @@ body.dark #proximosBadge {
 }
 
 /* ================================================================
+   REGISTRO DE PERSONAL — LISTA DE MÉDICOS rows
+   ================================================================ */
+
+/* Default row background (CSS controls it; no inline bg needed) */
+#listaMedicosPersonal > div { background: white; }
+body.dark #listaMedicosPersonal > div { background: transparent; }
+
+/* Hover via CSS so it can't be broken by stale inline handlers */
+#listaMedicosPersonal > div:not(.fila-activa):hover {
+  background: #f4f6f9 !important;
+}
+body.dark #listaMedicosPersonal > div:not(.fila-activa):hover {
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* ================================================================
    DARK MODE — REGISTRO DE PERSONAL
    ================================================================ */
 
-/* Tarjetas stat (bloques 1-3, 5) y paneles (bloques 4, 6, 7) */
+/* Bloque 5 (rp-card) y paneles (bloques 4, 6, 7) */
 body.dark .rp-card,
 body.dark .rp-panel,
 body.dark #bloque7 {
@@ -2639,15 +2655,12 @@ body.dark #bloque7 {
   box-shadow: 0 8px 32px rgba(0,0,0,0.50) !important;
 }
 
-/* Cabeceras internas */
+/* Cabeceras internas — texto siempre blanco */
 body.dark .rp-panel-header {
   border-bottom: 1px solid rgba(255,255,255,0.07) !important;
 }
-body.dark .rp-panel-header span[style*="color:#1e293b"] {
+body.dark .rp-panel-header span {
   color: rgba(255,255,255,0.85) !important;
-}
-body.dark .rp-panel-header span[style*="color:#94a3b8"] {
-  color: rgba(255,255,255,0.40) !important;
 }
 
 /* Fila cabecera de columnas (bloque 4) */
@@ -2657,22 +2670,8 @@ body.dark .rp-col-header {
   color: rgba(255,255,255,0.40) !important;
 }
 
-/* Números grandes en stat cards */
-body.dark .rp-card [style*="color:#2b1070"] {
-  color: rgba(255,255,255,0.90) !important;
-}
-/* Sub-etiquetas grises en stat cards */
-body.dark .rp-card [style*="color:#94a3b8"] {
-  color: rgba(255,255,255,0.40) !important;
-}
-/* Etiqueta "BLOQUE X" */
-body.dark .rp-card [style*="color:#c7d0e0"] {
-  color: rgba(255,255,255,0.18) !important;
-}
-/* "En Construcción" */
-body.dark .rp-card [style*="color:#94a3b8"] {
-  color: rgba(255,255,255,0.40) !important;
-}
+/* Bloque 5 text */
+body.dark .rp-card span { color: rgba(255,255,255,0.65) !important; }
 
 /* Estado vacío bloque7 (ícono + texto) */
 body.dark #bloque7 i[style*="color:#e2e8f0"] {

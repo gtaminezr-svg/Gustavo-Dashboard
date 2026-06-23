@@ -4666,8 +4666,6 @@ function renderizarListaMedicosPersonal(filtro) {
   const term = (filtro || '').toLowerCase().trim();
 
   const filaBorde   = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
-  const filaBg      = esDark ? 'transparent'            : 'white';
-  const filaHover   = esDark ? 'rgba(255,255,255,0.07)' : '#f8fafc';
   const textoNombre = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
   const textoEsp    = esDark ? 'rgba(255,255,255,0.55)' : '#475569';
   const textoFecha  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
@@ -4678,9 +4676,7 @@ function renderizarListaMedicosPersonal(filtro) {
     .filter(o => !term || (o.m.nombre || '').toLowerCase().includes(term))
     .map(o => `
     <div data-idx="${o.i}" onclick="mostrarFichaMedico(${o.i})"
-      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid ${filaBorde}; background:${filaBg}; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;"
-      onmouseover="if(!this.classList.contains('fila-activa')) this.style.background='${filaHover}'"
-      onmouseout="if(!this.classList.contains('fila-activa')) this.style.background='${filaBg}'">
+      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid ${filaBorde}; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;">
       <div style="font-weight:600; color:${textoNombre}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.nombre || '—'}</div>
       <div style="color:${textoEsp}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.especialidad || '—'}</div>
       <div style="color:${textoFecha};">${o.m.fechaRegistro || '—'}</div>
@@ -4702,7 +4698,7 @@ function mostrarFichaMedico(idx) {
   const esDark = document.body.classList.contains('dark');
   document.querySelectorAll('#listaMedicosPersonal > div').forEach(el => {
     el.classList.remove('fila-activa');
-    el.style.background = esDark ? 'transparent' : 'white';
+    el.style.background = '';
     el.style.borderLeft = '3px solid transparent';
   });
   const fila = document.querySelector(`#listaMedicosPersonal > div[data-idx="${idx}"]`);
