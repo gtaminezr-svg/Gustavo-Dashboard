@@ -485,7 +485,7 @@ body.dark .btn-capsula:hover {
   line-height: 1;
   color: rgba(180, 186, 194, 0.80);
   position: absolute;
-  bottom: -8px;
+  bottom: -20px;
   right: 4px;
   z-index: 0;
   pointer-events: none;
@@ -1716,7 +1716,7 @@ body.dark .stats-card-demo > div:first-child {
 body.dark .stats-card-demo > div:last-child {
   color: rgba(255,255,255,0.12) !important;
   position: absolute;
-  bottom: -8px;
+  bottom: -20px;
   right: 4px;
   font-size: 145px !important;
   font-weight: 900 !important;
@@ -2259,7 +2259,7 @@ body:not(.dark) .stats-card-demo > div:first-child {
 /* Número: marca de agua abajo-derecha con el color propio de cada stat */
 body:not(.dark) .stats-card-demo > div:last-child {
   position: absolute;
-  bottom: -8px;
+  bottom: -20px;
   right: 4px;
   font-size: 145px !important;
   font-weight: 900 !important;
@@ -2406,7 +2406,7 @@ body.dark .panel-casos-block button[style*="background:#ffffff"] {
 /* Tarjetas stat superiores — número como marca de agua abajo-derecha (ambos modos) */
 #totalPacientesMesPanel {
   position: absolute !important;
-  bottom: -8px !important;
+  bottom: -20px !important;
   right: 4px !important;
   font-size: 145px !important;
   font-weight: 900 !important;
