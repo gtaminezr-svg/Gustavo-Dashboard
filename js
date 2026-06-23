@@ -59,6 +59,7 @@
 
   window.onload = function() {
     if (sessionStorage.getItem('sislab_auth') === '1') {
+      window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appContainer').style.display = 'flex';
       _iniciarApp();
@@ -101,8 +102,9 @@
         clearTimeout(_loginTimer);
         try {
           if (result && result.ok) {
+            window.__nombreUsuario = result.nombre || usuario;
             sessionStorage.setItem('sislab_auth', '1');
-            sessionStorage.setItem('sislab_usuario', (result.nombre || usuario));
+            sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
             const screen = document.getElementById('loginScreen');
             screen.style.opacity = '0';
             setTimeout(function() {
@@ -129,8 +131,9 @@
       .validarCredenciales(usuario, pin);
   }
 
-  // Saludo personalizado: obtiene el nombre del usuario (admin) desde el backend
+  // Saludo personalizado: si ya hay nombre del login lo usa directo, si no lo pide al backend
   function cargarNombreUsuario() {
+    if (window.__nombreUsuario) { aplicarSaludo(); return; }
     try {
       google.script.run
         .withSuccessHandler(function(u){
