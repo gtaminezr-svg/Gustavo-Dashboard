@@ -4727,7 +4727,7 @@ function mostrarFichaMedico(idx) {
   const numRegClr  = esDark ? '#a5b4fc'                : '#2b1070';
 
   bloque7.innerHTML = `
-    <div style="padding:24px; display:flex; flex-direction:column; gap:18px; box-sizing:border-box;">
+    <div style="padding:24px; display:flex; flex-direction:column; gap:18px; box-sizing:border-box; overflow-y:auto; flex:1; min-height:0;">
 
       <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
         <div style="width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
@@ -5055,6 +5055,7 @@ function verFichaMedico(idx) {
   const m = medicosEspecialidades[idx];
   if (!m) return;
 
+  const esDark = document.body.classList.contains('dark');
   const reg = bdPacientes.filter(p => p.medico === m.nombre).length;
   const leidos = bdPacientes.filter(p => p.medicoLector === m.nombre).length;
   const iniciales = (m.nombre || '?').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
@@ -5064,8 +5065,18 @@ function verFichaMedico(idx) {
   if (esp.includes('pediatr')) { espColor = '#0369a1'; espBg = '#e0f2fe'; }
   else if (esp.includes('general')) { espColor = '#166534'; espBg = '#dcfce7'; }
 
+  const swalBg      = esDark ? '#0f1e3d'                  : '#ffffff';
+  const textoVal    = esDark ? 'rgba(255,255,255,0.92)'   : '#1e293b';
+  const textoLabel  = esDark ? 'rgba(255,255,255,0.45)'   : '#94a3b8';
+  const divisor     = esDark ? 'rgba(255,255,255,0.07)'   : '#f1f5f9';
+  const miniCardBg  = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#f8fafc';
+  const miniCardBrd = esDark ? '1px solid rgba(255,255,255,0.08)'        : '1px solid transparent';
+  const numRegClr   = esDark ? '#a5b4fc'                  : '#2b1070';
+
   Swal.fire({
     width: 430,
+    background: swalBg,
+    color: textoVal,
     showCloseButton: true,
     showConfirmButton: true,
     showDenyButton: true,
@@ -5077,41 +5088,41 @@ function verFichaMedico(idx) {
       <div style="display:flex; flex-direction:column; gap:16px; text-align:left;">
         <div style="display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center;">
           <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white;">${iniciales}</div>
-          <div style="font-size:19px; font-weight:900; color:#1e293b; line-height:1.2;">${m.nombre || '—'}</div>
+          <div style="font-size:19px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre || '—'}</div>
           <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
         </div>
-        <div style="border-top:1px solid #f1f5f9;"></div>
+        <div style="border-top:1px solid ${divisor};"></div>
         <div style="display:flex; flex-direction:column; gap:11px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">CMP</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.cmp || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">CMP</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">RNE / RNA</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.rne || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Fecha de Registro</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.fechaRegistro || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Nacionalidad</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.nacionalidad || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Edad</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.edad || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Edad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
           </div>
         </div>
-        <div style="border-top:1px solid #f1f5f9;"></div>
+        <div style="border-top:1px solid ${divisor};"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div style="background:#f8fafc; border-radius:12px; padding:14px; text-align:center;">
-            <div style="font-size:28px; font-weight:900; color:#2b1070; line-height:1;">${reg}</div>
-            <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px;">Pacientes Registrados</div>
+          <div style="background:${miniCardBg}; border:${miniCardBrd}; border-radius:12px; padding:14px; text-align:center;">
+            <div style="font-size:28px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
+            <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px;">Pacientes Registrados</div>
           </div>
-          <div style="background:#f8fafc; border-radius:12px; padding:14px; text-align:center;">
+          <div style="background:${miniCardBg}; border:${miniCardBrd}; border-radius:12px; padding:14px; text-align:center;">
             <div style="font-size:28px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
-            <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px;">Pacientes Leídos</div>
+            <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px;">Pacientes Leídos</div>
           </div>
         </div>
       </div>
