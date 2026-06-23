@@ -82,32 +82,49 @@
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Verificando...';
 
+    function _resetLoginBtn(msg) {
+      btn.disabled = false;
+      btn.innerHTML = 'Iniciar Sesión';
+      if (msg && errEl) {
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      }
+    }
+
+    // Timeout de seguridad: si en 15s no responde, resetear
+    const _loginTimer = setTimeout(function() {
+      _resetLoginBtn('El servidor tardó demasiado. Inténtalo de nuevo.');
+    }, 15000);
+
     google.script.run
       .withSuccessHandler(function(result) {
-        if (result.ok) {
-          sessionStorage.setItem('sislab_auth', '1');
-          sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
-          const screen = document.getElementById('loginScreen');
-          screen.style.opacity = '0';
-          setTimeout(function() {
-            screen.style.display = 'none';
-            document.getElementById('appContainer').style.display = 'flex';
-            _iniciarApp();
-          }, 420);
-        } else {
-          btn.disabled = false;
-          btn.innerHTML = 'Iniciar Sesión';
-          errEl.textContent = 'Usuario o PIN incorrecto. Inténtalo de nuevo.';
-          errEl.style.display = 'block';
-          document.getElementById('loginPin').value = '';
-          document.getElementById('loginPin').focus();
+        clearTimeout(_loginTimer);
+        try {
+          if (result && result.ok) {
+            sessionStorage.setItem('sislab_auth', '1');
+            sessionStorage.setItem('sislab_usuario', (result.nombre || usuario));
+            const screen = document.getElementById('loginScreen');
+            screen.style.opacity = '0';
+            setTimeout(function() {
+              screen.style.display = 'none';
+              document.getElementById('appContainer').style.display = 'flex';
+              _iniciarApp();
+            }, 420);
+          } else {
+            _resetLoginBtn('Usuario o PIN incorrecto. Inténtalo de nuevo.');
+            document.getElementById('loginPin').value = '';
+            document.getElementById('loginPin').focus();
+          }
+        } catch(e) {
+          _resetLoginBtn('Ocurrió un error inesperado. Inténtalo de nuevo.');
         }
       })
-      .withFailureHandler(function() {
-        btn.disabled = false;
-        btn.innerHTML = 'Iniciar Sesión';
-        errEl.textContent = 'Error de conexión. Inténtalo de nuevo.';
-        errEl.style.display = 'block';
+      .withFailureHandler(function(err) {
+        clearTimeout(_loginTimer);
+        const msg = (err && err.message && err.message.includes('not found'))
+          ? 'Función no disponible. Verifica el despliegue del script.'
+          : 'Error de conexión con el servidor. Inténtalo de nuevo.';
+        _resetLoginBtn(msg);
       })
       .validarCredenciales(usuario, pin);
   }
@@ -356,16 +373,14 @@
   // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
   // el modo oscuro real se aplicará cuando definamos la paleta de colores)
   function toggleModoOscuro() {
-    const goingDark = !document.body.classList.contains('dark');
-    const overlay = document.getElementById('themeOverlay');
+    const app = document.getElementById('appContainer');
+    if (!app) return;
 
-    // Fase 1: fade-in del overlay con el color del tema destino
-    if (overlay) {
-      overlay.style.background = goingDark ? '#021B4D' : '#f0f8ff';
-      overlay.style.opacity = '1';
-    }
+    // Fase 1: desvanecer el contenido
+    app.style.transition = 'opacity 0.30s ease';
+    app.style.opacity = '0';
 
-    // Fase 2: mientras el overlay tapa todo, hacemos el cambio (220ms)
+    // Fase 2: con el contenido invisible, hacer el swap de tema y re-renders
     setTimeout(function() {
       const t = document.querySelector('.theme-toggle');
       if (t) t.classList.toggle('dark');
@@ -385,9 +400,9 @@
       if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
       if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
 
-      // Fase 3: fade-out del overlay revelando el nuevo tema
-      if (overlay) overlay.style.opacity = '0';
-    }, 220);
+      // Fase 3: revelar el nuevo tema con fade-in
+      app.style.opacity = '1';
+    }, 320);
   }
 
   // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
