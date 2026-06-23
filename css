@@ -196,6 +196,8 @@ nav {
   color:#94a3b8;
   z-index:1;
   transition:color .25s ease;
+  height:100%;
+  line-height:1;
 }
 .theme-toggle .theme-sun{ color:#f59e0b; }
 .theme-toggle-thumb{
