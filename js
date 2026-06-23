@@ -55,6 +55,15 @@
     generarBarraMesesDinamica();
     cargarNombreUsuario();
     setInterval(_autoRefreshSilente, 5 * 60 * 1000);
+    // Pre-cargar eventos del calendario para que el conteo de agendados sea correcto desde el inicio
+    google.script.run
+      .withSuccessHandler(function(lista) {
+        _snapshot.programados = lista.length;
+        pacientesProgramados = lista;
+        actualizarNotificacionCampana(_notifData.vencidos, _notifData.porVencer);
+      })
+      .withFailureHandler(function(){})
+      .obtenerPacientesProgramados();
     setTimeout(_abrirPanelNotificaciones, 600);
   }
 
@@ -581,6 +590,9 @@
     } else {
       dot.style.display = 'none';
     }
+    // Si el panel está abierto, re-renderizarlo con los datos actualizados
+    const _panel = document.getElementById('panelNotificaciones');
+    if (_panel && _panel.dataset.abierto === 'true') renderPanelNotificaciones();
   }
 
   // Barra de progreso del sidebar: % de casos cerrados (Completados, sea lectura realizada o desestimados)
