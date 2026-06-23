@@ -55,6 +55,22 @@
     generarBarraMesesDinamica();
     cargarNombreUsuario();
     setInterval(_autoRefreshSilente, 5 * 60 * 1000);
+    setTimeout(_abrirPanelNotificaciones, 600);
+  }
+
+  function _abrirPanelNotificaciones() {
+    const panel = document.getElementById('panelNotificaciones');
+    const btn   = document.getElementById('btnCampana');
+    if (!panel || !btn) return;
+    const rect = btn.getBoundingClientRect();
+    panel.style.top   = (rect.bottom + 8) + 'px';
+    panel.style.right = (window.innerWidth - rect.right) + 'px';
+    panel.style.left  = 'auto';
+    renderPanelNotificaciones();
+    panel.style.maxHeight = '360px';
+    panel.style.opacity   = '1';
+    panel.dataset.abierto = 'true';
+    setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
   }
 
   window.onload = function() {
