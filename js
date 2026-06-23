@@ -618,16 +618,17 @@
   function cargarListasDesplegables() {
     google.script.run
       .withSuccessHandler(function(listas) {
-        ejecutivosDatosPin = listas.ejecutivosConPin || []; // Guardamos los PINs en secreto
-        
+        ejecutivosDatosPin = listas.ejecutivosConPin || []; // Lista COMPLETA (incluye supervisores) para validar PINs
+
         rellenarSelect('ejecutivo', listas.ejecutivos);
         rellenarSelect('seguro', listas.seguros);
-        
+
         // MÉDICO SOLICITANTE
         const selectMedico = document.getElementById('medico');
         selectMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
         medicosEspecialidades = listas.medicos;
-        ejecutivosData = listas.ejecutivosConPin;
+        // Datos para gráficos/conteos/tabla de personal: SIN supervisores
+        ejecutivosData = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor');
         _snapshot.medicos = (listas.medicos || []).length;
         _snapshot.ejecutivos = (listas.ejecutivosConPin || []).length;
         listas.medicos.forEach(m => {
@@ -662,8 +663,8 @@
       .withSuccessHandler(function(listas) {
         const _prevMed  = _snapshot.medicos;
         const _prevEjec = _snapshot.ejecutivos;
-        ejecutivosDatosPin    = listas.ejecutivosConPin || [];
-        ejecutivosData        = listas.ejecutivosConPin || [];
+        ejecutivosDatosPin    = listas.ejecutivosConPin || []; // Completa (con supervisores) para PINs
+        ejecutivosData        = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor'); // Sin supervisores
         medicosEspecialidades = listas.medicos || [];
         if (_prevMed >= 0 && medicosEspecialidades.length > _prevMed) {
           const n = medicosEspecialidades.length - _prevMed;
@@ -5679,7 +5680,8 @@ function abrirModalEjecutivos() {
     showConfirmButton: false,
     showCloseButton: true,
     didOpen: () => {
-      renderModalEjecutivos({ ejecutivosConPin: ejecutivosDatosPin || [] });
+      // La tabla de personal muestra solo ejecutivos (sin supervisores)
+      renderModalEjecutivos({ ejecutivosConPin: ejecutivosData || [] });
     }
   });
 }

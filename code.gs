@@ -76,7 +76,10 @@ function obtenerListasDesplegables() {
 
     if (hojaEjecutivos && hojaEjecutivos.getLastRow() >= 2) {
       let dataEjec = hojaEjecutivos.getRange(2, 1, hojaEjecutivos.getLastRow() - 1, 6).getValues();
-      ejecutivos = dataEjec.map(fila => fila[0].toString().trim()).filter(String);
+      // El desplegable "Ejecutivo que registra" excluye a los Supervisores
+      ejecutivos = dataEjec
+        .filter(fila => fila[0].toString().trim() !== "" && (fila[5] ? fila[5].toString().trim() : "") !== "Supervisor")
+        .map(fila => fila[0].toString().trim());
       ejecutivosConPin = dataEjec.filter(fila => fila[0].toString().trim() !== "").map(fila => {
         let fechaEjec = "—";
         if (fila[3]) {
