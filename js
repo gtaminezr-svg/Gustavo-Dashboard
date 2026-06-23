@@ -4240,8 +4240,17 @@ function renderizarMiniCalLista() {
   const total = registradosMes.length + programadosMes.length;
   if (badge) badge.textContent = total;
 
+  const esDark = document.body.classList.contains('dark');
+
+  const filaBorde   = esDark ? 'rgba(255,255,255,0.07)' : '#f8fafc';
+  const filaBg      = esDark ? 'transparent'            : 'white';
+  const filaHover   = esDark ? 'rgba(255,255,255,0.08)' : '#f8fafc';
+  const textoNombre = esDark ? 'rgba(255,255,255,0.85)' : '#1e293b';
+  const textoFecha  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const sinDatosClr = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+
   if (total === 0) {
-    contenedor.innerHTML = `<div style="text-align:center; padding:30px 16px; color:#94a3b8; font-size:12px; font-weight:600;">Sin casos este mes</div>`;
+    contenedor.innerHTML = `<div style="text-align:center; padding:30px 16px; color:${sinDatosClr}; font-size:12px; font-weight:600;">Sin casos este mes</div>`;
     return;
   }
 
@@ -4260,18 +4269,19 @@ function renderizarMiniCalLista() {
       <div onclick="abrirModalLectura('${p.id || p.dni}')" style="
         display:flex; align-items:center; gap:10px;
         padding:10px 16px;
-        border-bottom:1px solid #f8fafc;
+        border-bottom:1px solid ${filaBorde};
+        background:${filaBg};
         cursor:pointer;
         transition:background 0.15s;
       "
-      onmouseover="this.style.background='#f8fafc'"
-      onmouseout="this.style.background='white'">
+      onmouseover="this.style.background='${filaHover}'"
+      onmouseout="this.style.background='${filaBg}'">
         <div style="width:8px; height:8px; border-radius:50%; background:${color}; flex-shrink:0;"></div>
         <div style="flex:1; min-width:0;">
-          <div style="font-size:12px; font-weight:700; color:#1e293b; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre || '—'}</div>
-          <div style="font-size:10px; color:#94a3b8; font-weight:600;">${p.fechaCreacion ? p.fechaCreacion.split(' ')[0] : '—'}</div>
+          <div style="font-size:12px; font-weight:700; color:${textoNombre}; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre || '—'}</div>
+          <div style="font-size:10px; color:${textoFecha}; font-weight:600;">${p.fechaCreacion ? p.fechaCreacion.split(' ')[0] : '—'}</div>
         </div>
-        <span style="background:${color}20; color:${color}; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">${textoEstado}</span>
+        <span style="background:${color}; color:#ffffff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">${textoEstado}</span>
       </div>
     `;
   });
@@ -4280,20 +4290,26 @@ function renderizarMiniCalLista() {
   programadosMes.forEach(p => {
     const fechaP = new Date(p.fechaProgramada + 'T00:00:00');
     const esFuturo = fechaP > hoy;
+    const progBg = esDark
+      ? (esFuturo ? 'rgba(16,185,129,0.10)' : 'transparent')
+      : (esFuturo ? '#f0fdf4' : 'white');
+    const progNomClr = esDark ? '#6ee7b7' : '#166534';
+    const progBadgeBg = esDark ? 'rgba(16,185,129,0.20)' : '#dcfce7';
+    const progBadgeClr = esDark ? '#6ee7b7' : '#166534';
 
     html += `
       <div style="
         display:flex; align-items:center; gap:10px;
         padding:10px 16px;
-        border-bottom:1px solid #f8fafc;
-        background:${esFuturo ? '#f0fdf4' : 'white'};
+        border-bottom:1px solid ${filaBorde};
+        background:${progBg};
       ">
         <div style="width:8px; height:8px; border-radius:50%; background:#166534; flex-shrink:0;"></div>
         <div style="flex:1; min-width:0;">
-          <div style="font-size:12px; font-weight:700; color:#166534; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre || '—'}</div>
-          <div style="font-size:10px; color:#94a3b8; font-weight:600;">${p.fechaProgramada || '—'} · ${p.medico || '—'}</div>
+          <div style="font-size:12px; font-weight:700; color:${progNomClr}; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre || '—'}</div>
+          <div style="font-size:10px; color:${textoFecha}; font-weight:600;">${p.fechaProgramada || '—'} · ${p.medico || '—'}</div>
         </div>
-        <span style="background:#dcfce7; color:#166534; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">Programado</span>
+        <span style="background:${progBadgeBg}; color:${progBadgeClr}; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">Programado</span>
       </div>
     `;
   });
