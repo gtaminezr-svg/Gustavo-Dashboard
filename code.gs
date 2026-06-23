@@ -844,23 +844,15 @@ function generarTopExamenesExcel(filas) {
       .build();
     sheet.insertChart(chart);
 
-    // Exportar como .xlsx
+    // Exportar como .xlsx usando DriveApp (no requiere UrlFetchApp)
     var fileId = ss.getId();
-    var token = ScriptApp.getOAuthToken();
-    var url = 'https://docs.google.com/spreadsheets/d/' + fileId + '/export?format=xlsx';
-    var resp = UrlFetchApp.fetch(url, {
-      headers: { Authorization: 'Bearer ' + token },
-      muteHttpExceptions: true
-    });
+    var xlsxBlob = DriveApp.getFileById(fileId)
+      .getAs('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
     // Borrar la hoja temporal
     DriveApp.getFileById(fileId).setTrashed(true);
 
-    if (resp.getResponseCode() !== 200) {
-      throw new Error('No se pudo exportar el archivo Excel (código ' + resp.getResponseCode() + ').');
-    }
-
-    return Utilities.base64Encode(resp.getBlob().getBytes());
+    return Utilities.base64Encode(xlsxBlob.getBytes());
   } catch (e) {
     Logger.log('Error generarTopExamenesExcel: ' + e);
     throw new Error(e.message || 'No se pudo generar el archivo Excel.');
