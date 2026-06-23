@@ -867,3 +867,67 @@ function crearTopExamenesExcel(filas, etiquetaMes) {
     return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
   }
 }
+
+////////////// Generar Excel con Pacientes por Seguro y gráfico de columnas //////////////
+function crearSeguroExcel(filas, etiquetaMes) {
+  try {
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Pacientes por Seguro - ' + label);
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Por Seguro');
+
+    // Encabezados
+    var header = sheet.getRange(1, 1, 1, 3);
+    header.setValues([['Posición', 'Seguro', 'Pacientes']]);
+    header.setFontWeight('bold');
+    header.setBackground('#004EE0');
+    header.setFontColor('#FFFFFF');
+    header.setHorizontalAlignment('center');
+
+    // Datos con filas alternadas
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, 3).setValues(filas);
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, 3).setBackground('#EEF4FF');
+        }
+      }
+    }
+
+    // Anchos de columna
+    sheet.setColumnWidth(1, 80);
+    sheet.setColumnWidth(2, 280);
+    sheet.setColumnWidth(3, 100);
+    sheet.setFrozenRows(1);
+
+    // Paleta multicolor
+    var colores = [
+      '#004EE0','#E03A00','#00A86B','#9B00E0','#E0A800',
+      '#00C4E0','#E05C00','#0094E0','#C4E000','#E000A8'
+    ];
+
+    // Gráfico de columnas (Seguro vs Pacientes)
+    var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
+    var chart = sheet.newChart()
+      .setChartType(Charts.ChartType.COLUMN)
+      .addRange(dataRange)
+      .setPosition(2, 5, 0, 0)
+      .setOption('title', 'Pacientes por Seguro — ' + label)
+      .setOption('titleTextStyle', { fontSize: 16, bold: true, color: '#1e293b' })
+      .setOption('isStacked', false)
+      .setOption('legend', { position: 'labeled', textStyle: { fontSize: 11 } })
+      .setOption('hAxis', { title: 'Seguro', slantedText: true, slantedTextAngle: 45, textStyle: { fontSize: 11 } })
+      .setOption('vAxis', { title: 'Cantidad de pacientes', minValue: 0, textStyle: { fontSize: 11 } })
+      .setOption('colors', colores)
+      .setOption('width', 820)
+      .setOption('height', 520)
+      .build();
+    sheet.insertChart(chart);
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
+  } catch (e) {
+    Logger.log('Error crearSeguroExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
+  }
+}
