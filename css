@@ -3361,26 +3361,7 @@ body.dark .user-dropdown-item:hover {
   color: white;
 }
 #mobFAB {
-  position: fixed;
-  bottom: 84px;
-  right: 20px;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2b1070, #4f46e5);
-  border: none;
-  color: white;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 6px 22px rgba(43,16,112,.50);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform .18s ease, opacity .18s ease;
-  z-index: 600;
-}
-#mobFAB:active {
-  transform: scale(0.93);
+  display: none;
 }
 #mobFAB.mob-fab-hidden {
   opacity: 0;
@@ -3393,6 +3374,29 @@ body.dark .user-dropdown-item:hover {
 #mobChips::-webkit-scrollbar { display: none; }
 
 @media (max-width: 768px) {
+
+  #mobFAB {
+    position: fixed;
+    bottom: 84px;
+    right: 20px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2b1070, #4f46e5);
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(43,16,112,.50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .18s ease, opacity .18s ease;
+    z-index: 600;
+  }
+  #mobFAB:active {
+    transform: scale(0.93);
+  }
 
   /* Bandeja de pacientes oculta en móvil */
   .table-card {
