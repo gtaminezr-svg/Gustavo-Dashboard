@@ -3427,6 +3427,45 @@ body.dark .user-dropdown-item:hover {
     max-width: 100% !important;
   }
 
+  /* Login: ocultar panel decorativo izquierdo, form a pantalla completa */
+  .login-left {
+    display: none !important;
+  }
+  .login-right {
+    width: 100% !important;
+    padding: 48px 28px !important;
+    background: #0a1628 !important;
+  }
+  .login-right::before,
+  .login-right::after,
+  .login-right .login-deco-mid {
+    display: none !important;
+  }
+  .login-form-wrap {
+    max-width: 100% !important;
+  }
+  .login-title {
+    color: #ffffff !important;
+  }
+  .login-subtitle {
+    color: rgba(255,255,255,0.60) !important;
+  }
+  .login-label {
+    color: rgba(255,255,255,0.80) !important;
+  }
+  .login-input {
+    background: rgba(255,255,255,0.08) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: #ffffff !important;
+  }
+  .login-input::placeholder {
+    color: rgba(255,255,255,0.35) !important;
+  }
+  .login-input:focus {
+    border-color: #4a7fff !important;
+    background: rgba(255,255,255,0.12) !important;
+  }
+
   /* Navegación inferior */
   #mobileBottomNav {
     display: flex;
