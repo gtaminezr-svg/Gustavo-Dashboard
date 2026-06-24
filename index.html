@@ -814,6 +814,10 @@
     </div>
 
     <!-- Mobile: navegación inferior con FAB central -->
+    <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro">
+      <i class="fas fa-plus"></i>
+    </button>
+
     <nav id="mobileBottomNav">
       <button class="mob-nav-btn active" id="mobnav-mob-casos" onclick="irASeccionMobile('casos')">
         <i class="fas fa-clock"></i><span>Casos</span>
@@ -821,11 +825,6 @@
       <button class="mob-nav-btn" id="mobnav-mob-stats" onclick="irASeccionMobile('stats')">
         <i class="fas fa-chart-line"></i><span>Stats</span>
       </button>
-      <div class="mob-nav-fab-wrap">
-        <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro">
-          <i class="fas fa-plus"></i>
-        </button>
-      </div>
       <button class="mob-nav-btn" id="mobnav-mob-agenda" onclick="irASeccionMobile('agenda')">
         <i class="fas fa-users"></i><span>Personal</span>
       </button>
