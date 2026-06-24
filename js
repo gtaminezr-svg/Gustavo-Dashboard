@@ -913,8 +913,8 @@
   function _renderMobSaludo() {
     const container = document.getElementById('mobSaludoBloque');
     if (!container) return;
-    const nombre = sessionStorage.getItem('sislabNombre') || '—';
-    const rol = sessionStorage.getItem('sislabRol') || '—';
+    const nombre = sessionStorage.getItem('sislab_usuario') || '—';
+    const rol = sessionStorage.getItem('sislab_rol') || '—';
     const rolColores = {
       'Supervisor': { bg: '#fef3c7', color: '#92400e' },
       'Ejecutivo':  { bg: '#ede9f8', color: '#2b1070' },
@@ -1124,9 +1124,9 @@
   function _renderMobPerfil() {
     const container = document.getElementById('mobPerfilContenido');
     if (!container) return;
-    const nombre = sessionStorage.getItem('sislabNombre') || '—';
-    const rol = sessionStorage.getItem('sislabRol') || '—';
-    const usuario = sessionStorage.getItem('sislabUsuario') || '—';
+    const nombre = sessionStorage.getItem('sislab_usuario') || '—';
+    const rol = sessionStorage.getItem('sislab_rol') || '—';
+    const usuario = sessionStorage.getItem('sislab_usuario') || '—';
     const total = (bdPacientes || []).length;
     const misRegistros = (bdPacientes || []).filter(function(p) { return p.ejecutivo === nombre || p.ejecutivo === usuario; }).length;
     container.innerHTML =
