@@ -910,6 +910,30 @@
     _renderMobResumen();
   }
 
+  function _renderMobSaludo() {
+    const container = document.getElementById('mobSaludoBloque');
+    if (!container) return;
+    const nombre = sessionStorage.getItem('sislabNombre') || '—';
+    const rol = sessionStorage.getItem('sislabRol') || '—';
+    const rolColores = {
+      'Supervisor': { bg: '#fef3c7', color: '#92400e' },
+      'Ejecutivo':  { bg: '#ede9f8', color: '#2b1070' },
+      'Medico':     { bg: '#ecfdf5', color: '#065f46' }
+    };
+    const rc = rolColores[rol] || { bg: '#f1f5f9', color: '#475569' };
+    container.innerHTML =
+      '<div style="background:linear-gradient(135deg,#2b1070,#4f46e5);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:14px;">' +
+        '<div style="width:46px;height:46px;background:rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          '<i class="far fa-user" style="font-size:20px;color:white;"></i>' +
+        '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:12px;color:rgba(255,255,255,0.65);font-weight:600;margin-bottom:2px;">Bienvenido</div>' +
+          '<div style="font-size:16px;font-weight:800;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nombre + '</div>' +
+        '</div>' +
+        '<span style="background:' + rc.bg + ';color:' + rc.color + ';font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + rol + '</span>' +
+      '</div>';
+  }
+
   function _mobFiltrarEstado(lista, key) {
     if (key === 'Pendiente')    return lista.filter(function(p) { return p.estado === 'Pendiente'; });
     if (key === 'En Proceso')   return lista.filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); });
@@ -919,6 +943,7 @@
   }
 
   function _renderMobResumen() {
+    _renderMobSaludo();
     const container = document.getElementById('mobTarjetasResumen');
     if (!container) return;
     const bd = bdPacientes || [];
