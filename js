@@ -1176,25 +1176,33 @@
     // Pie chart SVG
     let pieHtml = '';
     if (topSeguros.length) {
-      const sz = 160, cx = sz / 2, cy = sz / 2, r = 58;
+      const sz = 180, cx = sz / 2, cy = sz / 2, r = 64;
       let startAngle = -Math.PI / 2;
       const slices = topSeguros.map(function(entry, i) {
         const frac = entry[1] / totalSeg;
         const angle = frac * 2 * Math.PI;
         const x1 = cx + r * Math.cos(startAngle);
         const y1 = cy + r * Math.sin(startAngle);
+        const midAngle = startAngle + angle / 2;
         startAngle += angle;
         const x2 = cx + r * Math.cos(startAngle);
         const y2 = cy + r * Math.sin(startAngle);
         const large = angle > Math.PI ? 1 : 0;
-        return { path: 'M ' + cx + ' ' + cy + ' L ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' Z', color: coloresSeg[i] || '#94a3b8', name: entry[0], cnt: entry[1] };
+        const labelR = r * 0.65;
+        const lx = cx + labelR * Math.cos(midAngle);
+        const ly = cy + labelR * Math.sin(midAngle);
+        const pct = Math.round(frac * 100);
+        return { path: 'M ' + cx + ' ' + cy + ' L ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' Z', color: coloresSeg[i] || '#94a3b8', name: entry[0], cnt: entry[1], pct: pct, lx: lx, ly: ly };
       });
-      const svgPaths = slices.map(function(s) { return '<path d="' + s.path + '" fill="' + s.color + '" stroke="white" stroke-width="2"></path>'; }).join('');
+      const svgPaths = slices.map(function(s) {
+        const label = s.pct >= 7 ? '<text x="' + s.lx.toFixed(1) + '" y="' + (s.ly + 4).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="800" fill="white">' + s.pct + '%</text>' : '';
+        return '<path d="' + s.path + '" fill="' + s.color + '" stroke="white" stroke-width="2"></path>' + label;
+      }).join('');
       const legend = slices.map(function(s) {
         return '<div style="display:flex;align-items:center;gap:8px;">' +
           '<div style="width:10px;height:10px;border-radius:3px;background:' + s.color + ';flex-shrink:0;"></div>' +
           '<span style="font-size:12px;color:#475569;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</span>' +
-          '<span style="font-size:12px;font-weight:700;color:#1e293b;">' + s.cnt + '</span>' +
+          '<span style="font-size:12px;font-weight:700;color:' + s.color + ';">' + s.pct + '%</span>' +
         '</div>';
       }).join('');
       pieHtml =
