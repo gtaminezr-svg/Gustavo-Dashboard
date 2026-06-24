@@ -30,7 +30,7 @@
   };
 
   function _autoRefreshSilente() {
-    cargarDatosDelServidor();
+    cargarDatosDelServidor(true);
     google.script.run
       .withSuccessHandler(function(lista) {
         const _prevProg = _snapshot.programados;
@@ -55,7 +55,7 @@
     cargarListasDesplegables();
     generarBarraMesesDinamica();
     cargarNombreUsuario();
-    setInterval(_autoRefreshSilente, 5 * 60 * 1000);
+    setInterval(_autoRefreshSilente, 20 * 60 * 1000);
     // Pre-cargar eventos del calendario para que el conteo de agendados sea correcto desde el inicio
     google.script.run
       .withSuccessHandler(function(lista) {
@@ -755,8 +755,8 @@
 
   function toggleSidebar() { toggleNamesPanel(); }
 
-  function cargarDatosDelServidor() {
-    mostrarCargandoTabla();
+  function cargarDatosDelServidor(silente) {
+    if (!silente) mostrarCargandoTabla();
     google.script.run
       .withSuccessHandler(function(pacientes) {
         const _prevPac = _snapshot.pacientes;
