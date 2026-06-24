@@ -798,8 +798,12 @@
       </div>
 
       <!-- Vista: Agenda -->
-      <div id="mobVistaAgenda" class="mob-view" style="display:none; flex-direction:column; height:100%; overflow-y:auto; padding:16px;">
-        <div id="mobAgendaContenido"></div>
+      <div id="mobVistaAgenda" class="mob-view" style="display:none; flex-direction:column; height:100%; overflow:hidden;">
+        <div style="display:flex; gap:8px; padding:12px 16px 0; flex-shrink:0;">
+          <button id="mobPersonalTabMedicos" onclick="mobPersonalTab('medicos')" style="flex:1;padding:10px;border-radius:12px;border:none;background:#2b1070;color:white;font-size:13px;font-weight:700;cursor:pointer;">Médicos</button>
+          <button id="mobPersonalTabEjecutivos" onclick="mobPersonalTab('ejecutivos')" style="flex:1;padding:10px;border-radius:12px;border:2px solid #e2e8f0;background:white;color:#475569;font-size:13px;font-weight:700;cursor:pointer;">Ejecutivos</button>
+        </div>
+        <div id="mobPersonalContenido" style="flex:1; overflow-y:auto; padding:12px 16px 16px;"></div>
       </div>
 
       <!-- Vista: Perfil -->
@@ -823,7 +827,7 @@
         </button>
       </div>
       <button class="mob-nav-btn" id="mobnav-mob-agenda" onclick="irASeccionMobile('agenda')">
-        <i class="fas fa-calendar-alt"></i><span>Agenda</span>
+        <i class="fas fa-users"></i><span>Personal</span>
       </button>
       <button class="mob-nav-btn" id="mobnav-mob-perfil" onclick="irASeccionMobile('perfil')">
         <i class="fas fa-user"></i><span>Perfil</span>
