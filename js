@@ -890,6 +890,8 @@
   // ===== MOBILE APP =====
   let _mobSeccionActual = 'casos';
   let _mobFiltroCasos = 'Pendiente';
+  let _mobStatsMes = new Date().getMonth();
+  let _mobStatsAnio = new Date().getFullYear();
 
   function irASeccionMobile(key) {
     _mobSeccionActual = key;
@@ -1086,8 +1088,7 @@
     document.getElementById('mobSubStats').style.display = 'none';
     const subLista = document.getElementById('mobSubStatsLista');
     subLista.style.display = 'flex';
-    const hoy = new Date();
-    const mes = hoy.getMonth(); const anio = hoy.getFullYear();
+    const mes = _mobStatsMes; const anio = _mobStatsAnio;
     const bd = bdPacientes || [];
     const delMes = bd.filter(function(p) {
       if (!p.fechaCreacion) return false;
@@ -1140,30 +1141,79 @@
     }).join('');
   }
 
+  function _mobStatsSetMes(delta) {
+    _mobStatsMes += delta;
+    if (_mobStatsMes > 11) { _mobStatsMes = 0; _mobStatsAnio++; }
+    if (_mobStatsMes < 0)  { _mobStatsMes = 11; _mobStatsAnio--; }
+    _renderMobStats();
+  }
+
   function _renderMobStats() {
     const container = document.getElementById('mobStatsContenido');
     if (!container) return;
-    const hoy = new Date();
-    const mes = hoy.getMonth(); const anio = hoy.getFullYear();
-    const delMes = (bdPacientes || []).filter(p => {
+    const mes = _mobStatsMes; const anio = _mobStatsAnio;
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const delMes = (bdPacientes || []).filter(function(p) {
       if (!p.fechaCreacion) return false;
       const partes = p.fechaCreacion.toString().split(' ')[0].split('/');
       if (partes.length < 3) return false;
       return parseInt(partes[1], 10) - 1 === mes && parseInt(partes[2], 10) === anio;
     });
-    const completados = delMes.filter(p => p.estado === 'Completado' || p.estado === 'Desestimado').length;
-    const pendientes = (bdPacientes || []).filter(p => p.estado === 'Pendiente').length;
-    const enProceso = (bdPacientes || []).filter(p => p.estado === 'En Proceso' || (p.estado || '').startsWith('En Proceso')).length;
+    const completados = delMes.filter(function(p) { return p.estado === 'Completado' || p.estado === 'Desestimado'; }).length;
+    const pendientes = (bdPacientes || []).filter(function(p) { return p.estado === 'Pendiente'; }).length;
+    const enProceso = (bdPacientes || []).filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); }).length;
     const pct = delMes.length > 0 ? Math.round(completados / delMes.length * 100) : 0;
     const seguroCount = {};
-    (bdPacientes || []).forEach(p => { if (p.seguro) seguroCount[p.seguro] = (seguroCount[p.seguro] || 0) + 1; });
-    const topSeguros = Object.entries(seguroCount).sort((a, b) => b[1] - a[1]).slice(0, 3);
-    const coloresSeg = ['#2b1070', '#4f46e5', '#818cf8'];
-    const totalAll = (bdPacientes || []).length || 1;
+    delMes.forEach(function(p) { if (p.seguro) seguroCount[p.seguro] = (seguroCount[p.seguro] || 0) + 1; });
+    const topSeguros = Object.entries(seguroCount).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 5);
+    const coloresSeg = ['#2b1070', '#4f46e5', '#818cf8', '#10b981', '#f59e0b'];
+    const totalSeg = topSeguros.reduce(function(s, e) { return s + e[1]; }, 0) || 1;
+
+    // Pie chart SVG
+    let pieHtml = '';
+    if (topSeguros.length) {
+      const sz = 160, cx = sz / 2, cy = sz / 2, r = 58;
+      let startAngle = -Math.PI / 2;
+      const slices = topSeguros.map(function(entry, i) {
+        const frac = entry[1] / totalSeg;
+        const angle = frac * 2 * Math.PI;
+        const x1 = cx + r * Math.cos(startAngle);
+        const y1 = cy + r * Math.sin(startAngle);
+        startAngle += angle;
+        const x2 = cx + r * Math.cos(startAngle);
+        const y2 = cy + r * Math.sin(startAngle);
+        const large = angle > Math.PI ? 1 : 0;
+        return { path: 'M ' + cx + ' ' + cy + ' L ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' Z', color: coloresSeg[i] || '#94a3b8', name: entry[0], cnt: entry[1] };
+      });
+      const svgPaths = slices.map(function(s) { return '<path d="' + s.path + '" fill="' + s.color + '" stroke="white" stroke-width="2"></path>'; }).join('');
+      const legend = slices.map(function(s) {
+        return '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<div style="width:10px;height:10px;border-radius:3px;background:' + s.color + ';flex-shrink:0;"></div>' +
+          '<span style="font-size:12px;color:#475569;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</span>' +
+          '<span style="font-size:12px;font-weight:700;color:#1e293b;">' + s.cnt + '</span>' +
+        '</div>';
+      }).join('');
+      pieHtml =
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+          '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
+          '<div style="display:flex;align-items:center;gap:16px;">' +
+            '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 ' + sz + ' ' + sz + '" style="flex-shrink:0;">' + svgPaths + '</svg>' +
+            '<div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;">' + legend + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
     container.innerHTML =
-      '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Resumen del Mes</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+        '<button onclick="_mobStatsSetMes(-1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-left"></i></button>' +
+        '<div style="text-align:center;">' +
+          '<div style="font-size:17px;font-weight:800;color:#1e293b;">' + meses[mes] + '</div>' +
+          '<div style="font-size:12px;color:#94a3b8;font-weight:600;">' + anio + '</div>' +
+        '</div>' +
+        '<button onclick="_mobStatsSetMes(1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-right"></i></button>' +
+      '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
-        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;active-opacity:.8;">' +
+        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;">' +
           '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
           '<div style="font-size:36px;font-weight:900;color:#2b1070;">' + delMes.length + '</div>' +
           '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
@@ -1194,23 +1244,7 @@
           '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#2b1070,#4f46e5);border-radius:50px;transition:width .6s ease;"></div>' +
         '</div>' +
       '</div>' +
-      (topSeguros.length ?
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);">' +
-          '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
-          topSeguros.map(function(entry, i) {
-            const seg = entry[0]; const cnt = entry[1];
-            const pctSeg = Math.round(cnt / totalAll * 100);
-            return '<div style="margin-bottom:14px;">' +
-              '<div style="display:flex;justify-content:space-between;margin-bottom:5px;">' +
-                '<span style="font-size:13px;font-weight:600;color:#1e293b;">' + seg + '</span>' +
-                '<span style="font-size:13px;font-weight:700;color:#2b1070;">' + cnt + '</span>' +
-              '</div>' +
-              '<div style="width:100%;height:7px;background:#e2e8f0;border-radius:50px;overflow:hidden;">' +
-                '<div style="height:100%;width:' + pctSeg + '%;background:' + (coloresSeg[i] || '#94a3b8') + ';border-radius:50px;"></div>' +
-              '</div>' +
-            '</div>';
-          }).join('') +
-        '</div>' : '');
+      pieHtml;
   }
 
   function _renderMobAgenda() {
