@@ -969,8 +969,8 @@
     const porEstado = _mobFiltrarEstado(bdPacientes || [], _mobFiltroCasos);
     const lista = porEstado.filter(function(p) {
       return !busqueda ||
-        (p.nombre || '').toLowerCase().includes(busqueda) ||
-        (p.dni || '').toLowerCase().includes(busqueda);
+        (p.nombre && p.nombre.toLowerCase().includes(busqueda)) ||
+        (p.dni != null && p.dni.toString().includes(busqueda));
     });
     if (lista.length === 0) {
       container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin resultados</span></div>';
