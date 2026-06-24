@@ -1,14 +1,98 @@
 <script>
+  // Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  (function() {
+    function _esMobile() {
+      return window.innerWidth <= 768 ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    }
+    function _inyectarEstilosMobile() {
+      if (document.getElementById('_mobileStyles')) return;
+      var s = document.createElement('style');
+      s.id = '_mobileStyles';
+      s.textContent = `
+        #mobileTopbar{display:flex!important;position:fixed;top:0;left:0;right:0;height:54px;background:var(--surface,#fff);align-items:center;justify-content:space-between;padding:0 16px;z-index:500;box-shadow:0 2px 10px rgba(15,23,42,.10);}
+        .mobile-hamburger{background:none;border:none;cursor:pointer;font-size:20px;color:#1e293b;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;}
+        .mobile-brand{font-size:17px;font-weight:800;color:#2b1070;display:flex;align-items:center;gap:7px;}
+        .sidebar{transform:translateX(-100%)!important;transition:transform .28s ease!important;z-index:1000!important;width:240px!important;}
+        .sidebar.mobile-open{transform:translateX(0)!important;}
+        .main-content,.main-content.rail-only{margin-left:0!important;width:100%!important;padding:66px 12px 72px!important;}
+        .search-container{height:auto!important;min-height:56px!important;flex-wrap:wrap!important;padding:10px 12px!important;gap:8px!important;}
+        .cards-row-container{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+        .counter-card{padding:12px 10px!important;}
+        .counter-number{font-size:26px!important;}
+        .counter-label{font-size:11px!important;}
+        #encabezadoTabla tr th{display:none!important;}
+        #cuerpoTabla tr{display:flex!important;flex-direction:column!important;background:var(--surface,#fff)!important;border-radius:14px!important;margin-bottom:10px!important;padding:12px 14px!important;box-shadow:0 2px 10px rgba(15,23,42,.07)!important;border:1px solid #e8ecf2!important;}
+        #cuerpoTabla td{display:block!important;border:none!important;padding:3px 0!important;font-size:13px!important;}
+        #cuerpoTabla td:first-child{font-size:15px!important;font-weight:700!important;color:#2b1070!important;border-bottom:1px solid #f1f5f9!important;padding-bottom:8px!important;margin-bottom:4px!important;}
+        #cuerpoTabla td:last-child .btn-table-view{width:100%!important;justify-content:center!important;margin-top:8px!important;}
+        .modal-overlay{align-items:flex-start!important;padding:0!important;}
+        .modal-content{width:100%!important;max-width:100%!important;height:100dvh!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:16px!important;}
+        .modal-header-inline{flex-direction:column!important;align-items:flex-start!important;gap:8px!important;}
+        .form-grid{grid-template-columns:1fr!important;}
+        .form-group.col-span-2{grid-column:1!important;}
+        .modal-actions{flex-direction:column!important;gap:10px!important;}
+        .modal-actions>div{width:100%!important;display:flex!important;flex-direction:column!important;gap:8px!important;}
+        .modal-actions .btn-primary,.modal-actions .btn-secondary,.modal-actions .btn-danger{width:100%!important;justify-content:center!important;}
+        #mobileBottomNav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;position:fixed;bottom:0;left:0;right:0;height:64px;background:white;border-radius:26px 26px 0 0;box-shadow:0 -2px 24px rgba(15,23,42,0.10);z-index:500;justify-content:space-around!important;align-items:center;padding:0 4px;overflow:visible!important;}
+        .mob-nav-btn{background:none;border:none;cursor:pointer;display:flex!important;flex-direction:column!important;align-items:center;gap:3px;padding:6px 4px;border-radius:12px;color:#94a3b8;font-size:11px;font-weight:600;flex:1!important;max-width:80px;}
+        .mob-nav-fab-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex:1;max-width:80px;height:100%;}
+        .mob-nav-fab-wrap::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:76px;height:76px;background:white;border-radius:50%;z-index:598;box-shadow:0 -4px 14px rgba(15,23,42,0.06);}
+        #mobFAB{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2b1070,#4f46e5);border:none;color:white;font-size:22px;cursor:pointer;box-shadow:0 6px 22px rgba(43,16,112,.50);display:flex;align-items:center;justify-content:center;z-index:600;}
+        .mob-nav-btn i{font-size:18px;}
+        .mob-nav-btn.active{color:#2b1070;background:#ede9f8;}
+        .login-left{display:none!important;}
+        .login-right{width:100%!important;padding:48px 28px!important;background:#0a1628!important;}
+        .login-title{color:#fff!important;}
+        .login-subtitle{color:rgba(255,255,255,.60)!important;}
+        .login-label{color:rgba(255,255,255,.80)!important;}
+        .login-input{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.15)!important;color:#fff!important;}
+        .login-input::placeholder{color:rgba(255,255,255,.35)!important;}
+        #toastContainer{top:62px!important;right:10px!important;left:10px!important;}
+        .toast-notif{min-width:unset!important;max-width:100%!important;}
+        #mobileDrawerOverlay.active{display:block!important;}
+        .table-card{display:none!important;}
+        body.mobile-view #desktopMain{display:none!important;}
+        body.mobile-view #mobileApp{display:flex!important;}
+      `;
+      document.head.appendChild(s);
+    }
+    function _quitarEstilosMobile() {
+      var s = document.getElementById('_mobileStyles');
+      if (s) s.remove();
+    }
+    function _aplicarMobile() {
+      if (_esMobile()) {
+        document.body.classList.add('mobile-view');
+        _inyectarEstilosMobile();
+      } else {
+        document.body.classList.remove('mobile-view');
+        _quitarEstilosMobile();
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', _aplicarMobile);
+    } else {
+      _aplicarMobile();
+    }
+    window.addEventListener('resize', _aplicarMobile);
+  })();
   let bdPacientes = [];
   let pacientesFiltrados = [];
-  let medicosEspecialidades = []; 
+  let medicosEspecialidades = [];
+  let medicoSeleccionado = null;
   let bandejaActual = 'Pendiente';
   let paginaActual = 1;
   const registrosPorPagina = 10;
+  let _notifData = { vencidos: 0, porVencer: 0, pendientes: 0, agendados: 0 };
+  let _notifDismissed = false;
+  let _notifItems = [];
+  let _snapshot = { pacientes: -1, medicos: -1, ejecutivos: -1, programados: -1 };
   let examenesSeleccionados = []; 
   let dniFichaActual = "";
   let subEstadoSeleccionado = "";
   let medicoLectorSeleccionado = "";
+  let ejecutivoCierreSeleccionado = "";
   let motivoDesestimacion = "";
   let ejecutivosDatosPin = []; // NUEVA VARIABLE PARA LOS PINS
   let ejecutivosData = [];
@@ -24,25 +108,437 @@
     "recojo parcial": "#704214" // NUEVO SUB-ESTADO AGREGADO         
   };
 
-  window.onload = function() {
+  function _autoRefreshSilente() {
+    cargarDatosDelServidor(true);
+    google.script.run
+      .withSuccessHandler(function(lista) {
+        const _prevProg = _snapshot.programados;
+        if (_prevProg >= 0 && lista.length > _prevProg) {
+          const n = lista.length - _prevProg;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario' : `Se agregaron ${n} eventos al calendario`, 'fas fa-calendar-plus');
+        }
+        _snapshot.programados = lista.length;
+        localStorage.setItem('sislab_snap_prog', lista.length);
+        pacientesProgramados = lista;
+        const vistaCalendario = document.getElementById('vistaCalendario');
+        if (vistaCalendario && vistaCalendario.style.display !== 'none') {
+          renderizarCalendario();
+          renderizarProximosEventos();
+        }
+      })
+      .obtenerPacientesProgramados();
+    recargarListasGlobales(null);
+  }
+
+  function _iniciarApp() {
     cargarListasDesplegables();
     generarBarraMesesDinamica();
+    cargarNombreUsuario();
+    setInterval(_autoRefreshSilente, 2 * 60 * 1000);
+    // Pre-cargar eventos del calendario para que el conteo de agendados sea correcto desde el inicio
+    google.script.run
+      .withSuccessHandler(function(lista) {
+        const _storedProg = parseInt(localStorage.getItem('sislab_snap_prog') || '-1', 10);
+        if (_storedProg >= 0 && lista.length > _storedProg) {
+          const n = lista.length - _storedProg;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario desde tu última sesión' : `Se agregaron ${n} eventos al calendario desde tu última sesión`, 'fas fa-calendar-plus');
+        }
+        _snapshot.programados = lista.length;
+        localStorage.setItem('sislab_snap_prog', lista.length);
+        pacientesProgramados = lista;
+        actualizarNotificacionCampana(_notifData.vencidos, _notifData.porVencer);
+      })
+      .withFailureHandler(function(){})
+      .obtenerPacientesProgramados();
+    setTimeout(_abrirPanelNotificaciones, 600);
+    _iniciarControlInactividad();
+  }
 
-    // Ocultar la columna de nombres al hacer clic fuera del sidebar
-    document.addEventListener('click', function(e) {
-      const sidebar = document.querySelector('.sidebar');
-      const panel = document.getElementById('namesPanel');
-      if (!sidebar || !panel) return;
-      if (panel.classList.contains('collapsed')) return;
-      if (!sidebar.contains(e.target)) {
-        panel.classList.add('collapsed');
-        const main = document.querySelector('.main-content');
-        if (main) main.classList.add('rail-only');
-      }
+  // ===== Cierre de sesión automático por inactividad (30 min) =====
+  let _inactividadTimer = null;
+  const _INACTIVIDAD_MS = 30 * 60 * 1000; // 30 minutos
+
+  function _reiniciarTimerInactividad() {
+    if (sessionStorage.getItem('sislab_auth') !== '1') return;
+    clearTimeout(_inactividadTimer);
+    _inactividadTimer = setTimeout(_cerrarSesionPorInactividad, _INACTIVIDAD_MS);
+  }
+
+  function _iniciarControlInactividad() {
+    const eventos = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    eventos.forEach(function(ev) {
+      document.addEventListener(ev, _reiniciarTimerInactividad, { passive: true });
     });
+    _reiniciarTimerInactividad();
+  }
+
+  function _cerrarSesionPorInactividad() {
+    if (sessionStorage.getItem('sislab_auth') !== '1') return;
+    clearTimeout(_inactividadTimer);
+    _ejecutarLogout();
+    if (typeof Swal !== 'undefined') {
+      const esDark = document.body.classList.contains('dark');
+      Swal.fire({
+        icon: 'info',
+        title: 'Sesión cerrada',
+        text: 'Tu sesión se cerró automáticamente por inactividad.',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#004EE0',
+        background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+        color: esDark ? '#e2e8f0' : '#1e293b'
+      });
+    }
+  }
+
+  function _limpiarVisualColorTema() {
+    var root = document.documentElement;
+    ['--card-bg','--surface','--card-border','--bg','--dashboard-bg','--card-text',
+     '--accent','--accent-2','--accent-dk','--on-accent','--on-accent-2','--text','--text-soft']
+      .forEach(function(p){ root.style.removeProperty(p); });
+    var estilo = document.getElementById('_temaEstilo');
+    if (estilo) estilo.remove();
+  }
+
+  // Lógica compartida de logout (sin confirmación): limpia sesión y vuelve al login
+  function _ejecutarLogout() {
+    clearTimeout(_inactividadTimer);
+    sessionStorage.removeItem('sislab_auth');
+    sessionStorage.removeItem('sislab_usuario');
+    sessionStorage.removeItem('sislab_rol');
+    sessionStorage.removeItem('sislab_color');
+    _limpiarVisualColorTema();
+    var restricEl = document.getElementById('_restriccionEjec');
+    if (restricEl) restricEl.remove();
+    document.getElementById('appContainer').style.display = 'none';
+    const screen = document.getElementById('loginScreen');
+    screen.style.opacity = '0';
+    screen.style.display = 'flex';
+    document.getElementById('loginUsuario').value = '';
+    document.getElementById('loginPin').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').innerHTML = 'Iniciar Sesión';
+    setTimeout(function() { screen.style.opacity = '1'; }, 20);
+  }
+
+
+  function _abrirPanelNotificaciones() {
+    const panel = document.getElementById('panelNotificaciones');
+    const btn   = document.getElementById('btnCampana');
+    if (!panel || !btn) return;
+    const rect = btn.getBoundingClientRect();
+    panel.style.top   = (rect.bottom + 8) + 'px';
+    panel.style.right = (window.innerWidth - rect.right) + 'px';
+    panel.style.left  = 'auto';
+    renderPanelNotificaciones();
+    panel.style.maxHeight = '360px';
+    panel.style.opacity   = '1';
+    panel.dataset.abierto = 'true';
+    setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
+  }
+
+  function _colorLighten(hex, amount) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255, Math.round(r + (255-r)*amount));
+    g = Math.min(255, Math.round(g + (255-g)*amount));
+    b = Math.min(255, Math.round(b + (255-b)*amount));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
+  function _colorDarken(hex, amount) {
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.max(0, Math.round(r * (1 - amount)));
+    g = Math.max(0, Math.round(g * (1 - amount)));
+    b = Math.max(0, Math.round(b * (1 - amount)));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
+  function _luminance(hex) {
+    var r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+    r = r <= 0.03928 ? r/12.92 : Math.pow((r+0.055)/1.055, 2.4);
+    g = g <= 0.03928 ? g/12.92 : Math.pow((g+0.055)/1.055, 2.4);
+    b = b <= 0.03928 ? b/12.92 : Math.pow((b+0.055)/1.055, 2.4);
+    return 0.2126*r + 0.7152*g + 0.0722*b;
+  }
+
+  function aplicarColorTema(hex, light) {
+    try {
+      if (!hex) return;
+      var lightHex   = light || _colorLighten(hex, 0.45);
+      var bgHex      = _colorLighten(hex, 0.84);
+      var dkHex      = _colorDarken(hex, 0.25);
+      var softBg1    = _colorLighten(hex, 0.84);
+      var softBg2    = _colorLighten(hex, 0.68);
+      var borderSoft = _colorLighten(hex, 0.52);
+
+      var lum          = _luminance(hex);
+      var onVivid      = lum > 0.20 ? _colorDarken(hex, 0.75) : '#ffffff';
+      var onVividSub   = lum > 0.20 ? _colorDarken(hex, 0.50) : 'rgba(255,255,255,0.75)';
+      var btnOverBg    = lum > 0.20 ? 'rgba(0,0,0,0.13)' : 'rgba(255,255,255,0.20)';
+      var iconOverBg   = lum > 0.20 ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.20)';
+      var colHeaderTxt = _colorDarken(hex, 0.55);
+
+      var root = document.documentElement;
+      root.style.setProperty('--card-bg',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+      root.style.setProperty('--surface',      'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')');
+      root.style.setProperty('--card-border',  hex);
+      root.style.setProperty('--bg',           bgHex);
+      root.style.setProperty('--dashboard-bg', bgHex);
+      root.style.setProperty('--card-text',    onVivid);
+      root.style.setProperty('--accent',       hex);
+      root.style.setProperty('--accent-2',     lightHex);
+      root.style.setProperty('--accent-dk',    dkHex);
+      root.style.setProperty('--on-accent',    onVivid);
+      root.style.setProperty('--on-accent-2',  dkHex);
+      root.style.setProperty('--text',         dkHex);
+      root.style.setProperty('--text-soft',    hex);
+
+      var estilo = document.getElementById('_temaEstilo');
+      if (!estilo) {
+        estilo = document.createElement('style');
+        estilo.id = '_temaEstilo';
+        document.head.appendChild(estilo);
+      }
+      var softGrad  = 'linear-gradient(145deg, ' + softBg1 + ', ' + softBg2 + ')';
+      var vividGrad = 'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')';
+      estilo.textContent = [
+        /* cards y bloques: degradado suave */
+        'body:not(.dark) .stats-card-demo { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .dash-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .panel-casos-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .carrusel-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* .cal-panel: solo los blancos (excluir el panel oscuro de fecha actual) */
+        'body:not(.dark) .cal-panel:not([style*="#1e293b"]) { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* bloques sin clase: por ID */
+        'body:not(.dark) #bloque7 { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* table-card: suave para que las filas sean legibles */
+        'body:not(.dark) .table-card { background: ' + softGrad + ' !important; }',
+        /* encabezado de la bandeja: vivid + diferenciado como barra de título */
+        'body:not(.dark) .table-header-container { background: ' + vividGrad + ' !important; border-radius: 12px !important; padding: 14px 20px !important; margin-bottom: 14px !important; }',
+        'body:not(.dark) .table-card .table-title { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .table-card #btnNuevoRegistro { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; border: 1.5px solid ' + onVividSub + ' !important; }',
+        /* thead sticky: tinte suave del tema */
+        'body:not(.dark) .table-card thead[style*="background: white"], body:not(.dark) .table-card thead[style*="background:white"] { background: ' + softBg1 + ' !important; }',
+        /* search-container y section-header-bar: vívido */
+        'body:not(.dark) .search-container { background: ' + vividGrad + ' !important; }',
+        'body:not(.dark) .section-header-bar { background: ' + vividGrad + ' !important; }',
+        /* contraste de texto en zonas vívidas */
+        'body:not(.dark) .search-container .welcome-text, body:not(.dark) .section-header-bar .welcome-text { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .search-container .saludo-sub, body:not(.dark) .section-header-bar .saludo-sub { color: ' + onVividSub + ' !important; }',
+        'body:not(.dark) .search-container .saludo-icon, body:not(.dark) .section-header-bar .saludo-icon { background: ' + iconOverBg + ' !important; color: ' + onVivid + ' !important; }',
+        /* botones icono (🔍🔄🔔) dentro del search-container vívido */
+        'body:not(.dark) .search-container .btn-icon-action { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; box-shadow: none !important; }',
+        /* Descargar Base y píldora de fecha en Panel de Casos (dentro de search-container) */
+        'body:not(.dark) .search-container #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
+        'body:not(.dark) .search-container #pildoraFechaPanel { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; box-shadow: none !important; }',
+        /* botones cápsula dentro de la barra de saludo vívida */
+        'body:not(.dark) .section-header-bar .btn-capsula { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; background: ' + btnOverBg + ' !important; }',
+        'body:not(.dark) .section-header-bar .btn-capsula:hover { background: ' + (lum > 0.20 ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.30)') + ' !important; }',
+        /* headers de sub-paneles Calendario: vívido (mismo patrón que la bandeja) */
+        'body:not(.dark) .cal-panel-header { background: ' + vividGrad + ' !important; border-bottom-color: ' + hex + ' !important; }',
+        'body:not(.dark) .cal-panel-header div { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .cal-panel-header span { color: ' + onVivid + ' !important; }',
+        'body:not(.dark) .cal-panel-header button { background: ' + btnOverBg + ' !important; color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
+        /* headers de sub-paneles Registro Personal: vívido */
+        'body:not(.dark) .rp-panel-header { background: ' + vividGrad + ' !important; padding: 12px 20px !important; border-bottom-color: ' + hex + ' !important; }',
+        'body:not(.dark) .rp-panel-header span { color: ' + onVivid + ' !important; }',
+        /* columnas de encabezado en sub-paneles: tinte suave */
+        'body:not(.dark) .rp-col-header { background: ' + softBg1 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .rp-col-header div { color: ' + colHeaderTxt + ' !important; }',
+        /* counter-cards: sincronizar borde izquierdo y punto con el tema */
+        'body:not(.dark) .counter-card { border-left-color: ' + hex + ' !important; }',
+        'body:not(.dark) .counter-card .card-dot { background: ' + hex + ' !important; }',
+        /* tarjetas de ejecutivos (bloque8Stack): degradado vívido del tema */
+        'body:not(.dark) #bloque8Stack > div[id^="ejec-card-"] { background: ' + vividGrad + ' !important; }',
+        /* botón Descargar Base (regla general, sobreescrita por la de search-container arriba) */
+        'body:not(.dark) #btnDescargarBase { color: ' + onVivid + ' !important; border-color: ' + onVividSub + ' !important; }',
+        /* botones de pestaña en Panel de Casos */
+        'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
+        'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
+      ].join('\n');
+    } catch(e) {}
+  }
+
+  function _elegirColorTema(hex, light) {
+    aplicarColorTema(hex, light);
+    sessionStorage.setItem('sislab_color', hex);
+    var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, hex);
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color guardado', text: 'El color se aplicó y se guardó en tu cuenta.', timer: 1800, showConfirmButton: false, timerProgressBar: true });
+  }
+
+  function _restablecerColorTema() {
+    var root = document.documentElement;
+    root.style.removeProperty('--card-bg');
+    root.style.removeProperty('--surface');
+    root.style.removeProperty('--card-border');
+    root.style.removeProperty('--bg');
+    root.style.removeProperty('--dashboard-bg');
+    root.style.removeProperty('--card-text');
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--accent-2');
+    root.style.removeProperty('--accent-dk');
+    root.style.removeProperty('--on-accent');
+    root.style.removeProperty('--on-accent-2');
+    root.style.removeProperty('--text');
+    root.style.removeProperty('--text-soft');
+    var estilo = document.getElementById('_temaEstilo');
+    if (estilo) estilo.remove();
+    sessionStorage.removeItem('sislab_color');
+    var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+    google.script.run
+      .withSuccessHandler(function() {})
+      .withFailureHandler(function() {})
+      .guardarColorTema(usuario, '');
+    Swal.close();
+    Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
+  }
+
+  window.onload = function() {
+    if (sessionStorage.getItem('sislab_auth') === '1') {
+      window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
+      window.__rolUsuario    = sessionStorage.getItem('sislab_rol') || 'Admin';
+      try {
+        var colorGuardado = sessionStorage.getItem('sislab_color');
+        if (colorGuardado) aplicarColorTema(colorGuardado);
+      } catch(e) {}
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'flex';
+      _iniciarApp();
+      _aplicarRestriccionesRol();
+    }
+    // Si no hay sesión, la loginScreen ya es visible por defecto
   };
 
+  function intentarLogin() {
+    const usuario = (document.getElementById('loginUsuario').value || '').trim();
+    const pin     = (document.getElementById('loginPin').value || '').trim();
+    const errEl   = document.getElementById('loginError');
+    errEl.style.display = 'none';
+
+    if (!usuario || !pin) {
+      errEl.textContent = 'Por favor ingresa usuario y PIN.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Verificando...';
+
+    function _resetLoginBtn(msg) {
+      btn.disabled = false;
+      btn.innerHTML = 'Iniciar Sesión';
+      if (msg && errEl) {
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      }
+    }
+
+    // Timeout de seguridad: si en 15s no responde, resetear
+    const _loginTimer = setTimeout(function() {
+      _resetLoginBtn('El servidor tardó demasiado. Inténtalo de nuevo.');
+    }, 15000);
+
+    google.script.run
+      .withSuccessHandler(function(result) {
+        clearTimeout(_loginTimer);
+        try {
+          if (result && result.ok) {
+            window.__nombreUsuario = result.nombre || usuario;
+            window.__rolUsuario    = result.rol || 'Admin';
+            sessionStorage.setItem('sislab_auth', '1');
+            sessionStorage.setItem('sislab_usuario', result.nombre || usuario);
+            sessionStorage.setItem('sislab_rol', result.rol || 'Admin');
+            if (result.colorTema) {
+              sessionStorage.setItem('sislab_color', result.colorTema);
+              aplicarColorTema(result.colorTema);
+            } else {
+              sessionStorage.removeItem('sislab_color');
+              _limpiarVisualColorTema();
+            }
+            const screen = document.getElementById('loginScreen');
+            screen.style.opacity = '0';
+            setTimeout(function() {
+              screen.style.display = 'none';
+              document.getElementById('appContainer').style.display = 'flex';
+              _iniciarApp();
+              _aplicarRestriccionesRol();
+            }, 420);
+          } else {
+            _resetLoginBtn('Usuario o PIN incorrecto. Inténtalo de nuevo.');
+            document.getElementById('loginPin').value = '';
+            document.getElementById('loginPin').focus();
+          }
+        } catch(e) {
+          _resetLoginBtn('Ocurrió un error inesperado. Inténtalo de nuevo.');
+        }
+      })
+      .withFailureHandler(function(err) {
+        clearTimeout(_loginTimer);
+        const msg = (err && err.message && err.message.includes('not found'))
+          ? 'Función no disponible. Verifica el despliegue del script.'
+          : 'Error de conexión con el servidor. Inténtalo de nuevo.';
+        _resetLoginBtn(msg);
+      })
+      .validarCredenciales(usuario, pin);
+  }
+
+  // Saludo personalizado: si ya hay nombre del login lo usa directo, si no lo pide al backend
+  function cargarNombreUsuario() {
+    if (window.__nombreUsuario) { aplicarSaludo(); return; }
+    try {
+      google.script.run
+        .withSuccessHandler(function(u){
+          if (u && u.nombre) { window.__nombreUsuario = u.nombre; }
+          aplicarSaludo();
+        })
+        .withFailureHandler(function(){ /* sin conexión: deja el saludo por defecto */ })
+        .getUsuarioActual();
+    } catch (e) {}
+  }
+
+  function _aplicarRestriccionesRol() {
+    var esEjecutivo = (window.__rolUsuario || '').toLowerCase() === 'ejecutivo';
+    // Botón Descargar Base (Panel de Casos)
+    var btnDesc = document.getElementById('btnDescargarBase');
+    if (btnDesc) btnDesc.style.display = esEjecutivo ? 'none' : '';
+    // Botón Ejecutivos (Registro Personal)
+    var btnEjec = document.querySelector('button.btn-capsula[data-tab="ejecutivo"]');
+    if (btnEjec) btnEjec.style.display = esEjecutivo ? 'none' : '';
+    // Lápiz de filas: se controla en el render, pero también via CSS
+    var styleId = '_restriccionEjec';
+    var prev = document.getElementById(styleId);
+    if (prev) prev.remove();
+    if (esEjecutivo) {
+      var s = document.createElement('style');
+      s.id = styleId;
+      s.textContent = '.icon-edit-row { display: none !important; } .dropdown-acciones { display: none !important; }';
+      document.head.appendChild(s);
+    }
+  }
+
+  function aplicarSaludo() {
+    if (!window.__nombreUsuario) return;
+    const rol = window.__rolUsuario || 'Admin';
+    const badgeClass = rol === 'Supervisor' ? 'badge-supervisor'
+                     : rol === 'Ejecutivo'  ? 'badge-ejecutivo'
+                     : '';
+    document.querySelectorAll('.welcome-text').forEach(function(el){
+      el.innerHTML = 'Bienvenido ' + window.__nombreUsuario +
+        ' <span class="role-badge ' + badgeClass + '">' + rol + '</span>';
+    });
+  }
+
   function cerrarSesion() {
+    cerrarMenuUsuario();
+    const esDark = document.body.classList.contains('dark');
     Swal.fire({
       icon: 'question',
       title: '¿Cerrar sesión?',
@@ -52,33 +548,300 @@
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#64748b',
-      reverseButtons: true
+      reverseButtons: true,
+      background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+      color: esDark ? '#e2e8f0' : '#1e293b'
     }).then(result => {
       if (result.isConfirmed) {
-        // Placeholder: recarga la app. Aquí puedes redirigir a tu página de login si la tienes.
-        window.location.reload();
+        _ejecutarLogout();
       }
     });
   }
 
-  // Hamburguesa: muestra/oculta la columna de nombres
+  function toggleMenuUsuario(event) {
+    event.stopPropagation();
+    const icon = event.currentTarget;
+    const menu = document.getElementById('menuUsuario');
+    if (!menu) return;
+    if (menu.dataset.abierto === 'true') {
+      cerrarMenuUsuario();
+    } else {
+      const rect = icon.getBoundingClientRect();
+      menu.style.top = (rect.bottom + 8) + 'px';
+      menu.style.left = rect.left + 'px';
+      menu.style.maxHeight = '200px';
+      menu.style.opacity = '1';
+      menu.dataset.abierto = 'true';
+      setTimeout(function() { document.addEventListener('click', cerrarMenuUsuarioFuera); }, 0);
+    }
+  }
+
+  function cerrarMenuUsuario() {
+    const menu = document.getElementById('menuUsuario');
+    if (!menu) return;
+    menu.style.maxHeight = '0';
+    menu.style.opacity = '0';
+    menu.dataset.abierto = 'false';
+    document.removeEventListener('click', cerrarMenuUsuarioFuera);
+  }
+
+  function cerrarMenuUsuarioFuera(e) {
+    const menu = document.getElementById('menuUsuario');
+    if (menu && !menu.contains(e.target)) {
+      cerrarMenuUsuario();
+    }
+  }
+
+  function togglePanelNotificaciones(event) {
+    event.stopPropagation();
+    cerrarMenuUsuario();
+    const panel = document.getElementById('panelNotificaciones');
+    if (!panel) return;
+    if (panel.dataset.abierto === 'true') {
+      cerrarPanelNotificaciones();
+    } else {
+      const btn = document.getElementById('btnCampana');
+      const rect = btn ? btn.getBoundingClientRect() : event.currentTarget.getBoundingClientRect();
+      panel.style.top = (rect.bottom + 8) + 'px';
+      panel.style.right = (window.innerWidth - rect.right) + 'px';
+      panel.style.left = 'auto';
+      renderPanelNotificaciones();
+      panel.style.maxHeight = '360px';
+      panel.style.opacity = '1';
+      panel.dataset.abierto = 'true';
+      setTimeout(function() { document.addEventListener('click', cerrarPanelNotificacionesFuera); }, 0);
+    }
+  }
+
+  function cerrarPanelNotificaciones() {
+    const panel = document.getElementById('panelNotificaciones');
+    if (!panel) return;
+    panel.style.maxHeight = '0';
+    panel.style.opacity = '0';
+    panel.dataset.abierto = 'false';
+    document.removeEventListener('click', cerrarPanelNotificacionesFuera);
+  }
+
+  function cerrarPanelNotificacionesFuera(e) {
+    const panel = document.getElementById('panelNotificaciones');
+    if (panel && !panel.contains(e.target)) {
+      cerrarPanelNotificaciones();
+    }
+  }
+
+  function agregarNotificacion(msg, icono) {
+    const hora = new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+    _notifItems.unshift({ msg, icono, hora });
+    if (_notifItems.length > 20) _notifItems.pop();
+    const dot = document.getElementById('bellDot');
+    if (dot) dot.style.display = 'block';
+    const btn = document.getElementById('btnCampana');
+    if (btn) {
+      btn.classList.add('bell-shake');
+      btn.addEventListener('animationend', () => btn.classList.remove('bell-shake'), { once: true });
+    }
+    const panel = document.getElementById('panelNotificaciones');
+    if (panel && panel.dataset.abierto === 'true') renderPanelNotificaciones();
+    mostrarToast(msg, icono);
+  }
+
+  function mostrarToast(msg, icono) {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast-notif';
+    toast.innerHTML = `
+      <i class="${icono} toast-notif-icon"></i>
+      <span class="toast-notif-msg">${msg}</span>
+      <div class="toast-progress"></div>
+    `;
+    toast.addEventListener('click', () => {
+      toast.classList.add('toast-out');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    });
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('toast-out');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    }, 4000);
+  }
+
+  function limpiarNotificaciones() {
+    _notifItems = [];
+    _notifDismissed = true;
+    const dot = document.getElementById('bellDot');
+    if (dot) dot.style.display = 'none';
+    renderPanelNotificaciones();
+  }
+
+  function renderPanelNotificaciones() {
+    const body = document.getElementById('notifContenido');
+    if (!body) return;
+    const esDark = document.body.classList.contains('dark');
+    const borderColor = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+
+    // Estado vacío tras borrar todo
+    if (_notifDismissed && _notifItems.length === 0) {
+      body.innerHTML = `
+        <div class="notif-empty">
+          <i class="far fa-bell-slash" style="font-size:26px; opacity:0.30; display:block; margin-bottom:8px;"></i>
+          Sin notificaciones nuevas
+        </div>`;
+      return;
+    }
+
+    let html = '';
+
+    // Sección de actividad reciente
+    if (_notifItems.length > 0) {
+      html += `<div class="notif-section-label">Actividad Reciente</div>`;
+      html += _notifItems.map((item, i) => `
+        <div class="notif-item" style="${i < _notifItems.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
+          <div class="notif-item-icon" style="background:#004EE022; color:${esDark ? '#99CAFF' : '#004EE0'};">
+            <i class="${item.icono}"></i>
+          </div>
+          <div class="notif-item-text">
+            <span class="notif-item-label">${item.msg}</span>
+            <span class="notif-item-desc">${item.hora}</span>
+          </div>
+        </div>`).join('');
+      html += `<div style="height:1px; background:${borderColor}; margin:4px 0 0;"></div>`;
+    }
+
+    // Sección de resumen (siempre visible cuando no se ha borrado)
+    html += `<div class="notif-section-label">Resumen</div>`;
+    const stats = [
+      { icon: 'fas fa-hourglass-half', bg: '#f59e0b', label: 'Pacientes Pendientes', count: _notifData.pendientes, desc: 'En espera de atención' },
+      { icon: 'fas fa-exclamation-circle', bg: '#ef4444', label: 'Pacientes Vencidos', count: _notifData.vencidos, desc: 'Fecha límite superada' },
+      { icon: 'fas fa-calendar-check', bg: '#10b981', label: 'Agendados en Calendario', count: _notifData.agendados, desc: 'Con programación activa' }
+    ];
+    html += stats.map((item, i) => `
+      <div class="notif-item" style="${i < stats.length - 1 ? 'border-bottom:1px solid ' + borderColor + ';' : ''}">
+        <div class="notif-item-icon" style="background:${item.bg}22; color:${item.bg};">
+          <i class="${item.icon}"></i>
+        </div>
+        <div class="notif-item-text">
+          <span class="notif-item-label">${item.label}</span>
+          <span class="notif-item-desc">${item.desc}</span>
+        </div>
+        <span class="notif-item-badge" style="background:${item.bg}22; color:${item.bg};">${item.count}</span>
+      </div>`).join('');
+
+    body.innerHTML = html;
+  }
+
+  function abrirPaletaColores() {
+    cerrarMenuUsuario();
+    const esDark = document.body.classList.contains('dark');
+    const colorActual = sessionStorage.getItem('sislab_color') || '';
+
+    const presets = [
+      { nombre: 'Azul (defecto)', hex: '#004EE0', light: '#99CAFF' },
+      { nombre: 'Bosque',         hex: '#2d6a4f', light: '#74c69d' },
+      { nombre: 'Esmeralda',      hex: '#40916c', light: '#95d5b2' },
+      { nombre: 'Jade',           hex: '#52b788', light: '#b7e4c7' },
+      { nombre: 'Menta',          hex: '#74c69d', light: '#d8f3dc' },
+      { nombre: 'Morado',         hex: '#7c3aed', light: '#c4b5fd' },
+      { nombre: 'Granate',        hex: '#be123c', light: '#fda4af' },
+      { nombre: 'Naranja',        hex: '#ea580c', light: '#fdba74' },
+      { nombre: 'Petróleo',       hex: '#0f766e', light: '#5eead4' },
+      { nombre: 'Índigo',         hex: '#4338ca', light: '#a5b4fc' },
+    ];
+
+    const htmlPresets = presets.map(function(p) {
+      const sel = (colorActual === p.hex) ? 'outline:3px solid #042E7B; outline-offset:2px;' : '';
+      return `<div onclick="_elegirColorTema('${p.hex}','${p.light}')" title="${p.nombre}"
+        style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${p.light},${p.hex});cursor:pointer;${sel}flex-shrink:0;transition:transform 0.15s;"
+        onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'"></div>`;
+    }).join('');
+
+    Swal.fire({
+      title: '🎨 Color del Dashboard',
+      html: `
+        <div style="text-align:left;">
+          <p style="font-size:13px;color:#64748b;margin-bottom:14px;">Elige un color para personalizar tus tarjetas y paneles en modo claro. Se guarda en tu cuenta.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px;">${htmlPresets}</div>
+          <div style="display:flex;align-items:center;gap:10px;padding-top:14px;border-top:1px solid #e2e8f0;">
+            <label style="font-size:13px;font-weight:600;color:#475569;white-space:nowrap;">Color libre:</label>
+            <input type="color" id="colorLibre" value="${colorActual || '#004EE0'}"
+              style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;">
+            <button onclick="_elegirColorTema(document.getElementById('colorLibre').value, null)"
+              style="background:var(--accent,#004EE0);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">
+              Aplicar
+            </button>
+          </div>
+          <div style="margin-top:14px;">
+            <button onclick="_restablecerColorTema()"
+              style="background:transparent;color:#94a3b8;border:1px solid #e2e8f0;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;width:100%;">
+              Restablecer color por defecto
+            </button>
+          </div>
+        </div>`,
+      confirmButtonText: 'Cerrar',
+      confirmButtonColor: '#004EE0',
+      background: esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff',
+      color: esDark ? '#e2e8f0' : '#1e293b',
+      width: 420
+    });
+  }
+
+  // Interruptor de modo claro / oscuro (de momento solo alterna el switch;
+  // el modo oscuro real se aplicará cuando definamos la paleta de colores)
+  function toggleModoOscuro() {
+    const app = document.getElementById('appContainer');
+    if (!app) return;
+
+    // Fase 1: desvanecer el contenido
+    app.style.transition = 'opacity 0.30s ease';
+    app.style.opacity = '0';
+
+    // Fase 2: con el contenido invisible, hacer el swap de tema y re-renders
+    setTimeout(function() {
+      const t = document.querySelector('.theme-toggle');
+      if (t) t.classList.toggle('dark');
+      document.body.classList.toggle('dark');
+
+      if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
+        dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
+      }
+      if (typeof ultimosPacientesPanelCasos !== 'undefined' && ultimosPacientesPanelCasos) {
+        if (typeof dibujarDonutSegurosPanelCasos === 'function') dibujarDonutSegurosPanelCasos(ultimosPacientesPanelCasos);
+        if (typeof dibujarBarrasEjecutivosPanel === 'function') dibujarBarrasEjecutivosPanel(ultimosPacientesPanelCasos);
+        if (typeof dibujarMedioAnilloProgreso === 'function') dibujarMedioAnilloProgreso(ultimosPacientesPanelCasos);
+        if (typeof dibujarBarrasExamenesPanel === 'function') dibujarBarrasExamenesPanel(ultimosPacientesPanelCasos);
+      }
+      if (typeof renderizarCalendario === 'function') renderizarCalendario();
+      if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
+      if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
+      if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
+      if (typeof actualizarProgresoCasos === 'function') actualizarProgresoCasos();
+
+      // Fase 3: revelar el nuevo tema con fade-in
+      app.style.opacity = '1';
+    }, 320);
+  }
+
+  // Hamburguesa: muestra/oculta los nombres (deja solo los iconos)
   function toggleNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.toggle('collapsed');
+    if (sidebar) sidebar.classList.toggle('collapsed');
     if (main) main.classList.toggle('rail-only');
   }
 
   function abrirNamesPanel() {
-    const panel = document.getElementById('namesPanel');
+    const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
-    if (panel) panel.classList.remove('collapsed');
+    if (sidebar) sidebar.classList.remove('collapsed');
     if (main) main.classList.remove('rail-only');
   }
 
   // Navegación desde la barra de iconos o desde los nombres: despliega el panel y dirige a la sección
   function irASeccion(key) {
-    abrirNamesPanel();
     switch (key) {
       case 'Pendiente': cambiarBandeja('Pendiente'); break;
       case 'EnProceso': cambiarBandeja('En Proceso'); break;
@@ -89,21 +852,484 @@
       case 'Calendario': mostrarVistaBaseDashboard(); break;
       case 'RegistroPersonal': mostrarVistaRegistroPersonal(); break;
     }
-    // Sincronizar el icono activo en la barra de iconos
-    document.querySelectorAll('.rail-icon[data-sec]').forEach(b => b.classList.remove('active'));
-    const rb = document.querySelector('.rail-icon[data-sec="' + key + '"]');
+    document.querySelectorAll('.menu-item[data-sec]').forEach(b => b.classList.remove('active'));
+    const rb = document.querySelector('.menu-item[data-sec="' + key + '"]');
     if (rb) rb.classList.add('active');
+    // Sincronizar bottom nav móvil
+    const mobKeys = ['Pendiente','PanelCasos','Estadisticas','Calendario','RegistroPersonal'];
+    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+    if (mobKeys.indexOf(key) !== -1) {
+      const mb = document.getElementById('mobnav-' + key);
+      if (mb) mb.classList.add('active');
+    }
+    // Cerrar drawer si está abierto
+    if (window.innerWidth <= 768) _cerrarMobileDrawer();
+  }
+
+  function toggleMobileDrawer() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    if (!sidebar) return;
+    if (sidebar.classList.contains('mobile-open')) {
+      _cerrarMobileDrawer();
+    } else {
+      sidebar.classList.add('mobile-open');
+      if (overlay) overlay.classList.add('active');
+    }
+  }
+
+  function _cerrarMobileDrawer() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (overlay) overlay.classList.remove('active');
   }
 
   function toggleSidebar() { toggleNamesPanel(); }
 
-  function cargarDatosDelServidor() {
-    mostrarCargandoTabla();
+  // ===== MOBILE APP =====
+  let _mobSeccionActual = 'casos';
+  let _mobFiltroCasos = 'Pendiente';
+  let _mobStatsMes = new Date().getMonth();
+  let _mobStatsAnio = new Date().getFullYear();
+
+  function irASeccionMobile(key) {
+    _mobSeccionActual = key;
+    document.querySelectorAll('.mob-view').forEach(v => { v.style.display = 'none'; });
+    const vistaMap = { casos: 'mobVistaCasos', stats: 'mobVistaStats', agenda: 'mobVistaAgenda', perfil: 'mobVistaPerfil' };
+    const el = document.getElementById(vistaMap[key]);
+    if (el) el.style.display = 'flex';
+    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('mobnav-mob-' + key);
+    if (btn) btn.classList.add('active');
+    if (key === 'casos') _renderMobCasos();
+    else if (key === 'stats') _renderMobStats();
+    else if (key === 'agenda') _renderMobAgenda();
+    else if (key === 'perfil') _renderMobPerfil();
+  }
+
+  function mobSetFiltro(filtro) {
+    _mobFiltroCasos = filtro;
+  }
+
+  function _renderMobCasos() {
+    // Siempre muestra la vista de resumen al llamarse
+    mobVolverResumen();
+    _renderMobResumen();
+  }
+
+  function _renderMobSaludo() {
+    const container = document.getElementById('mobSaludoBloque');
+    if (!container) return;
+    const nombre = sessionStorage.getItem('sislab_usuario') || '—';
+    const rol = sessionStorage.getItem('sislab_rol') || '—';
+    const rolColores = {
+      'Supervisor': { bg: '#fef3c7', color: '#92400e' },
+      'Ejecutivo':  { bg: '#ede9f8', color: '#2b1070' },
+      'Medico':     { bg: '#ecfdf5', color: '#065f46' }
+    };
+    const rc = rolColores[rol] || { bg: '#f1f5f9', color: '#475569' };
+    container.innerHTML =
+      '<div style="background:linear-gradient(135deg,#2b1070,#4f46e5);border-radius:18px;padding:18px 20px;display:flex;align-items:center;gap:14px;">' +
+        '<div style="width:46px;height:46px;background:rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          '<i class="far fa-user" style="font-size:20px;color:white;"></i>' +
+        '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:12px;color:rgba(255,255,255,0.65);font-weight:600;margin-bottom:2px;">Bienvenido</div>' +
+          '<div style="font-size:16px;font-weight:800;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + nombre + '</div>' +
+        '</div>' +
+        '<span style="background:' + rc.bg + ';color:' + rc.color + ';font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + rol + '</span>' +
+      '</div>';
+  }
+
+  function _mobFiltrarEstado(lista, key) {
+    if (key === 'Pendiente')    return lista.filter(function(p) { return p.estado === 'Pendiente'; });
+    if (key === 'En Proceso')   return lista.filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); });
+    if (key === 'Completado')   return lista.filter(function(p) { return p.estado === 'Completado' && (p.subEstado || '').toLowerCase().trim() !== 'desestimado'; });
+    if (key === 'Desestimado')  return lista.filter(function(p) { return p.estado === 'Completado' && (p.subEstado || '').toLowerCase().trim() === 'desestimado'; });
+    return lista;
+  }
+
+  function _renderMobResumen() {
+    _renderMobSaludo();
+    const container = document.getElementById('mobTarjetasResumen');
+    if (!container) return;
+    const bd = bdPacientes || [];
+    const estados = [
+      { key: 'Pendiente',   label: 'Pendiente',   icon: 'fas fa-clock',        color: '#f59e0b', bg: '#fffbeb', border: '#fde68a' },
+      { key: 'En Proceso',  label: 'En Proceso',  icon: 'fas fa-spinner',      color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' },
+      { key: 'Completado',  label: 'Completado',  icon: 'fas fa-check-circle', color: '#10b981', bg: '#f0fdf4', border: '#bbf7d0' },
+      { key: 'Desestimado', label: 'Desestimado', icon: 'fas fa-ban',          color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' }
+    ];
+    const counts = {};
+    estados.forEach(function(e) { counts[e.key] = _mobFiltrarEstado(bd, e.key).length; });
+    container.innerHTML = estados.map(function(e) {
+      const cnt = counts[e.key];
+      return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + e.bg + ';border:2px solid ' + e.border + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="width:42px;height:42px;background:' + e.color + '20;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
+            '<i class="' + e.icon + '" style="font-size:18px;color:' + e.color + ';"></i>' +
+          '</div>' +
+          '<i class="fas fa-chevron-right" style="font-size:12px;color:#94a3b8;"></i>' +
+        '</div>' +
+        '<div style="font-size:36px;font-weight:900;color:' + e.color + ';line-height:1;">' + cnt + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#475569;">' + e.label + '</div>' +
+      '</div>';
+    }).join('');
+    _renderMobDonut(estados, counts);
+  }
+
+  function _renderMobDonut(estados, counts) {
+    const chartEl = document.getElementById('mobDonutChart');
+    if (!chartEl) return;
+    const total = estados.reduce(function(s, e) { return s + counts[e.key]; }, 0);
+    if (total === 0) { chartEl.innerHTML = ''; return; }
+    const size = 180, cx = size / 2, cy = size / 2, r = 72, stroke = 28;
+    const circumference = 2 * Math.PI * r;
+    let offset = 0;
+    const segments = estados.map(function(e) {
+      const pct = counts[e.key] / total;
+      const dash = pct * circumference;
+      const seg = { color: e.color, dash: dash, offset: offset, pct: pct };
+      offset += dash;
+      return seg;
+    });
+    const svgSegs = segments.map(function(s, i) {
+      if (s.dash < 0.5) return '';
+      return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none"' +
+        ' stroke="' + s.color + '" stroke-width="' + stroke + '"' +
+        ' stroke-dasharray="' + s.dash.toFixed(2) + ' ' + (circumference - s.dash).toFixed(2) + '"' +
+        ' stroke-dashoffset="' + (-(s.offset - circumference / 4)).toFixed(2) + '"' +
+        ' stroke-linecap="round"' +
+        '></circle>';
+    }).join('');
+    const legend = estados.map(function(e) {
+      const pct = total > 0 ? Math.round(counts[e.key] / total * 100) : 0;
+      return '<div style="display:flex;align-items:center;gap:8px;min-width:110px;">' +
+        '<div style="width:10px;height:10px;border-radius:3px;background:' + e.color + ';flex-shrink:0;"></div>' +
+        '<span style="font-size:12px;color:#475569;font-weight:600;">' + e.label + '</span>' +
+        '<span style="font-size:12px;color:#94a3b8;margin-left:auto;">' + pct + '%</span>' +
+      '</div>';
+    }).join('');
+    chartEl.innerHTML =
+      '<div style="background:white;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(15,23,42,.07);">' +
+        '<div style="font-size:13px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;">Distribución de Casos</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">' +
+          '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="flex-shrink:0;">' +
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#f1f5f9" stroke-width="' + stroke + '"></circle>' +
+            svgSegs +
+            '<text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="28" font-weight="900" fill="#1e293b">' + total + '</text>' +
+            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">Total</text>' +
+          '</svg>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;flex:1;">' + legend + '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function mobAbrirLista(estado) {
+    _mobFiltroCasos = estado;
+    document.getElementById('mobSubResumen').style.display = 'none';
+    const subLista = document.getElementById('mobSubLista');
+    subLista.style.display = 'flex';
+    const titulo = document.getElementById('mobListaTitulo');
+    if (titulo) titulo.textContent = estado;
+    _renderMobLista();
+  }
+
+  function mobVolverResumen() {
+    const subLista = document.getElementById('mobSubLista');
+    const subResumen = document.getElementById('mobSubResumen');
+    if (subLista) subLista.style.display = 'none';
+    if (subResumen) subResumen.style.display = 'flex';
+    const inp = document.getElementById('mobBuscarPaciente');
+    if (inp) inp.value = '';
+  }
+
+  function _renderMobLista() {
+    const container = document.getElementById('mobListaCasos');
+    if (!container) return;
+    const busqueda = (document.getElementById('mobBuscarPaciente') ? document.getElementById('mobBuscarPaciente').value : '').toLowerCase().trim();
+    const porEstado = _mobFiltrarEstado(bdPacientes || [], _mobFiltroCasos);
+    const lista = porEstado.filter(function(p) {
+      return !busqueda ||
+        (p.nombre && p.nombre.toLowerCase().includes(busqueda)) ||
+        (p.dni != null && p.dni.toString().includes(busqueda));
+    });
+    if (lista.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin resultados</span></div>';
+      return;
+    }
+    const colores = { 'Pendiente': '#f59e0b', 'En Proceso': '#3b82f6', 'Completado': '#10b981', 'Desestimado': '#6b7280' };
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    container.innerHTML = lista.map(function(p) {
+      const color = colores[p.estado] || '#94a3b8';
+      const fechaVenc = p.vencimiento ? new Date(p.vencimiento + 'T00:00:00') : null;
+      const venc = fechaVenc ? fechaVenc.toLocaleDateString('es', { day: '2-digit', month: 'short' }) : '—';
+      const esVencido = fechaVenc && fechaVenc < hoy && p.estado === 'Pendiente';
+      return '<div class="mob-caso-card" onclick="mobVerPaciente(\'' + (p.id || p.dni) + '\')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+          '<div style="font-size:15px;font-weight:700;color:#1e293b;flex:1;margin-right:8px;line-height:1.3;">' + (p.nombre || '—') + '</div>' +
+          '<span style="background:' + color + '20;color:' + color + ';font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + p.estado + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:14px;font-size:12px;color:#64748b;flex-wrap:wrap;">' +
+          '<span><i class="fas fa-id-card" style="margin-right:4px;color:#94a3b8;"></i>' + (p.dni || '—') + '</span>' +
+          '<span style="color:' + (esVencido ? '#ef4444' : 'inherit') + '"><i class="fas fa-calendar-day" style="margin-right:4px;color:' + (esVencido ? '#ef4444' : '#94a3b8') + ';"></i>' + venc + '</span>' +
+          (p.seguro ? '<span><i class="fas fa-shield-alt" style="margin-right:4px;color:#94a3b8;"></i>' + p.seguro + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function mobVerPaciente(id) {
+    abrirModalLectura(id);
+  }
+
+  function mobAbrirListaStats(tipo) {
+    document.getElementById('mobSubStats').style.display = 'none';
+    const subLista = document.getElementById('mobSubStatsLista');
+    subLista.style.display = 'flex';
+    const mes = _mobStatsMes; const anio = _mobStatsAnio;
+    const bd = bdPacientes || [];
+    const delMes = bd.filter(function(p) {
+      if (!p.fechaCreacion) return false;
+      const partes = p.fechaCreacion.toString().split(' ')[0].split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) - 1 === mes && parseInt(partes[2], 10) === anio;
+    });
+    let lista, titulo;
+    if (tipo === 'mes')       { lista = delMes; titulo = 'Total del Mes'; }
+    else if (tipo === 'cerrados')  { lista = delMes.filter(function(p) { return p.estado === 'Completado' || p.estado === 'Desestimado'; }); titulo = 'Cerrados del Mes'; }
+    else if (tipo === 'pendientes'){ lista = bd.filter(function(p) { return p.estado === 'Pendiente'; }); titulo = 'Pendientes'; }
+    else if (tipo === 'enproceso') { lista = bd.filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); }); titulo = 'En Proceso'; }
+    else { lista = []; titulo = ''; }
+    const tituloEl = document.getElementById('mobStatsListaTitulo');
+    if (tituloEl) tituloEl.textContent = titulo + ' (' + lista.length + ')';
+    _mobRenderListaStats(lista);
+  }
+
+  function mobVolverStats() {
+    document.getElementById('mobSubStatsLista').style.display = 'none';
+    document.getElementById('mobSubStats').style.display = 'flex';
+  }
+
+  function _mobRenderListaStats(lista) {
+    const container = document.getElementById('mobStatsListaCasos');
+    if (!container) return;
+    if (lista.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin registros</span></div>';
+      return;
+    }
+    const colores = { 'Pendiente': '#f59e0b', 'En Proceso': '#3b82f6', 'Completado': '#10b981', 'Desestimado': '#6b7280' };
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    container.innerHTML = lista.map(function(p) {
+      const estadoDisplay = p.estado && p.estado.startsWith('En Proceso') ? 'En Proceso' : p.estado;
+      const color = colores[estadoDisplay] || '#94a3b8';
+      const fechaVenc = p.vencimiento ? new Date(p.vencimiento + 'T00:00:00') : null;
+      const venc = fechaVenc ? fechaVenc.toLocaleDateString('es', { day: '2-digit', month: 'short' }) : '—';
+      const esVencido = fechaVenc && fechaVenc < hoy && p.estado === 'Pendiente';
+      return '<div class="mob-caso-card" onclick="mobVerPaciente(\'' + (p.id || p.dni) + '\')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+          '<div style="font-size:15px;font-weight:700;color:#1e293b;flex:1;margin-right:8px;line-height:1.3;">' + (p.nombre || '—') + '</div>' +
+          '<span style="background:' + color + '20;color:' + color + ';font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + estadoDisplay + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:14px;font-size:12px;color:#64748b;flex-wrap:wrap;">' +
+          '<span><i class="fas fa-id-card" style="margin-right:4px;color:#94a3b8;"></i>' + (p.dni != null ? p.dni : '—') + '</span>' +
+          '<span style="color:' + (esVencido ? '#ef4444' : 'inherit') + '"><i class="fas fa-calendar-day" style="margin-right:4px;color:' + (esVencido ? '#ef4444' : '#94a3b8') + ';"></i>' + venc + '</span>' +
+          (p.seguro ? '<span><i class="fas fa-shield-alt" style="margin-right:4px;color:#94a3b8;"></i>' + p.seguro + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function _mobStatsSetMes(delta) {
+    _mobStatsMes += delta;
+    if (_mobStatsMes > 11) { _mobStatsMes = 0; _mobStatsAnio++; }
+    if (_mobStatsMes < 0)  { _mobStatsMes = 11; _mobStatsAnio--; }
+    _renderMobStats();
+  }
+
+  function _renderMobStats() {
+    const container = document.getElementById('mobStatsContenido');
+    if (!container) return;
+    const mes = _mobStatsMes; const anio = _mobStatsAnio;
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const delMes = (bdPacientes || []).filter(function(p) {
+      if (!p.fechaCreacion) return false;
+      const partes = p.fechaCreacion.toString().split(' ')[0].split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) - 1 === mes && parseInt(partes[2], 10) === anio;
+    });
+    const completados = delMes.filter(function(p) { return p.estado === 'Completado' || p.estado === 'Desestimado'; }).length;
+    const pendientes = (bdPacientes || []).filter(function(p) { return p.estado === 'Pendiente'; }).length;
+    const enProceso = (bdPacientes || []).filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); }).length;
+    const pct = delMes.length > 0 ? Math.round(completados / delMes.length * 100) : 0;
+    const seguroCount = {};
+    delMes.forEach(function(p) { if (p.seguro) seguroCount[p.seguro] = (seguroCount[p.seguro] || 0) + 1; });
+    const topSeguros = Object.entries(seguroCount).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 5);
+    const coloresSeg = ['#2b1070', '#4f46e5', '#818cf8', '#10b981', '#f59e0b'];
+    const totalSeg = topSeguros.reduce(function(s, e) { return s + e[1]; }, 0) || 1;
+
+    // Pie chart SVG
+    let pieHtml = '';
+    if (topSeguros.length) {
+      const sz = 160, cx = sz / 2, cy = sz / 2, r = 58;
+      let startAngle = -Math.PI / 2;
+      const slices = topSeguros.map(function(entry, i) {
+        const frac = entry[1] / totalSeg;
+        const angle = frac * 2 * Math.PI;
+        const x1 = cx + r * Math.cos(startAngle);
+        const y1 = cy + r * Math.sin(startAngle);
+        startAngle += angle;
+        const x2 = cx + r * Math.cos(startAngle);
+        const y2 = cy + r * Math.sin(startAngle);
+        const large = angle > Math.PI ? 1 : 0;
+        return { path: 'M ' + cx + ' ' + cy + ' L ' + x1.toFixed(2) + ' ' + y1.toFixed(2) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ' ' + y2.toFixed(2) + ' Z', color: coloresSeg[i] || '#94a3b8', name: entry[0], cnt: entry[1] };
+      });
+      const svgPaths = slices.map(function(s) { return '<path d="' + s.path + '" fill="' + s.color + '" stroke="white" stroke-width="2"></path>'; }).join('');
+      const legend = slices.map(function(s) {
+        return '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<div style="width:10px;height:10px;border-radius:3px;background:' + s.color + ';flex-shrink:0;"></div>' +
+          '<span style="font-size:12px;color:#475569;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</span>' +
+          '<span style="font-size:12px;font-weight:700;color:#1e293b;">' + s.cnt + '</span>' +
+        '</div>';
+      }).join('');
+      pieHtml =
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+          '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
+          '<div style="display:flex;align-items:center;gap:16px;">' +
+            '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 ' + sz + ' ' + sz + '" style="flex-shrink:0;">' + svgPaths + '</svg>' +
+            '<div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;">' + legend + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    container.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+        '<button onclick="_mobStatsSetMes(-1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-left"></i></button>' +
+        '<div style="text-align:center;">' +
+          '<div style="font-size:17px;font-weight:800;color:#1e293b;">' + meses[mes] + '</div>' +
+          '<div style="font-size:12px;color:#94a3b8;font-weight:600;">' + anio + '</div>' +
+        '</div>' +
+        '<button onclick="_mobStatsSetMes(1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-right"></i></button>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
+        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#2b1070;">' + delMes.length + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+        '</div>' +
+        '<div onclick="mobAbrirListaStats(\'cerrados\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Cerrados</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#10b981;">' + completados + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+        '</div>' +
+        '<div onclick="mobAbrirListaStats(\'pendientes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Pendientes</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+        '</div>' +
+        '<div onclick="mobAbrirListaStats(\'enproceso\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">En Proceso</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#3b82f6;">' + enProceso + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+        '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:12px;">Progreso de Cierres</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+          '<span style="font-size:13px;font-weight:600;color:#475569;">' + completados + ' de ' + delMes.length + ' casos</span>' +
+          '<span style="font-size:20px;font-weight:900;color:#2b1070;">' + pct + '%</span>' +
+        '</div>' +
+        '<div style="width:100%;height:10px;background:#e2e8f0;border-radius:50px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#2b1070,#4f46e5);border-radius:50px;transition:width .6s ease;"></div>' +
+        '</div>' +
+      '</div>' +
+      pieHtml;
+  }
+
+  function _renderMobAgenda() {
+    const container = document.getElementById('mobAgendaContenido');
+    if (!container) return;
+    const lista = typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : [];
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const proximos = lista.filter(function(e) {
+      const f = e.fechaCita ? new Date(e.fechaCita) : null;
+      return f && f >= hoy;
+    }).sort(function(a, b) { return new Date(a.fechaCita) - new Date(b.fechaCita); }).slice(0, 20);
+    container.innerHTML =
+      '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Próximos Eventos</div>' +
+      (proximos.length === 0 ?
+        '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-calendar-times" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin eventos próximos</span></div>' :
+        proximos.map(function(e) {
+          const fecha = e.fechaCita ? new Date(e.fechaCita).toLocaleDateString('es', { weekday: 'short', day: '2-digit', month: 'short' }) : '—';
+          return '<div style="background:white;border-radius:14px;padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid #2b1070;display:flex;align-items:center;gap:14px;">' +
+            '<div style="flex-shrink:0;width:44px;height:44px;background:#ede9f8;border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-check" style="color:#2b1070;font-size:18px;"></i></div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</div>' +
+              '<div style="font-size:12px;color:#64748b;">' + fecha + (e.hora ? ' · ' + e.hora : '') + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('')
+      );
+  }
+
+  function _renderMobPerfil() {
+    const container = document.getElementById('mobPerfilContenido');
+    if (!container) return;
+    const nombre = sessionStorage.getItem('sislab_usuario') || '—';
+    const rol = sessionStorage.getItem('sislab_rol') || '—';
+    const usuario = sessionStorage.getItem('sislab_usuario') || '—';
+    const total = (bdPacientes || []).length;
+    const misRegistros = (bdPacientes || []).filter(function(p) { return p.ejecutivo === nombre || p.ejecutivo === usuario; }).length;
+    container.innerHTML =
+      '<div style="text-align:center;margin-bottom:24px;padding-top:8px;">' +
+        '<div style="width:80px;height:80px;background:linear-gradient(135deg,#2b1070,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 16px rgba(43,16,112,.3);">' +
+          '<i class="fas fa-user" style="font-size:32px;color:white;"></i>' +
+        '</div>' +
+        '<div style="font-size:20px;font-weight:800;color:#1e293b;">' + nombre + '</div>' +
+        '<div style="font-size:13px;color:#64748b;margin-top:6px;">' + usuario + ' · <span style="background:#ede9f8;color:#2b1070;padding:2px 10px;border-radius:20px;font-weight:700;">' + rol + '</span></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">' +
+        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Mis Registros</div>' +
+          '<div style="font-size:34px;font-weight:900;color:#2b1070;">' + misRegistros + '</div>' +
+        '</div>' +
+        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total Sistema</div>' +
+          '<div style="font-size:34px;font-weight:900;color:#475569;">' + total + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="cerrarSesion()" style="width:100%;padding:16px;background:#fee2e2;border:none;border-radius:16px;font-size:15px;font-weight:700;color:#dc2626;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">' +
+        '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión' +
+      '</button>';
+  }
+
+  function _actualizarVistaMobile() {
+    if (!document.body.classList.contains('mobile-view')) return;
+    if (_mobSeccionActual === 'casos') _renderMobCasos();
+    else if (_mobSeccionActual === 'stats') _renderMobStats();
+    else if (_mobSeccionActual === 'agenda') _renderMobAgenda();
+  }
+  // ===== FIN MOBILE APP =====
+
+  function cargarDatosDelServidor(silente) {
+    if (!silente) mostrarCargandoTabla();
     google.script.run
       .withSuccessHandler(function(pacientes) {
+        const _prevPac = _snapshot.pacientes;
         bdPacientes = pacientes;
         console.log(bdPacientes);
-        
+        const _storedPac = parseInt(localStorage.getItem('sislab_snap_pac') || '-1', 10);
+        if (_prevPac >= 0 && pacientes.length > _prevPac) {
+          const n = pacientes.length - _prevPac;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo caso' : `Se agregaron ${n} nuevos casos`, 'fas fa-user-plus');
+        } else if (_prevPac < 0 && _storedPac >= 0 && pacientes.length > _storedPac) {
+          const n = pacientes.length - _storedPac;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo caso desde tu última sesión' : `Se agregaron ${n} nuevos casos desde tu última sesión`, 'fas fa-user-plus');
+        }
+        _snapshot.pacientes = pacientes.length;
+        localStorage.setItem('sislab_snap_pac', pacientes.length);
+
         /* TOTAL PACIENTES */
         document.getElementById('numeroTotalAbsoluto').textContent = bdPacientes.length;
 
@@ -169,7 +1395,8 @@
         }
 
         cambiarBandeja(bandejaActual);
-        
+        actualizarNotificacionCampana(pacientesVencidos, pacientesPorVencer);
+
         // Refrescar panel médico si hay búsqueda activa
         const inputMedico = document.getElementById('inputBuscadorMedico');
         if (inputMedico && inputMedico.value.trim() !== '') {
@@ -181,12 +1408,41 @@
         actualizarProgresoCasos();
         // Verificar y mover programaciones vencidas
         google.script.run.moverProgramacionesVencidas();
+        // Actualizar vista mobile con datos frescos
+        _actualizarVistaMobile();
       })
       .withFailureHandler(function(err) {
         console.error("Error al cargar pacientes:", err);
         document.getElementById('cuerpoTabla').innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Error al cargar datos del servidor.</td></tr>`;
       })
       .obtenerPacientes();
+  }
+
+  function actualizarNotificacionCampana(vencidos, porVencer) {
+    const pendientes = (bdPacientes || []).filter(p => p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso')).length;
+    const agendados = (typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : []).length;
+    _notifData = { vencidos, porVencer, pendientes, agendados };
+    _notifDismissed = false;
+
+    const btn = document.getElementById('btnCampana');
+    const dot = document.getElementById('bellDot');
+    if (!btn || !dot) return;
+    const hayNotificaciones = vencidos > 0 || porVencer > 0 || pendientes > 0 || agendados > 0;
+    if (hayNotificaciones) {
+      dot.style.display = 'block';
+      if (!btn.dataset.animado) {
+        btn.dataset.animado = '1';
+        setTimeout(() => {
+          btn.classList.add('bell-shake');
+          btn.addEventListener('animationend', () => btn.classList.remove('bell-shake'), { once: true });
+        }, 600);
+      }
+    } else {
+      dot.style.display = 'none';
+    }
+    // Si el panel está abierto, re-renderizarlo con los datos actualizados
+    const _panel = document.getElementById('panelNotificaciones');
+    if (_panel && _panel.dataset.abierto === 'true') renderPanelNotificaciones();
   }
 
   // Barra de progreso del sidebar: % de casos cerrados (Completados, sea lectura realizada o desestimados)
@@ -204,16 +1460,33 @@
   function cargarListasDesplegables() {
     google.script.run
       .withSuccessHandler(function(listas) {
-        ejecutivosDatosPin = listas.ejecutivosConPin || []; // Guardamos los PINs en secreto
-        
+        ejecutivosDatosPin = listas.ejecutivosConPin || []; // Lista COMPLETA (incluye supervisores) para validar PINs
+
         rellenarSelect('ejecutivo', listas.ejecutivos);
         rellenarSelect('seguro', listas.seguros);
-        
+
         // MÉDICO SOLICITANTE
         const selectMedico = document.getElementById('medico');
         selectMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
         medicosEspecialidades = listas.medicos;
-        ejecutivosData = listas.ejecutivosConPin;
+        // Datos para gráficos/conteos/tabla de personal: SIN supervisores
+        ejecutivosData = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor');
+        const _curMed  = (listas.medicos || []).length;
+        const _curEjec = (listas.ejecutivosConPin || []).length;
+        const _storedMed  = parseInt(localStorage.getItem('sislab_snap_med')  || '-1', 10);
+        const _storedEjec = parseInt(localStorage.getItem('sislab_snap_ejec') || '-1', 10);
+        if (_storedMed >= 0 && _curMed > _storedMed) {
+          const n = _curMed - _storedMed;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo médico desde tu última sesión' : `Se agregaron ${n} nuevos médicos desde tu última sesión`, 'fas fa-user-md');
+        }
+        if (_storedEjec >= 0 && _curEjec > _storedEjec) {
+          const n = _curEjec - _storedEjec;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo ejecutivo desde tu última sesión' : `Se agregaron ${n} nuevos ejecutivos desde tu última sesión`, 'fas fa-briefcase');
+        }
+        _snapshot.medicos    = _curMed;
+        _snapshot.ejecutivos = _curEjec;
+        localStorage.setItem('sislab_snap_med',  _curMed);
+        localStorage.setItem('sislab_snap_ejec', _curEjec);
         listas.medicos.forEach(m => {
           let opt = document.createElement('option');
           opt.value = m.nombre;
@@ -244,23 +1517,51 @@
   function recargarListasGlobales(callback) {
     google.script.run
       .withSuccessHandler(function(listas) {
-        ejecutivosDatosPin = listas.ejecutivosConPin || [];
-        ejecutivosData = listas.ejecutivosConPin || [];
+        const _prevMed  = _snapshot.medicos;
+        const _prevEjec = _snapshot.ejecutivos;
+        ejecutivosDatosPin    = listas.ejecutivosConPin || []; // Completa (con supervisores) para PINs
+        ejecutivosData        = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor'); // Sin supervisores
         medicosEspecialidades = listas.medicos || [];
+        if (_prevMed >= 0 && medicosEspecialidades.length > _prevMed) {
+          const n = medicosEspecialidades.length - _prevMed;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo médico' : `Se agregaron ${n} nuevos médicos`, 'fas fa-user-md');
+        }
+        if (_prevEjec >= 0 && ejecutivosData.length > _prevEjec) {
+          const n = ejecutivosData.length - _prevEjec;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo ejecutivo' : `Se agregaron ${n} nuevos ejecutivos`, 'fas fa-briefcase');
+        }
+        _snapshot.medicos    = medicosEspecialidades.length;
+        _snapshot.ejecutivos = ejecutivosData.length;
+        localStorage.setItem('sislab_snap_med',  medicosEspecialidades.length);
+        localStorage.setItem('sislab_snap_ejec', ejecutivosData.length);
 
-        // Refrescar el desplegable "Ejecutivo que registra" del formulario de pacientes
-        rellenarSelect('ejecutivo', listas.ejecutivos);
+        // Solo actualizar los dropdowns del formulario si el modal NO está abierto
+        const _modalAbierto = document.getElementById('modalClinico') &&
+                              document.getElementById('modalClinico').classList.contains('active');
 
-        // Refrescar opciones del desplegable "Médico Solicitante" (sin reiniciar TomSelect)
-        const selectMedico = document.getElementById('medico');
-        if (selectMedico) {
-          selectMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
-          (listas.medicos || []).forEach(function(m) {
-            const opt = document.createElement('option');
-            opt.value = m.nombre;
-            opt.textContent = m.nombre;
-            selectMedico.appendChild(opt);
-          });
+        if (!_modalAbierto) {
+          // Refrescar el desplegable "Ejecutivo que registra" conservando la selección actual
+          const _selEjec = document.getElementById('ejecutivo');
+          const _prevEjecVal = _selEjec ? _selEjec.value : '';
+          rellenarSelect('ejecutivo', listas.ejecutivos);
+          if (_prevEjecVal && _selEjec) _selEjec.value = _prevEjecVal;
+
+          // Refrescar médicos respetando el filtro de especialidad activo y conservando la selección
+          const _selMed = document.getElementById('medico');
+          const _prevMedVal = _selMed ? _selMed.value : '';
+          const _espActual = document.getElementById('especialidadFiltro') ? document.getElementById('especialidadFiltro').value : '';
+          if (_espActual) {
+            filtrarMedicosPorEspecialidad();
+          } else if (_selMed) {
+            _selMed.innerHTML = '<option value="">-- Seleccionar --</option>';
+            (listas.medicos || []).forEach(function(m) {
+              const opt = document.createElement('option');
+              opt.value = m.nombre;
+              opt.textContent = m.nombre;
+              _selMed.appendChild(opt);
+            });
+          }
+          if (_prevMedVal && _selMed) _selMed.value = _prevMedVal;
         }
 
         // Redibujar la tabla de pacientes para refrescar los badges de especialidad
@@ -435,22 +1736,37 @@
     sc.style.background = '';
     sc.style.boxShadow = '';
     sc.style.borderRadius = '';
-    sc.style.justifyContent = 'flex-end';
+    sc.style.justifyContent = 'space-between';
     sc.style.gap = '12px';
     if (!document.getElementById('searchPillBandeja')) {
       sc.innerHTML = `
-        <div id="searchPillBandeja" onclick="toggleBuscadorBandeja()" style="display:flex; align-items:center; gap:10px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); border-radius:50px; box-shadow:0 4px 10px rgba(37,99,235,0.35); padding:0 18px; height:44px; cursor:pointer;">
-          <span style="color:white; font-size:14px; font-weight:700; white-space:nowrap;">Búsqueda</span>
-          <i class="fas fa-search" style="color:white; font-size:15px; flex-shrink:0;"></i>
-          <input type="text" id="inputBuscar" placeholder="Buscar por DNI o Nombre..." oninput="filtrarPacientes()" onclick="event.stopPropagation()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="width:0; opacity:0; padding:0; border:none; outline:none; background:white; border-radius:40px; height:32px; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease; color:#334155; font-size:14px;">
+        <div class="saludo-bloque">
+          <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
+          <div class="saludo-texts">
+            <span class="welcome-text">Bienvenido</span>
+            <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+          </div>
         </div>
-        <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" style="display:flex; align-items:center; gap:8px; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); color:white; border-radius:50px; padding:0 20px; height:44px; font-size:14px; font-weight:700; box-shadow:0 4px 10px rgba(37,99,235,0.35); transition:transform 0.2s ease, box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 7px 16px rgba(37,99,235,0.45)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,99,235,0.35)';">
-          <span>Actualizar</span> <i class="fas fa-sync-alt"></i>
-        </button>
+        <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+          <div id="searchPillBandeja" style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+            <input type="text" id="inputBuscar" class="search-bar-input" placeholder="Buscar paciente o caso..." oninput="filtrarPacientes()" onblur="setTimeout(cerrarBuscadorBandeja, 150)" data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+            <button onclick="toggleBuscadorBandeja()" title="Buscar" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button onclick="cargarDatosDelServidor()" title="Actualizar Datos" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button id="btnCampana" title="Notificaciones" onclick="togglePanelNotificaciones(event)" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease; position:relative;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="far fa-bell"></i>
+            <span id="bellDot" class="bell-dot" style="display:none;"></span>
+          </button>
+        </div>
       `;
     }
 
     const _sp = document.getElementById('searchPillBandeja'); if (_sp) _sp.style.visibility = 'visible';
+    aplicarSaludo();
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
@@ -486,6 +1802,16 @@
     }
 
     document.getElementById('numeroContador').textContent = pacientesFiltrados.length;
+    const dotPendientes = document.getElementById('dotPendientes');
+    if (dotPendientes) {
+      if (nombreBandeja === 'Pendiente' && pacientesFiltrados.length === 0) {
+        dotPendientes.style.background = '#10b981';
+      } else if (nombreBandeja === 'Pendiente') {
+        dotPendientes.style.background = '#dc3545';
+      } else {
+        dotPendientes.style.background = '';
+      }
+    }
     const inputBuscarEl = document.getElementById('inputBuscar');
     if (inputBuscarEl) inputBuscarEl.value = "";
     
@@ -713,6 +2039,7 @@
     document.getElementById('medico').innerHTML ='<option value="">-- Seleccionar --</option>';
     subEstadoSeleccionado = "";
     medicoLectorSeleccionado = "";
+    ejecutivoCierreSeleccionado = "";
     actualizarColorBadgeSubEstado('');
     
     document.getElementById('textoSubEstadoBadge').textContent = "Sub-Estado";
@@ -1073,38 +2400,56 @@
       const medicoLectorTexto = esDesestimado ? 'Sin registro' : (p.medicoLector || 'No asignado');
       const especialidadTexto = esDesestimado ? 'Sin registro' : obtenerEspecialidadMedico(p.medicoLector);
       document.getElementById('btnEliminarPaciente').onclick = function () {
+        const esDark = document.body.classList.contains('dark');
+        const popupBg     = esDark ? 'linear-gradient(160deg,#0D1428 0%,#0A0F1E 50%,#070C18 100%)' : '#ffffff';
+        const tituloColor = esDark ? '#7BA7F5' : '#2b1070';
+        const labelColor  = esDark ? '#5B6585' : '#475569';
+        const fieldBg     = esDark ? '#1C2033' : '#f8fafc';
+        const fieldBorder = esDark ? 'rgba(255,255,255,0.10)' : '#cbd5e1';
+        const chipBg      = esDark ? '#252B45' : '#f1f5f9';
+        const chipColor   = esDark ? '#C9D1E9' : '#334155';
+        const btnColor    = esDark ? 'linear-gradient(135deg,#3B5FD9,#5B3DB8)' : '#2b1070';
+
+        const chipStyle = `background:${chipBg}; color:${chipColor}; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;`;
+        const fieldStyle = `background:${fieldBg}; border:1px solid ${fieldBorder}; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;`;
+
+        const fechaCierreHtml = p.fechaCierre
+          ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;">
+               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span>
+               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}</span>
+             </div>`
+          : `<span style="${chipStyle}">Sin fecha registrada</span>`;
+
         Swal.fire({
           target: document.getElementById('modalClinico'),
           width: 470,
-          confirmButtonColor: '#2b1070',
+          background: popupBg,
+          confirmButtonColor: esDark ? '#3B5FD9' : '#2b1070',
           html: `
-            <div style="font-size:20px; font-weight:700; color:#2b1070; margin-bottom:27px; text-align:center;">Información de Lectura</div>
-            <div style="border:none; box-shadow:none; padding:8px 0; border-radius:20px; padding:14px; text-align:left;">
+            <div style="font-size:20px; font-weight:700; color:${tituloColor}; margin-bottom:27px; text-align:center;">Información de Lectura</div>
+            <div style="padding:14px; text-align:left;">
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Médico Lector</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Médico Lector</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Especialidad</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${especialidadTexto}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Especialidad</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}">${especialidadTexto}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Ejecutivo de Cierre</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                    <!-- AQUÍ ESTÁ LA CORRECCIÓN CLAVE -->
-                    <span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${p.ejecutivoCierre || 'No asignado'}</span>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Ejecutivo de Cierre</div>
+                  <div style="${fieldStyle}">
+                    <span style="${chipStyle}">${p.ejecutivoCierre || 'No asignado'}</span>
                   </div>
                 </div>
                 <div>
-                  <div style="font-size:14px; font-weight:700; color:#475569; margin-bottom:8px;">Fecha de Cierre</div>
-                  <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;">
-                  ${p.fechaCierre ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;"><span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span><span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false})}</span></div>` : `<span style="background:#f1f5f9; color:#334155; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;">Sin fecha registrada</span>`}
-                  </div>
+                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Fecha de Cierre</div>
+                  <div style="${fieldStyle}">${fechaCierreHtml}</div>
                 </div>
               </div>
             </div>
@@ -1216,7 +2561,6 @@
     
     if (camposFaltantes.length > 0) {
       Swal.fire({
-        target: document.getElementById('modalClinico'),
         icon: 'error',
         title: 'Campos requeridos',
         html: `<div style="text-align:left; font-size:14px; line-height:1.7;">Faltan completar:<br><br>${camposFaltantes.map(c => `• ${c}`).join('<br>')}</div>`,
@@ -1236,7 +2580,6 @@
 
     if (document.getElementById('estado').value === 'En Proceso' && (esLecturaRealizada || esDesestimado)) {
       Swal.fire({
-        target: document.getElementById('modalClinico'),
         icon: 'question',
         title: esDesestimado ? 'Desestimar Caso' : 'Completar Caso',
         html: esDesestimado ? `¿Desea cerrar este caso como <b>DESESTIMADO</b>?` : `¿Desea marcar este caso como COMPLETADO?`,
@@ -1297,7 +2640,6 @@
     }
 
     Swal.fire({
-      target: document.getElementById('modalClinico'),
       title: 'Guardando registro...',
       text: 'Por favor espere.',
       allowOutsideClick: false,
@@ -1307,7 +2649,6 @@
     google.script.run
       .withSuccessHandler(function(mensaje) {
         Swal.fire({
-          target: document.getElementById('modalClinico'),
           icon: 'success',
           title: '¡Operación Exitosa!',
           text: mensaje,
@@ -1316,13 +2657,12 @@
         }).then(() => {
           cerrarModal();
           // Forzamos el salto de bandeja
-          bandejaActual = nuevaBandeja; 
+          bandejaActual = nuevaBandeja;
           cargarDatosDelServidor();
         });
       })
       .withFailureHandler(function(err) {
         Swal.fire({
-          target: document.getElementById('modalClinico'),
           icon: 'error',
           title: 'Oops...',
           text: err.message || 'Error desconocido.',
@@ -1389,6 +2729,7 @@
     const ib = document.getElementById('inputBuscar');
     if (ib) ib.value = '';
     
+    const esDark = document.body.classList.contains('dark');
     const searchContainer = document.getElementById('searchContainer');
     searchContainer.style.display = 'flex';
     searchContainer.style.margin = '';
@@ -1397,22 +2738,35 @@
     searchContainer.style.boxShadow = '';
     searchContainer.style.borderRadius = '';
     searchContainer.style.position = 'relative';
-    searchContainer.style.justifyContent = 'flex-end';
+    searchContainer.style.justifyContent = 'space-between';
     searchContainer.style.gap = '';
+    const bgIndicador = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : 'linear-gradient(145deg,#E9ECEF,#F3F9FA)';
+    const colorIndicador = esDark ? '#99CAFF' : '#004EE0';
     searchContainer.innerHTML = `
-      <div style="display:flex; align-items:center; gap:10px;">
-        <input type="text" id="inputBuscadorMedico" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:44px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-        <div id="medicoIndicador" style="flex:0 0 auto; height:44px; min-width:44px; border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
+      <div class="saludo-bloque">
+        <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
+        <div class="saludo-texts">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
+          <input type="text" id="inputBuscadorMedico" class="search-bar-input" oninput="buscarMedicoEstadisticas()" onblur="setTimeout(cerrarBuscadorEstadisticas,150)" placeholder="Buscar médico por nombre..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; border:1px solid #e2e8f0; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="medicoIndicador" style="flex:0 0 auto; height:40px; min-width:40px; border-radius:50px; background:${bgIndicador}; box-shadow:0 6px 14px rgba(0,78,224,0.28); color:${colorIndicador}; display:flex; align-items:center; justify-content:center; padding:0; font-size:16px; font-weight:700; white-space:nowrap; transition:all 0.3s ease;">
           <i class="fas fa-user-md"></i>
         </div>
-        <button onclick="toggleBuscadorEstadisticas()" title="Buscar médico" style="flex:0 0 auto; width:44px; height:44px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:16px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"><i class="fas fa-search"></i></button>
       </div>
     `;
+    aplicarSaludo();
     resetearPanelEstadisticas();
   }
 
-let mesPanelSeleccionado = new Date().getMonth();  
+let mesPanelSeleccionado = new Date().getMonth();
 let anioPanelSeleccionado = new Date().getFullYear();
+let ultimosPacientesPanelCasos = null;
 // NUEVAS VARIABLES PARA QUE LA BARRA SE MUEVA INDEPENDIENTEMENTE
 let mesInicioBarraPanel = new Date().getMonth() > 0 ? new Date().getMonth() - 1 : 11;
 let anioBarraPanel = new Date().getMonth() > 0 ? new Date().getFullYear() : new Date().getFullYear() - 1;
@@ -1429,43 +2783,70 @@ function mostrarVistaPanelCasos(){
     document.getElementById('menu-PanelCasos').classList.add('active');  
 
     // Inyectar la estructura visual de la barra horizontal
+    const esDark = document.body.classList.contains('dark');
+    const bgBarraTabs = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : 'linear-gradient(145deg,#E9ECEF,#F3F9FA)';
+    const bgTabPill   = esDark ? 'linear-gradient(145deg,#004EE0,#042E7B)' : '#ffffff';
+    const sombTabPill = esDark ? '3px 3px 7px rgba(0,0,0,0.45), -3px -3px 7px rgba(4,46,123,0.6)' : '3px 3px 7px rgba(163,177,198,0.55), -3px -3px 7px #ffffff';
       const searchContainer = document.getElementById('searchContainer');
     searchContainer.style.display = 'flex';
     searchContainer.style.alignItems = 'center';
-    searchContainer.style.background = 'white';
-    searchContainer.style.boxShadow = '0 4px 14px rgba(15,23,42,0.08)';
-    searchContainer.style.padding = '10px 32px';
-    searchContainer.style.borderRadius = '0';
-    searchContainer.style.margin = '-32px -32px 15px -32px';
+    searchContainer.style.background = '';
+    searchContainer.style.boxShadow = '';
+    searchContainer.style.padding = '';
+    searchContainer.style.borderRadius = '';
+    searchContainer.style.margin = '';
     searchContainer.style.position = 'relative';
     searchContainer.style.justifyContent = '';
     searchContainer.style.gap = '';
     searchContainer.innerHTML = `
-      <div id="barraTabsPanel" style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:flex; align-items:stretch; background:#eef2f7; border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 6px 16px rgba(15,23,42,0.10);">
-        <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 12px rgba(37,99,235,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
-        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#ffffff; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
+      <div class="saludo-bloque">
+        <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
+        <div class="saludo-texts">
+          <span class="welcome-text">Bienvenido</span>
+          <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+        </div>
+      </div>
+
+      <!-- Pestañas ocultas por ahora (se reubicarán más adelante) -->
+      <div id="barraTabsPanel" style="display:none; position:absolute; left:32px; top:50%; transform:translateY(-50%); align-items:stretch; background:${bgBarraTabs}; border:none; border-radius:40px; padding:5px; gap:2px; box-shadow:0 4px 12px rgba(15,23,42,0.06);">
+        <div id="tabPanelPill" style="position:absolute; top:5px; left:5px; width:0; height:calc(100% - 10px); border-radius:40px; background:${bgTabPill}; box-shadow:${sombTabPill}; transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;"></div>
+        <button data-tabp="examenes" onclick="seleccionarTabPanelCasos('examenes')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#004EE0; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-vials"></i> Exámenes del Mes</button>
         <button data-tabp="seguro" onclick="seleccionarTabPanelCasos('seguro')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-shield-alt"></i> Pacientes por Seguro</button>
         <button data-tabp="base" onclick="seleccionarTabPanelCasos('base')" style="position:relative; z-index:1; display:flex; align-items:center; gap:8px; border:none; cursor:pointer; padding:10px 20px; border-radius:40px; font-size:13px; font-weight:700; background:transparent; color:#64748b; white-space:nowrap; transition:color 0.3s ease;"><i class="fas fa-chart-pie"></i> Base del Mes</button>
       </div>
 
-      <div style="margin-left: auto; display:flex; align-items:center; gap:12px;">
-
-        <div id="panelToolbar" style="flex:0 0 auto; display:flex; align-items:center; background:#eef2f7; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); padding:4px;">
-          <input type="text" id="inputBuscarCasoPanel" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
-          <button onclick="toggleBuscadorPanel()" title="Buscar" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35); color:white; display:flex; align-items:center; justify-content:center; font-size:15px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+      <!-- Grupo derecho: Búsqueda + Descargar Base + píldora de fecha (izquierda vacía) -->
+      <div style="flex:0 0 auto; display:flex; align-items:center; gap:12px; margin-left:auto;">
+        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; background:transparent; box-shadow:none; padding:0;">
+          <input type="text" id="inputBuscarCasoPanel" class="search-bar-input" oninput="filtrarListaPanel()" onblur="setTimeout(cerrarBuscadorPanel, 150)" placeholder="Buscar paciente o caso..." data-abierto="false" style="height:40px; width:0; opacity:0; padding:0; margin-right:0; border:none; border-radius:40px; outline:none; color:#334155; font-size:14px; background:white; box-sizing:border-box; overflow:hidden; transition:all 0.3s ease;">
+          <button onclick="toggleBuscadorPanel()" title="Buscar" class="btn-icon-action" style="flex:0 0 auto; width:36px; height:36px; border-radius:50%; border:none; cursor:pointer; background:var(--accent); box-shadow:0 6px 14px rgba(0,78,224,0.28); color:var(--on-accent); display:flex; align-items:center; justify-content:center; font-size:14px; transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
             <i class="fas fa-search"></i>
           </button>
         </div>
+        <div style="position:relative; flex:0 0 auto; ${(window.__rolUsuario||'').toLowerCase()==='ejecutivo' ? 'display:none;' : ''}">
+          <button id="btnDescargarBase" onclick="descargarBasePanel(event)" title="Descargar Base" style="display:flex; align-items:center; gap:8px; cursor:pointer; background:transparent; color:var(--accent); border:1.5px solid var(--accent); border-radius:50px; padding:8px 18px; font-size:14px; font-weight:700; transition:background 0.2s ease, color 0.2s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.14)':'var(--accent)'; this.style.color=d?'#ffffff':'var(--on-accent)';" onmouseout="var d=document.body.classList.contains('dark'); this.style.background='transparent'; this.style.color=d?'rgba(255,255,255,0.80)':'var(--accent)';">
+            Descargar Base <i class="fas fa-chevron-down" style="font-size:11px;"></i>
+          </button>
+          <div id="menuDescargarBase" data-abierto="false" style="position:absolute; top:calc(100% + 8px); left:0; min-width:200px; background:var(--surface); border-radius:12px; box-shadow:0 10px 28px rgba(15,23,42,0.18); overflow:hidden; max-height:0; opacity:0; transition:max-height 0.3s ease, opacity 0.25s ease; z-index:60;">
+            <div onclick="cerrarMenuDescargarBase(); descargarTopExamenes();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Top Exámenes</div>
+            <div onclick="cerrarMenuDescargarBase(); descargarPacientesPorSeguro();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Paciente por Seguro</div>
+            <div onclick="cerrarMenuDescargarBase(); descargarBaseMes();" style="padding:11px 16px; cursor:pointer; font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; transition:background 0.15s ease;" onmouseover="var d=document.body.classList.contains('dark'); this.style.background=d?'rgba(255,255,255,0.08)':'var(--accent-2)';" onmouseout="this.style.background='transparent'">Base del Mes</div>
+          </div>
+        </div>
 
-        <div style="width: 380px; padding-right: 5px;">
-          <div class="month-selector" id="barraMesesDinamicaPanel" style="background:#eef2f7; border:none; border-radius:50px; box-shadow:0 6px 16px rgba(15,23,42,0.10); margin:0; position:relative;"></div>
+        <div id="pildoraFechaPanel" onclick="abrirSelectorFechaPanel()" title="Cambiar mes / año" style="flex:0 0 auto; display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--accent); color:var(--on-accent); border-radius:50px; padding:9px 18px; font-size:14px; font-weight:700; box-shadow:0 6px 14px rgba(0,78,224,0.28); transition:transform 0.2s ease;" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
+          <i class="fas fa-calendar-alt"></i>
+          <span id="textoFechaPanel">Mes Año</span>
+          <i class="fas fa-caret-down" style="opacity:0.85;"></i>
         </div>
       </div>
     `;
 
-    generarBarraMesesPanel();
+    aplicarSaludo();
+    actualizarPildoraFechaPanel();
     renderizarPacientesJunio(); // Forzamos el renderizado al entrar
     setTimeout(function() { seleccionarTabPanelCasos('examenes'); }, 50);
+    _aplicarRestriccionesRol();
 }
 
 // -------------------------------------------------------------
@@ -1475,13 +2856,13 @@ function cambiarMesVistaPanel(direccion) {
   mesInicioBarraPanel += direccion;
   if (mesInicioBarraPanel > 11) { mesInicioBarraPanel = 0; anioBarraPanel++; }
   else if (mesInicioBarraPanel < 0) { mesInicioBarraPanel = 11; anioBarraPanel--; }
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
 }
 
 function activarMesFiltroPanel(mesIndex, anio) {
   mesPanelSeleccionado = mesIndex;
   anioPanelSeleccionado = anio;
-  generarBarraMesesPanel();
+  actualizarPildoraFechaPanel();
   renderizarPacientesJunio(); // Actualiza los gráficos y listas al instante
 }
 
@@ -1535,7 +2916,7 @@ function seleccionarTabPanelCasos(tab) {
   const pill = document.getElementById('tabPanelPill');
   bar.querySelectorAll('button[data-tabp]').forEach(btn => {
     const activo = btn.getAttribute('data-tabp') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1554,7 +2935,7 @@ function seleccionarTabCalendario(tab) {
   const pill = document.getElementById('tabCalendarioPill');
   bar.querySelectorAll('button[data-tabc]').forEach(btn => {
     const activo = btn.getAttribute('data-tabc') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -1612,14 +2993,14 @@ function generarBarraMesesPanel() {
     contenedor.style.position = 'relative';
     pill = document.createElement('div');
     pill.id = 'pillMesPanel';
-    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 12px rgba(37,99,235,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
+    pill.style.cssText = 'position:absolute; top:4px; left:0; width:0; height:calc(100% - 8px); border-radius:50px; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 12px rgba(0,78,224,0.40); transition:all 0.35s cubic-bezier(0.4,0,0.2,1); z-index:0; opacity:0;';
     contenedor.appendChild(pill);
   }
 
   // Quitar los items viejos pero conservar la píldora
   Array.from(contenedor.querySelectorAll('.month-item')).forEach(n => n.remove());
 
-  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#3b82f6,#1d4ed8); box-shadow:0 4px 10px rgba(37,99,235,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
+  let html = `<div class="month-item" style="cursor:pointer; flex:0 0 auto; padding:0 16px; color:#ffffff; background:linear-gradient(90deg,#004EE0,#042E7B); box-shadow:0 4px 10px rgba(0,78,224,0.35);" onclick="abrirSelectorFechaPanel()">${anioBarraPanel} <i class="fas fa-caret-down" style="margin-left:6px;"></i></div>`;
   html += `<div class="month-item" style="flex: 0 0 40px;" onclick="cambiarMesVistaPanel(-1)"><i class="fas fa-chevron-left"></i></div>`;
 
   for (let i = 0; i < 3; i++) {
@@ -1645,60 +3026,341 @@ function generarBarraMesesPanel() {
   });
 }
 
-function abrirSelectorFechaPanel() {  
-  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];  
-  const anioActualSistema = new Date().getFullYear();  
-  const anioLimite = anioActualSistema + 5;   
-  let opcionesAnio = '';  
-  for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioPanelSeleccionado ? 'selected' : ''}>${i}</option>`;  
-    
-  let opcionesMes = '';  
-  for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesPanelSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;  
+// Actualiza la píldora con el mes y año seleccionados del Panel de Casos
+function actualizarPildoraFechaPanel() {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const el = document.getElementById('textoFechaPanel');
+  if (el) el.textContent = meses[mesPanelSeleccionado] + ' ' + anioPanelSeleccionado;
+}
 
-  Swal.fire({  
-    title: 'Filtrar Casos por Fecha',  
-    width: 280,  
-    html: `  
-      <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">  
-        <div>  
-          <label style="font-size:12px; font-weight:700; color:#475569;">Año</label>  
-          <select id="popAnioPanel" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">  
-            ${opcionesAnio}  
-          </select>  
-        </div>  
-        <div>  
-          <label style="font-size:12px; font-weight:700; color:#475569;">Mes</label>  
-          <select id="popMesPanel" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">  
-            ${opcionesMes}  
-          </select>  
-        </div>  
-      </div>  
-    `,  
-    showCancelButton: true,  
-    confirmButtonText: 'Aplicar',  
-    cancelButtonText: 'Cancelar',  
-    confirmButtonColor: '#2b1070',  
-    cancelButtonColor: '#64748b',  
-    preConfirm: () => {  
-      return {  
-        anio: parseInt(document.getElementById('popAnioPanel').value),  
-        mes: parseInt(document.getElementById('popMesPanel').value)  
-      }  
-    }  
-  }).then((result) => {  
-    if (result.isConfirmed) {  
-      mesPanelSeleccionado = result.value.mes;  
-      anioPanelSeleccionado = result.value.anio;  
+// Botón "Descargar Base" (Panel de Casos): despliega el menú con efecto cortina
+function descargarBasePanel(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  if (menu.dataset.abierto === 'true') {
+    cerrarMenuDescargarBase();
+  } else {
+    menu.style.maxHeight = '240px';
+    menu.style.opacity = '1';
+    menu.dataset.abierto = 'true';
+    setTimeout(function(){ document.addEventListener('click', cerrarMenuDescargarBaseFuera); }, 0);
+  }
+}
+function cerrarMenuDescargarBase() {
+  const menu = document.getElementById('menuDescargarBase');
+  if (!menu) return;
+  menu.style.maxHeight = '0';
+  menu.style.opacity = '0';
+  menu.dataset.abierto = 'false';
+  document.removeEventListener('click', cerrarMenuDescargarBaseFuera);
+}
+function cerrarMenuDescargarBaseFuera(e) {
+  const btn = document.getElementById('btnDescargarBase');
+  const menu = document.getElementById('menuDescargarBase');
+  if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) {
+    cerrarMenuDescargarBase();
+  }
+}
 
-      // Acomoda la barra para que el mes elegido quede al centro visible
+function descargarTopExamenes() {
+  if (!bdPacientes || bdPacientes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay pacientes cargados para generar el reporte.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  // Filtrar pacientes del mes/año seleccionado en el panel
+  const mesBuscado = mesPanelSeleccionado + 1;
+  const anioBuscado = anioPanelSeleccionado;
+  const nombresMesesTop = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const etiquetaMes = nombresMesesTop[mesPanelSeleccionado] + ' ' + anioBuscado;
+
+  const pacientesMes = bdPacientes.filter(function(p) {
+    if (!p.fechaCreacion) return false;
+    const fc = p.fechaCreacion.toString();
+    if (fc.includes('/')) {
+      const partes = fc.split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[2].split(' ')[0], 10) === anioBuscado;
+    } else if (fc.includes('-')) {
+      const partes = fc.split('T')[0].split('-');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[0], 10) === anioBuscado;
+    }
+    return false;
+  });
+
+  if (pacientesMes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin registros', text: 'No hay pacientes registrados en ' + etiquetaMes + '.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const conteo = {};
+  pacientesMes.forEach(function(p) {
+    if (!p.listaExamenes || !Array.isArray(p.listaExamenes)) return;
+    p.listaExamenes.forEach(function(ex) {
+      const nombre = (ex || '').toString().trim();
+      if (!nombre) return;
+      conteo[nombre] = (conteo[nombre] || 0) + 1;
+    });
+  });
+
+  const ordenado = Object.entries(conteo).sort(function(a, b) { return b[1] - a[1]; });
+  if (ordenado.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin exámenes', text: 'Los pacientes de ' + etiquetaMes + ' no tienen exámenes registrados.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Generando Excel...',
+    text: 'Creando reporte de ' + etiquetaMes + ', espera un momento.',
+    allowOutsideClick: false,
+    didOpen: function() { Swal.showLoading(); }
+  });
+
+  const filas = ordenado.map(function(entry, idx) {
+    return [idx + 1, entry[0], entry[1]];
+  });
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      Swal.close();
+      if (!result || !result.ok) {
+        Swal.fire({ icon: 'error', title: 'Error al generar', text: (result && result.error) || 'No se pudo crear el archivo.', confirmButtonColor: '#004EE0' });
+        return;
+      }
+      const exportUrl = 'https://docs.google.com/spreadsheets/d/' + result.fileId + '/export?format=xlsx';
+      window.open(exportUrl, '_blank');
+    })
+    .withFailureHandler(function(err) {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
+    })
+    .crearTopExamenesExcel(filas, etiquetaMes);
+}
+
+function descargarPacientesPorSeguro() {
+  if (!bdPacientes || bdPacientes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay pacientes cargados para generar el reporte.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const mesBuscado = mesPanelSeleccionado + 1;
+  const anioBuscado = anioPanelSeleccionado;
+  const nombresMesesTop = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const etiquetaMes = nombresMesesTop[mesPanelSeleccionado] + ' ' + anioBuscado;
+
+  const pacientesMes = bdPacientes.filter(function(p) {
+    if (!p.fechaCreacion) return false;
+    const fc = p.fechaCreacion.toString();
+    if (fc.includes('/')) {
+      const partes = fc.split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[2].split(' ')[0], 10) === anioBuscado;
+    } else if (fc.includes('-')) {
+      const partes = fc.split('T')[0].split('-');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[0], 10) === anioBuscado;
+    }
+    return false;
+  });
+
+  if (pacientesMes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin registros', text: 'No hay pacientes registrados en ' + etiquetaMes + '.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const conteo = {};
+  pacientesMes.forEach(function(p) {
+    const seg = (p.seguro || 'Sin seguro').trim();
+    conteo[seg] = (conteo[seg] || 0) + 1;
+  });
+
+  const ordenado = Object.entries(conteo).sort(function(a, b) { return b[1] - a[1]; });
+
+  Swal.fire({
+    title: 'Generando Excel...',
+    text: 'Creando reporte de ' + etiquetaMes + ', espera un momento.',
+    allowOutsideClick: false,
+    didOpen: function() { Swal.showLoading(); }
+  });
+
+  const filas = ordenado.map(function(entry, idx) {
+    return [idx + 1, entry[0], entry[1]];
+  });
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      Swal.close();
+      if (!result || !result.ok) {
+        Swal.fire({ icon: 'error', title: 'Error al generar', text: (result && result.error) || 'No se pudo crear el archivo.', confirmButtonColor: '#004EE0' });
+        return;
+      }
+      const exportUrl = 'https://docs.google.com/spreadsheets/d/' + result.fileId + '/export?format=xlsx';
+      window.open(exportUrl, '_blank');
+    })
+    .withFailureHandler(function(err) {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
+    })
+    .crearSeguroExcel(filas, etiquetaMes);
+}
+
+function descargarBaseMes() {
+  if (!bdPacientes || bdPacientes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin datos', text: 'No hay pacientes cargados para generar el reporte.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  const mesBuscado = mesPanelSeleccionado + 1;
+  const anioBuscado = anioPanelSeleccionado;
+  const nombresMesesTop = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const etiquetaMes = nombresMesesTop[mesPanelSeleccionado] + ' ' + anioBuscado;
+
+  const pacientesMes = bdPacientes.filter(function(p) {
+    if (!p.fechaCreacion) return false;
+    const fc = p.fechaCreacion.toString();
+    if (fc.includes('/')) {
+      const partes = fc.split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[2].split(' ')[0], 10) === anioBuscado;
+    } else if (fc.includes('-')) {
+      const partes = fc.split('T')[0].split('-');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) === mesBuscado && parseInt(partes[0], 10) === anioBuscado;
+    }
+    return false;
+  });
+
+  if (pacientesMes.length === 0) {
+    Swal.fire({ icon: 'info', title: 'Sin registros', text: 'No hay pacientes registrados en ' + etiquetaMes + '.', confirmButtonColor: '#004EE0' });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Generando Base del Mes...',
+    text: 'Preparando Excel de ' + etiquetaMes + ', espera un momento.',
+    allowOutsideClick: false,
+    didOpen: function() { Swal.showLoading(); }
+  });
+
+  const filas = pacientesMes.map(function(p) {
+    const examenes = Array.isArray(p.listaExamenes) ? p.listaExamenes.join(', ') : (p.listaExamenes || '');
+    const subE = (p.subEstado || '').toLowerCase().trim();
+    let resultadoCierre = '';
+    if (p.estado === 'Completado') {
+      resultadoCierre = subE === 'desestimado' ? 'Desestimado' : 'Completado';
+    }
+    return [
+      p.fechaCreacion   || '',
+      p.estado          || '',
+      p.caso            || '',
+      p.dni             || '',
+      p.nombre          || '',
+      examenes,
+      p.telefono        || '',
+      p.seguro          || '',
+      p.medico          || '',
+      '',                           // Fecha de Recojo (no almacenado aún)
+      '',                           // Fecha de Envío de Resultados (no almacenado aún)
+      p.ejecutivo       || '',
+      p.precioTotal     || '',
+      p.medicoLector    || '',
+      p.vencimiento     || '',
+      resultadoCierre
+    ];
+  });
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      Swal.close();
+      if (!result || !result.ok) {
+        Swal.fire({ icon: 'error', title: 'Error al generar', text: (result && result.error) || 'No se pudo crear el archivo.', confirmButtonColor: '#004EE0' });
+        return;
+      }
+      const exportUrl = 'https://docs.google.com/spreadsheets/d/' + result.fileId + '/export?format=xlsx';
+      window.open(exportUrl, '_blank');
+    })
+    .withFailureHandler(function(err) {
+      Swal.close();
+      Swal.fire({ icon: 'error', title: 'Error', text: (err && err.message) || 'No se pudo conectar con el servidor.', confirmButtonColor: '#004EE0' });
+    })
+    .crearBaseMesExcel(filas, etiquetaMes);
+}
+
+function _csvEscape(val) {
+  const s = (val || '').toString();
+  return s.includes(',') || s.includes('"') || s.includes('\n')
+    ? '"' + s.replace(/"/g, '""') + '"'
+    : s;
+}
+
+function _csvFechaHoy() {
+  const d = new Date();
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+
+function abrirSelectorFechaPanel() {
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const anioActualSistema = new Date().getFullYear();
+  const anioLimite = anioActualSistema + 5;
+  let opcionesAnio = '';
+  for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioPanelSeleccionado ? 'selected' : ''}>${i}</option>`;
+
+  let opcionesMes = '';
+  for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesPanelSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;
+
+  const esDark = document.body.classList.contains('dark');
+  const cLabel  = esDark ? 'rgba(255,255,255,0.60)' : '#475569';
+  const cSelect = esDark ? 'background:#1C2033; color:#C9D1E9; border:1px solid rgba(255,255,255,0.12);' : 'background:#fff; color:#334155; border:1px solid #cbd5e1;';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
+  Swal.fire({
+    title: 'Filtrar Casos por Fecha',
+    width: 280,
+    background: bgModal,
+    html: `
+      <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
+        <div>
+          <label style="font-size:12px; font-weight:700; color:${cLabel};">Año</label>
+          <select id="popAnioPanel" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
+            ${opcionesAnio}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; color:${cLabel};">Mes</label>
+          <select id="popMesPanel" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
+            ${opcionesMes}
+          </select>
+        </div>
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Aplicar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#2b1070',
+    cancelButtonColor: '#64748b',
+    preConfirm: () => {
+      return {
+        anio: parseInt(document.getElementById('popAnioPanel').value),
+        mes: parseInt(document.getElementById('popMesPanel').value)
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      mesPanelSeleccionado = result.value.mes;
+      anioPanelSeleccionado = result.value.anio;
+
       anioBarraPanel = result.value.anio;
       mesInicioBarraPanel = result.value.mes > 0 ? result.value.mes - 1 : 11;
       if(result.value.mes === 0) anioBarraPanel--;
 
-      generarBarraMesesPanel(); 
-      renderizarPacientesJunio(); 
-    }  
-  });  
+      actualizarPildoraFechaPanel();
+      renderizarPacientesJunio();
+    }
+  });
 }
 
 
@@ -1743,7 +3405,6 @@ function abrirSelectorFechaPanel() {
   renderizarListaMedicosPersonal();
   renderizarEjecutivosBloque8();
   renderizarMedicoLectorMes();
-  setTimeout(function() { setTabActivo('medico'); }, 40);
       google.script.run
   .withSuccessHandler(function(conteo) {
     const el1 = document.getElementById('conteoMedicosGenerales');
@@ -1776,7 +3437,7 @@ function abrirSelectorFechaPanel() {
       const tbody = document.getElementById('tablaUltimosMedico');
       if (tbody) tbody.innerHTML = sinDatos;
       const carrusel = document.getElementById('carruselContenedorTarjetas');
-      if (carrusel) carrusel.innerHTML = '<div style="color:#cbd5e1; font-size:12px; font-weight:600; text-align:center; padding-top:40px;">Sin resultados</div>';
+      if (carrusel) carrusel.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:100%; background:white; border:1px solid #e2e8f0; border-radius:16px; padding:20px 24px; box-sizing:border-box; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px;"><i class="fas fa-search" style="font-size:22px; color:#cbd5e1;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin datos</span></div>`;
       const controles = document.getElementById('controlesCarrusel');
       if (controles) controles.style.display = 'none';
       const burbujas = document.getElementById('contenedorBurbujasSeguros');
@@ -2032,12 +3693,15 @@ function abrirSelectorFechaPanel() {
   }
 
   let animacionDonutId = null;
+  let ultimoDonutMedico = null;
 
   function dibujarDonutMedico(solicitados, leidos) {
+    ultimoDonutMedico = { solicitados, leidos };
     const canvas = document.getElementById('donutMedico');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+    const esDark = document.body.classList.contains('dark');
+
     // Cancelar animación anterior si el usuario hace clic muy rápido
     if (animacionDonutId) {
       cancelAnimationFrame(animacionDonutId);
@@ -2048,16 +3712,16 @@ function abrirSelectorFechaPanel() {
     const cx = 130;
     const cy = 130;
     const radio = 95;
-    const grosor = 26;
+    const grosor = 34;
 
     if (solicitados === 0 && leidos === 0) {
       ctx.clearRect(0, 0, 260, 260);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#e2e8f0';
+      ctx.strokeStyle = esDark ? '#2D3451' : '#e2e8f0';
       ctx.lineWidth = grosor;
       ctx.stroke();
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = esDark ? '#5B6585' : '#94a3b8';
       ctx.font = 'bold 16px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -2065,12 +3729,25 @@ function abrirSelectorFechaPanel() {
       return;
     }
 
-    const colorSolicitados = '#2b1070';
-    const colorLeidos = '#10b981';
+    // Degradados diagonales para los dos colores del anillo
+    const gradAzul = ctx.createLinearGradient(cx - radio, cy - radio, cx + radio, cy + radio);
+    if (esDark) {
+      gradAzul.addColorStop(0, '#6B8DF5');
+      gradAzul.addColorStop(1, '#2A4FB0');
+    } else {
+      gradAzul.addColorStop(0, '#3B82F6');
+      gradAzul.addColorStop(1, '#1e3a8a');
+    }
+    const gradVerde = ctx.createLinearGradient(cx - radio, cy - radio, cx + radio, cy + radio);
+    gradVerde.addColorStop(0, '#34d399');
+    gradVerde.addColorStop(1, '#059669');
+
+    const colorSolicitados = gradAzul;
+    const colorLeidos = gradVerde;
     const esBaseSolicitados = solicitados >= leidos;
     const colorBase = esBaseSolicitados ? colorSolicitados : colorLeidos;
     const colorProgreso = esBaseSolicitados ? colorLeidos : colorSolicitados;
-    
+
     const total = solicitados + leidos;
     const parteMenor = esBaseSolicitados ? leidos : solicitados;
     const anguloFinalObjetivo = (parteMenor / total) * 2 * Math.PI;
@@ -2090,7 +3767,7 @@ function abrirSelectorFechaPanel() {
       if (!startTime) startTime = currentTime;
       const timeElapsed = currentTime - startTime;
       let progress = Math.min(timeElapsed / duration, 1);
-      
+
       // Aplicar el rebote al progreso
       const easeProgress = easeOutBack(progress);
 
@@ -2099,7 +3776,7 @@ function abrirSelectorFechaPanel() {
       // 1. Dibujar el anillo de fondo (Base)
       ctx.beginPath();
       ctx.arc(cx, cy, radio, 0, 2 * Math.PI);
-      ctx.strokeStyle = colorBase; 
+      ctx.strokeStyle = colorBase;
       ctx.lineWidth = grosor;
       ctx.stroke();
 
@@ -2108,21 +3785,21 @@ function abrirSelectorFechaPanel() {
         ctx.beginPath();
         const anguloActual = easeProgress * anguloFinalObjetivo;
         ctx.arc(cx, cy, radio, -Math.PI / 2, -Math.PI / 2 + anguloActual);
-        ctx.strokeStyle = colorProgreso; 
+        ctx.strokeStyle = colorProgreso;
         ctx.lineWidth = grosor;
         ctx.stroke();
       }
 
       // 3. Dibujar textos centrales (tamaños ajustados al nuevo anillo)
-      ctx.fillStyle = '#2b1070';
+      ctx.fillStyle = esDark ? '#FFFFFF' : '#1e3a8a';
       ctx.font = 'bold 38px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(solicitados, cx, cy - 12); 
-      
+      ctx.fillText(solicitados, cx, cy - 12);
+
       ctx.fillStyle = '#10b981';
       ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(leidos + ' leídos', cx, cy + 22); 
+      ctx.fillText(leidos + ' leídos', cx, cy + 22);
 
       // Si no ha terminado, solicitar el siguiente fotograma
       if (progress < 1) {
@@ -2230,27 +3907,33 @@ function abrirSelectorFechaPanel() {
   function abrirSelectorFecha() {
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const anioActualSistema = new Date().getFullYear();
-    const anioLimite = anioActualSistema + 5; 
+    const anioLimite = anioActualSistema + 5;
     let opcionesAnio = '';
     for(let i = 2023; i <= anioLimite; i++) opcionesAnio += `<option value="${i}" ${i === anioSeleccionado ? 'selected' : ''}>${i}</option>`;
-    
+
     let opcionesMes = '';
     for(let i = 0; i < 12; i++) opcionesMes += `<option value="${i}" ${i === mesSeleccionado ? 'selected' : ''}>${meses[i]}</option>`;
+
+    const esDark = document.body.classList.contains('dark');
+    const cLabel  = esDark ? 'rgba(255,255,255,0.60)' : '#475569';
+    const cSelect = esDark ? 'background:#1C2033; color:#C9D1E9; border:1px solid rgba(255,255,255,0.12);' : 'background:#fff; color:#334155; border:1px solid #cbd5e1;';
+    const bgModal = esDark ? '#0f1e3d' : '#ffffff';
 
     Swal.fire({
       title: 'Ir a fecha',
       width: 280,
+      background: bgModal,
       html: `
         <div style="display:flex; flex-direction:column; gap:10px; text-align:left;">
           <div>
-            <label style="font-size:12px; font-weight:700; color:#475569;">Año</label>
-            <select id="popAnio" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">
+            <label style="font-size:12px; font-weight:700; color:${cLabel};">Año</label>
+            <select id="popAnio" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
               ${opcionesAnio}
             </select>
           </div>
           <div>
-            <label style="font-size:12px; font-weight:700; color:#475569;">Mes</label>
-            <select id="popMes" style="width:100%; height:36px; border-radius:8px; border:1px solid #cbd5e1; padding:0 10px; font-size:14px; outline:none; margin-top:4px;">
+            <label style="font-size:12px; font-weight:700; color:${cLabel};">Mes</label>
+            <select id="popMes" style="width:100%; height:36px; border-radius:8px; padding:0 10px; font-size:14px; outline:none; margin-top:4px; ${cSelect}">
               ${opcionesMes}
             </select>
           </div>
@@ -2285,18 +3968,17 @@ function abrirSelectorFechaPanel() {
     if (!contenedor) return;
 
     if (pacientesCarrusel.length === 0) {
-      contenedor.innerHTML = `<div style="display:flex; height:100%; align-items:center; justify-content:center; color:#94a3b8; font-size:12px; font-weight:600; padding-top:20px;">Sin registros en este mes</div>`;
-      document.getElementById('controlesCarrusel').style.display = 'none';
+      contenedor.innerHTML = `<div class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:200px; border-radius:16px; box-sizing:border-box;"></div>`;
       return;
     }
 
-    document.getElementById('controlesCarrusel').style.display = 'flex';
+    const totalC = pacientesCarrusel.length;
     let html = '';
-    
+
     // Construimos todas las tarjetas, la transición ocurre al mover las clases CSS
     pacientesCarrusel.forEach((p, i) => {
       html += `
-        <div id="carrusel-item-${i}" style="position:absolute; top:0; left:0; width:100%; height:95px; background:white; border:1px solid #e2e8f0; border-radius:12px; padding:12px 15px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -2px 10px rgba(0,0,0,0.03); display:flex; flex-direction:column; gap:6px; transform-origin: top center;">
+        <div id="carrusel-item-${i}" class="carrusel-card" style="position:absolute; top:0; left:0; width:100%; height:200px; border-radius:16px; padding:24px 28px; box-sizing:border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; justify-content:center; gap:12px; transform-origin: top center;">
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Nombre:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;" title="${p.nombre || '—'}">${p.nombre || '—'}</span>
@@ -2308,6 +3990,13 @@ function abrirSelectorFechaPanel() {
             <div style="display:flex; align-items:center; flex-wrap: wrap; gap:5px;">
               <span style="font-size:11px; font-weight:600; color:#94a3b8; width:70px;">Vence:</span>
               <span style="font-size:13px; font-weight:700; color:#1e293b;">${p.vencimiento || '—'}</span>
+            </div>
+            <div class="carrusel-controles" style="position:absolute; bottom:14px; right:16px; display:flex; align-items:center; gap:12px;">
+              <i class="fas fa-eye carrusel-ojo" onclick="event.stopPropagation(); verDetalleCarrusel()" style="cursor:pointer; font-size:16px; transition:color 0.2s;" title="Ver Ficha Clínica"></i>
+              ${totalC > 1 ? `
+              <i class="fas fa-chevron-left carrusel-flecha" onclick="event.stopPropagation(); moverCarrusel(-1)" style="cursor:pointer; font-size:12px; padding:6px 10px; border-radius:6px; transition:background 0.2s;"></i>
+              <i class="fas fa-chevron-right carrusel-flecha" onclick="event.stopPropagation(); moverCarrusel(1)" style="cursor:pointer; font-size:12px; padding:6px 10px; border-radius:6px; transition:background 0.2s;"></i>
+              ` : ''}
             </div>
         </div>
       `;
@@ -2466,7 +4155,10 @@ function renderizarPacientesJunio() {
         sumaIngresos += precio;
       }
     });
-    txtTotalIngresos.textContent = 'S/ ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const textoIngreso = 'S/. ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    txtTotalIngresos.textContent = textoIngreso;
+    const len = textoIngreso.length;
+    txtTotalIngresos.style.fontSize = len <= 10 ? '34px' : len <= 13 ? '26px' : len <= 16 ? '20px' : '16px';
   }
 
   const cardSeguroTop = document.getElementById('cardSeguroTop');
@@ -2558,7 +4250,7 @@ function renderizarPacientesJunio() {
     if (txtTotal) txtTotal.textContent = '0';
     
     const txtIngresos = document.getElementById('totalIngresosMesPanel');
-    if (txtIngresos) txtIngresos.textContent = 'S/ 0.00';
+    if (txtIngresos) { txtIngresos.textContent = 'S/. 0.00'; txtIngresos.style.fontSize = '34px'; }
     
     const txtSeguro = document.getElementById('seguroTopTexto');
     if (txtSeguro) txtSeguro.innerHTML = '<span style="font-size: 32px; font-weight: 900; color: #2b1070;">-</span>';
@@ -2592,6 +4284,7 @@ function renderizarPacientesJunio() {
     return; // Detiene el código
   }
 
+  const esDark = document.body.classList.contains('dark');
   let html = '';
   pacientesJunio.forEach(p => {
     let colorSeguro = '#64748b';
@@ -2610,10 +4303,10 @@ function renderizarPacientesJunio() {
 
     if (p.estado === 'Pendiente') {
       hexColor = '#ef4444';
-      bgEstado = '#ef444420';
+      bgEstado = hexColor;
     } else if (p.estado === 'Completado') {
       hexColor = '#10b981';
-      bgEstado = '#10b98120';
+      bgEstado = hexColor;
     }
 
     const subEstadoPlano = p.subEstado || '';
@@ -2622,7 +4315,7 @@ function renderizarPacientesJunio() {
       estadoTextoMostrar = subEstadoPlano;
       const claveColor = subEstadoPlano.toLowerCase().trim();
       hexColor = mapaColoresSemaforo[claveColor] || '#f59e0b';
-      bgEstado = hexColor + '20';
+      bgEstado = hexColor;
     }
 
     const especialidad = obtenerEspecialidadMedico(p.medico);
@@ -2646,7 +4339,7 @@ function renderizarPacientesJunio() {
           </div>
           <div style="font-size: 12px; color: #475569; font-weight: 500;">${especialidad}</div>
           <div>
-            <span style="background: ${bgEstado}; color: ${hexColor}; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
+            <span style="background: ${bgEstado}; color: #ffffff; border: 1px solid ${hexColor}; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;">${estadoTextoMostrar}</span>
           </div>
           
           <!-- Contenedor relativo para el lápiz y su menú -->
@@ -2669,17 +4362,17 @@ function renderizarPacientesJunio() {
 
   contenedor.innerHTML = html;
 
+  ultimosPacientesPanelCasos = pacientesJunio;
+
   if (typeof dibujarDonutSegurosPanelCasos === 'function') {
     dibujarDonutSegurosPanelCasos(pacientesJunio);
   }
   if (typeof dibujarBarrasEjecutivosPanel === 'function') {
     dibujarBarrasEjecutivosPanel(pacientesJunio);
   }
-  // NUEVO: Llamada al gráfico de medio anillo
   if (typeof dibujarMedioAnilloProgreso === 'function') {
     dibujarMedioAnilloProgreso(pacientesJunio);
   }
-  // NUEVO: Llamada al gráfico de top exámenes
   if (typeof dibujarBarrasExamenesPanel === 'function') {
     dibujarBarrasExamenesPanel(pacientesJunio);
   }
@@ -2695,6 +4388,7 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
   const leyenda = document.getElementById('leyendaDonutSeguros');
   if (!canvas || !leyenda) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionDonutPanelCasosId) {
     cancelAnimationFrame(animacionDonutPanelCasosId);
@@ -2736,12 +4430,12 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     ctx.lineWidth = grosorBase;
     ctx.stroke();
     
-    ctx.fillStyle = '#1e293b';
+    ctx.fillStyle = esDark ? '#ffffff' : '#1e293b';
     ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(textoCentroMes, cx, cy);
-    
+
     leyenda.innerHTML = '';
     return;
   }
@@ -2763,10 +4457,13 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
   });
 
   // --- LEYENDA LIMPIA (Sin los porcentajes) ---
+  const leyendaColor = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
+  const leyendaBg    = esDark ? 'rgba(255,255,255,0.06)' : '#f8fafc';
+  const leyendaBorde = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
   let htmlLeyenda = '';
   segmentos.forEach(seg => {
     htmlLeyenda += `
-      <div style="display: flex; align-items: center; width: 100%; font-size: 11px; font-weight: 700; color: #475569; background: #f8fafc; padding: 8px 12px; border-radius: 8px; box-sizing: border-box; border: 1px solid #f1f5f9;">
+      <div style="display: flex; align-items: center; width: 100%; font-size: 11px; font-weight: 700; color: ${leyendaColor}; background: ${leyendaBg}; padding: 8px 12px; border-radius: 8px; box-sizing: border-box; border: 1px solid ${leyendaBorde};">
         <span style="display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: ${seg.color}; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-right: 8px;"></span>
         <span style="text-transform: uppercase;">${seg.nombre}</span>
       </div>
@@ -2830,8 +4527,8 @@ function dibujarDonutSegurosPanelCasos(pacientesDelMes) {
     });
 
     // 3. TEXTO DEL MES EN EL CENTRO
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 26px sans-serif'; // Letra grande y limpia
+    ctx.fillStyle = esDark ? '#ffffff' : '#1e293b';
+    ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(textoCentroMes, cx, cy);
@@ -2875,6 +4572,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const canvas = document.getElementById('barrasEjecutivosPanel');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionBarrasEjecutivosId) {
     cancelAnimationFrame(animacionBarrasEjecutivosId);
@@ -2904,7 +4602,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const lista = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
 
   const width = canvas.width;   // Ahora es 600
-  const height = canvas.height; // Ahora es 260
+  const height = canvas.height; // Ahora es 340
 
   if (lista.length === 0) {
     ctx.clearRect(0, 0, width, height);
@@ -2912,22 +4610,26 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   }
 
   // 4. Variables Espaciales del Canvas
-  const maxVal = Math.max(...lista.map(item => item[1]), 1); 
+  const maxVal = Math.max(...lista.map(item => item[1]), 1);
   const barCount = lista.length;
-  
-  const leftArea = 100;  
-  const rightArea = 60;  
-  // ¡CORRECCIÓN!: Aumentamos los márgenes superior e inferior para que respire
-  const topArea = 20;    
-  const bottomArea = 25; 
+
+  const leftArea  = 110; // espacio para nombres
+  const rightArea = 70;  // espacio para números
+  const topArea    = 2;
+  const bottomArea = 42;
   const chartWidth = width - leftArea - rightArea;
-  
-  const barSpacing = 0; 
-  const maxBarHeight = 45; 
-  const calculatedBarHeight = (height - topArea - bottomArea) / barCount;
-  const barHeight = Math.min(calculatedBarHeight, maxBarHeight); 
-  
-  const startY = topArea + (height - topArea - bottomArea - (barHeight * barCount)) / 2;
+  const available  = height - topArea - bottomArea;
+
+  // Barras dinámicas: se adaptan al número de ejecutivos
+  const maxBarH = 54;
+  const minBarH = 16;
+  const gap     = 8;
+  const barHeight = Math.min(maxBarH, Math.max(minBarH, Math.floor((available - gap * (barCount - 1)) / barCount)));
+  const barStep   = barHeight + gap;
+  const totalGroupH = barCount * barStep - gap;
+  const startY = topArea + Math.max(0, (available - totalGroupH) / 2);
+  const labelSize = barHeight >= 28 ? 15 : 12;
+  const numSize   = barHeight >= 28 ? 16 : 12;
 
   let startTime = null;
   const duration = 1000;
@@ -2949,19 +4651,19 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       const color = getColorEjecutivo(nombre);
       
       const barW = (valor / maxVal) * chartWidth * easeProgress;
-      const y = startY + index * barHeight; 
-      const widthVisible = Math.max(barW, 4); 
+      const y = startY + index * barStep;
+      const widthVisible = Math.max(barW, 4);
 
       // 1. Dibujar NOMBRE
-      ctx.fillStyle = '#475569'; 
-      ctx.font = 'bold 15px sans-serif';
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
+      ctx.font = `bold ${labelSize}px sans-serif`;
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       ctx.fillText(nombre.toUpperCase(), leftArea - 15, y + barHeight / 2);
 
-      // 2. Pintar BARRA HORIZONTAL PEGADA
+      // 2. Pintar BARRA HORIZONTAL
       ctx.fillStyle = color;
-      
+
       const radius = Math.min(6, widthVisible / 2, barHeight / 2);
       ctx.beginPath();
       ctx.moveTo(leftArea, y);
@@ -2975,15 +4677,15 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       // 3. Dibujar CANTIDAD DE CASOS
       if (progress > 0.4) {
         ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-        
+
         if (widthVisible > 40) {
           ctx.fillStyle = 'white';
-          ctx.font = 'bold 16px sans-serif'; 
+          ctx.font = `bold ${numSize}px sans-serif`;
           ctx.textAlign = 'right';
           ctx.fillText(valor, leftArea + widthVisible - 12, y + barHeight / 2 + 1);
         } else {
           ctx.fillStyle = color;
-          ctx.font = 'bold 16px sans-serif';
+          ctx.font = `bold ${numSize}px sans-serif`;
           ctx.textAlign = 'left';
           ctx.fillText(valor, leftArea + widthVisible + 10, y + barHeight / 2 + 1);
         }
@@ -2992,10 +4694,11 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     });
 
     // Línea base vertical decorativa (Con un pequeño rebose arriba y abajo para verse mejor)
+    const finBarras = startY + (barStep * (barCount - 1)) + barHeight;
     ctx.beginPath();
     ctx.moveTo(leftArea, startY - 8);
-    ctx.lineTo(leftArea, startY + (barHeight * barCount) + 8);
-    ctx.strokeStyle = '#bae6fd';
+    ctx.lineTo(leftArea, finBarras + 8);
+    ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.20)' : '#bae6fd';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3114,6 +4817,7 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
   const canvas = document.getElementById('halfDonutProgreso');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionMedioAnilloId) {
     cancelAnimationFrame(animacionMedioAnilloId);
@@ -3139,10 +4843,10 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
   const porcentajeTexto = Math.round(porcentajeReal * 100);
 
   // 2. Coordenadas y diseño ampliados para maximizar el espacio
-  const cx = 140;
-  const cy = 135; 
-  const radio = 100; // Aumentado (antes 80) para expandir el arco
-  const grosor = 45; // Aumentado (antes 35) para hacerlo más grueso
+  const cx = 160;
+  const cy = 165;
+  const radio = 115; // Aumentado para aprovechar el canvas más grande
+  const grosor = 48; // Ligeramente más grueso
 
   let startTime = null;
   const duration = 1200;
@@ -3159,34 +4863,35 @@ function dibujarMedioAnilloProgreso(pacientesDelMes) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo completo del arco (Faltantes) -> Color #aec3b0
+    // Fondo completo del arco (Faltantes) -> Color #99CAFF
     ctx.beginPath();
     ctx.arc(cx, cy, radio, Math.PI, 2 * Math.PI);
-    ctx.strokeStyle = '#aec3b0';
+    ctx.strokeStyle = '#99CAFF';
     ctx.lineWidth = grosor;
     ctx.stroke();
 
-    // Progreso superpuesto (Completados) -> Color #375534
+    // Progreso superpuesto (Completados) -> Color #004EE0
     if (porcentajeReal > 0) {
       const anguloProgreso = Math.PI + (Math.PI * porcentajeReal * easeProgress);
       ctx.beginPath();
       ctx.arc(cx, cy, radio, Math.PI, anguloProgreso);
-      ctx.strokeStyle = '#375534';
+      ctx.strokeStyle = '#004EE0';
       ctx.lineWidth = grosor;
       ctx.stroke();
     }
 
     // Texto en el centro
     const currentPorcentaje = Math.round(porcentajeTexto * easeProgress);
-    ctx.fillStyle = '#2b1070';
-    ctx.font = '900 46px Verdana, sans-serif'; // Porcentaje mucho más grande
+    ctx.fillStyle = esDark ? '#ffffff' : '#2b1070';
+    ctx.font = '900 38px Verdana, sans-serif';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(currentPorcentaje + '%', cx, cy - 12);
-    
-    ctx.fillStyle = '#64748b';
-    ctx.font = '800 12px sans-serif'; // Letra inferior ligeramente más grande
-    ctx.fillText('COMPLETADOS', cx, cy + 18);
+    ctx.textBaseline = 'middle';
+    ctx.fillText(currentPorcentaje + '%', cx, cy - 16);
+
+    ctx.fillStyle = esDark ? 'rgba(255,255,255,0.65)' : '#64748b';
+    ctx.font = '700 13px sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillText('COMPLETADOS', cx, cy + 12);
 
     if (progress < 1) {
       animacionMedioAnilloId = requestAnimationFrame(animar);
@@ -3205,6 +4910,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
   const canvas = document.getElementById('barrasExamenesPanel');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const esDark = document.body.classList.contains('dark');
 
   if (animacionBarrasExamenesId) {
     cancelAnimationFrame(animacionBarrasExamenesId);
@@ -3239,9 +4945,11 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     return;
   }
 
-  // 3. Paleta de colores clínicos solicitada
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
-  
+  // 3. Paleta de colores clínicos (tonos más claros en modo oscuro)
+  const colores = esDark
+    ? ['#A5C8FF', '#7BA7F5', '#4F8EF7', '#99CAFF', '#C9DDF5']
+    : ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
+
   const maxVal = Math.max(...lista.map(item => item[1]), 1);
   
   // Variables espaciales corregidas
@@ -3273,7 +4981,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
     ctx.beginPath();
     ctx.moveTo(startX, height - bottomArea);
     ctx.lineTo(width - 20, height - bottomArea);
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.15)' : '#e2e8f0';
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -3311,7 +5019,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       // Dibujar la cantidad arriba de la barra (¡Corregido!)
       if (progress > 0.4) {
         ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-        ctx.fillStyle = color;
+        ctx.fillStyle = esDark ? '#ffffff' : color;
         ctx.font = '900 22px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom'; // CORRECCIÓN: Evita que el número se hunda en la barra
@@ -3320,7 +5028,7 @@ function dibujarBarrasExamenesPanel(pacientesDelMes) {
       }
 
       // Dibujar el nombre del examen abajo
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.75)' : '#475569';
       ctx.font = '800 12px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
@@ -3395,11 +5103,18 @@ function verDetallesExamenesTop() {
   }
 
   // 4. Paleta de colores
-  const colores = ['#0f2a1d', '#375534', '#6b9071', '#aec3b0', '#e3eed4'];
+  const colores = ['#042E7B', '#004EE0', '#1883FF', '#99CAFF', '#E3F2FF'];
 
   // 5. Construir la lista HTML detallada
+  const esDark = document.body.classList.contains('dark');
+  const cTxt    = esDark ? 'rgba(255,255,255,0.87)' : '#334155';
+  const cSub    = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+  const cBg     = esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9';
+  const cTitulo = esDark ? '#7BA7F5' : '#2b1070';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
-  
+
   lista.forEach((item, index) => {
     const nombre = item[0];
     const cantidad = item[1];
@@ -3408,16 +5123,16 @@ function verDetallesExamenesTop() {
 
     htmlDetalle += `
       <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:#334155;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:${cTxt};">
           <span style="text-align:left; line-height:1.2;">
-            <span style="color:#94a3b8; margin-right:4px;">#${index + 1}</span> 
+            <span style="color:${cSub}; margin-right:4px;">#${index + 1}</span>
             ${nombre}
           </span>
           <span style="color:${color}; font-weight:900; font-size: 16px;">
-            ${cantidad} <span style="font-size:11px; color:#94a3b8; font-weight:600;">(${porcentaje}%)</span>
+            ${cantidad} <span style="font-size:11px; color:${cSub}; font-weight:600;">(${porcentaje}%)</span>
           </span>
         </div>
-        <div style="width:100%; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+        <div style="width:100%; height:10px; background:${cBg}; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
           <div style="width:${porcentaje}%; height:100%; background-color:${color}; border-radius:5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
         </div>
       </div>
@@ -3427,8 +5142,9 @@ function verDetallesExamenesTop() {
 
   // 6. Lanzar la alerta
   Swal.fire({
-    title: '<div style="font-size:22px; font-weight:800; color:#2b1070; text-transform:uppercase; margin-bottom: 0;">Detalle de Exámenes</div><div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:none; margin-top:4px;">Exámenes más solicitados del mes</div>',
+    title: `<div style="font-size:22px; font-weight:800; color:${cTitulo}; text-transform:uppercase; margin-bottom: 0;">Detalle de Exámenes</div><div style="font-size:12px; font-weight:600; color:${cSub}; text-transform:none; margin-top:4px;">Exámenes más solicitados del mes</div>`,
     html: htmlDetalle,
+    background: bgModal,
     width: 420,
     confirmButtonText: 'Cerrar',
     confirmButtonColor: '#64748b',
@@ -3495,33 +5211,40 @@ function verDetallesSeguros() {
   }
 
   // 4. Construir la lista HTML detallada
+  const esDark = document.body.classList.contains('dark');
+  const cTxt    = esDark ? 'rgba(255,255,255,0.87)' : '#334155';
+  const cSub    = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+  const cBg     = esDark ? 'rgba(255,255,255,0.10)' : '#f1f5f9';
+  const cTitulo = esDark ? '#7BA7F5' : '#2b1070';
+  const bgModal = esDark ? '#0f1e3d' : '#ffffff';
+
   let htmlDetalle = '<div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; padding: 0 10px;">';
-  
+
   lista.forEach((item, index) => {
     const nombre = item[0];
     const cantidad = item[1];
     const porcentaje = Math.round((cantidad / total) * 100);
-    
+
     // Paleta de colores exacta por marca de seguro
-    let color = '#64748b'; 
+    let color = '#64748b';
     if (nombre === 'MAPFRE') color = '#68000c';
     else if (nombre === 'RIMAC') color = '#dc2626';
-    else if (nombre === 'LA POSITIVA') color = '#ea580c'; 
+    else if (nombre === 'LA POSITIVA') color = '#ea580c';
     else if (nombre === 'PARTICULAR') color = '#16a34a';
     else if (nombre.includes('VIP')) color = '#ca8a04';
 
     htmlDetalle += `
       <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:#334155;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:700; color:${cTxt};">
           <span style="text-align:left; line-height:1.2; display:flex; align-items:center; gap:8px;">
             <span style="display:inline-block; width:12px; height:12px; border-radius:3px; background:${color};"></span>
             ${nombre}
           </span>
           <span style="color:${color}; font-weight:900; font-size: 16px;">
-            ${cantidad} <span style="font-size:11px; color:#94a3b8; font-weight:600;">(${porcentaje}%)</span>
+            ${cantidad} <span style="font-size:11px; color:${cSub}; font-weight:600;">(${porcentaje}%)</span>
           </span>
         </div>
-        <div style="width:100%; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+        <div style="width:100%; height:10px; background:${cBg}; border-radius:5px; overflow:hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
           <div style="width:${porcentaje}%; height:100%; background-color:${color}; border-radius:5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
         </div>
       </div>
@@ -3531,8 +5254,9 @@ function verDetallesSeguros() {
 
   // 5. Lanzar la alerta emergente
   Swal.fire({
-    title: '<div style="font-size:22px; font-weight:800; color:#2b1070; text-transform:uppercase; margin-bottom: 0;">Detalle por Seguro</div><div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:none; margin-top:4px;">Distribución de pacientes atendidos</div>',
+    title: `<div style="font-size:22px; font-weight:800; color:${cTitulo}; text-transform:uppercase; margin-bottom: 0;">Detalle por Seguro</div><div style="font-size:12px; font-weight:600; color:${cSub}; text-transform:none; margin-top:4px;">Distribución de pacientes atendidos</div>`,
     html: htmlDetalle,
+    background: bgModal,
     width: 420,
     confirmButtonText: 'Cerrar',
     confirmButtonColor: '#64748b',
@@ -3614,6 +5338,12 @@ function iniciarCalendario() {
   actualizarFechaHoyCard();
   google.script.run
     .withSuccessHandler(function(lista) {
+      const _prevProg = _snapshot.programados;
+      if (_prevProg >= 0 && lista.length > _prevProg) {
+        const n = lista.length - _prevProg;
+        agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario' : `Se agregaron ${n} eventos al calendario`, 'fas fa-calendar-plus');
+      }
+      _snapshot.programados = lista.length;
       pacientesProgramados = lista;
       renderizarCalendario();
       renderizarProximosEventos();
@@ -3657,15 +5387,34 @@ function renderizarCalendario() {
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
 
+  const esDark = document.body.classList.contains('dark');
+
   const hoy = new Date();
   hoy.setHours(0,0,0,0);
 
   const primerDia = new Date(calAnio, calMes, 1).getDay();
   const diasEnMes = new Date(calAnio, calMes + 1, 0).getDate();
 
+  // Tokens de color según el tema
+  const borde       = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const bgVacia     = esDark ? 'rgba(0,0,0,0.15)'       : '#fafafa';
+  const bgNormal    = esDark ? 'rgba(255,255,255,0.03)'  : 'white';
+  const bgHoy       = esDark ? 'rgba(99,102,241,0.18)'   : '#faf5ff';
+  const bgHoverNorm = esDark ? 'rgba(255,255,255,0.08)'  : '#f8fafc';
+  const bgHoverHoy  = esDark ? 'rgba(99,102,241,0.28)'   : '#f3e8ff';
+  const circHoyBg   = esDark ? '#818cf8'                 : '#2b1070';
+  const numHoy      = 'white';
+  const numPasado   = esDark ? 'rgba(255,255,255,0.28)'  : '#94a3b8';
+  const numFuturo   = esDark ? 'rgba(255,255,255,0.85)'  : '#1e293b';
+  const chipRegBg   = esDark ? 'rgba(139,92,246,0.22)'   : '#ede9fe';
+  const chipRegClr  = esDark ? '#c4b5fd'                 : '#2b1070';
+  const chipProgBg  = esDark ? 'rgba(16,185,129,0.20)'   : '#dcfce7';
+  const chipProgClr = esDark ? '#6ee7b7'                 : '#166534';
+  const masClr      = esDark ? 'rgba(255,255,255,0.40)'  : '#94a3b8';
+
   // Celdas vacías antes del primer día
   for (let i = 0; i < primerDia; i++) {
-    grid.innerHTML += `<div style="border:1px solid #f1f5f9; background:#fafafa; overflow:hidden;"></div>`;
+    grid.innerHTML += `<div style="border:1px solid ${borde}; background:${bgVacia}; overflow:hidden;"></div>`;
   }
   // Actualizar contadores del encabezado
   const elProg = document.getElementById('calTotalProgramados');
@@ -3683,6 +5432,10 @@ function renderizarCalendario() {
     const esHoy = fechaDia.getTime() === hoy.getTime();
     const esPasado = fechaDia < hoy;
 
+    const bgBase  = esHoy ? bgHoy    : bgNormal;
+    const bgHover = esHoy ? bgHoverHoy : bgHoverNorm;
+    const numColor = esHoy ? numHoy : (esPasado ? numPasado : numFuturo);
+
     // Pacientes registrados ese día
     const registrados = bdPacientes.filter(p => {
       if (!p.fechaCreacion) return false;
@@ -3697,39 +5450,39 @@ function renderizarCalendario() {
 
     let eventosHTML = '';
     registrados.slice(0, 2).forEach(p => {
-      eventosHTML += `<div style="background:#ede9fe; color:#2b1070; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre}</div>`;
+      eventosHTML += `<div style="background:${chipRegBg}; color:${chipRegClr}; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre}</div>`;
     });
     programados.slice(0, 2).forEach(p => {
-      eventosHTML += `<div style="background:#dcfce7; color:#166534; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre}</div>`;
+      eventosHTML += `<div style="background:${chipProgBg}; color:${chipProgClr}; border-radius:4px; padding:2px 5px; font-size:10px; font-weight:600; margin-bottom:2px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre}</div>`;
     });
 
     const totalExtra = (registrados.length + programados.length) - 4;
 
     grid.innerHTML += `
       <div onclick="calClickDia('${fechaStr}', ${esPasado})" style="
-        border:1px solid #f1f5f9;
+        border:1px solid ${borde};
         padding:8px;
         cursor:pointer;
-        background:${esHoy ? '#faf5ff' : 'white'};
+        background:${bgBase};
         transition:background 0.15s;
         position:relative;
         overflow:hidden;
         box-sizing:border-box;
       "
-      onmouseover="this.style.background='${esHoy ? '#f3e8ff' : '#f8fafc'}'"
-      onmouseout="this.style.background='${esHoy ? '#faf5ff' : 'white'}'">
+      onmouseover="this.style.background='${bgHover}'"
+      onmouseout="this.style.background='${bgBase}'">
         <div style="
           width:26px; height:26px;
           border-radius:50%;
-          background:${esHoy ? '#2b1070' : 'transparent'};
-          color:${esHoy ? 'white' : esPasado ? '#94a3b8' : '#1e293b'};
+          background:${esHoy ? circHoyBg : 'transparent'};
+          color:${numColor};
           font-size:13px;
           font-weight:${esHoy ? '700' : '500'};
           display:flex; align-items:center; justify-content:center;
           margin-bottom:4px;
         ">${d}</div>
         ${eventosHTML}
-        ${totalExtra > 0 ? `<div style="font-size:10px; color:#94a3b8; font-weight:600;">+${totalExtra} más</div>` : ''}
+        ${totalExtra > 0 ? `<div style="font-size:10px; color:${masClr}; font-weight:600;">+${totalExtra} más</div>` : ''}
       </div>
     `;
   }
@@ -3739,6 +5492,19 @@ function calClickDia(fechaStr, esPasado) {
   const fecha = new Date(fechaStr + 'T00:00:00');
   const opciones = { year:'numeric', month:'long', day:'numeric' };
   const fechaFormateada = fecha.toLocaleDateString('es-PE', opciones);
+  const esDark = document.body.classList.contains('dark');
+
+  // Colores adaptativos del modal
+  const modalBg      = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff';
+  const tituloClr    = esDark ? '#ffffff'                  : '#1e293b';
+  const seccionClr   = esDark ? '#a5b4fc'                  : '#2b1070';
+  const seccionVerde = esDark ? '#86efac'                  : '#166534';
+  const regChipBg    = esDark ? 'rgba(139,92,246,0.20)'    : '#ede9fe';
+  const regChipClr   = esDark ? '#c4b5fd'                  : '#2b1070';
+  const regEstadoClr = esDark ? '#a78bfa'                  : '#7c3aed';
+  const progChipBg   = esDark ? 'rgba(16,185,129,0.18)'    : '#dcfce7';
+  const progChipClr  = esDark ? '#6ee7b7'                  : '#166534';
+  const sinDatosClr  = esDark ? 'rgba(255,255,255,0.35)'   : '#94a3b8';
 
   // Ver programados de ese día
   const programadosDelDia = pacientesProgramados.filter(p => p.fechaProgramada === fechaStr);
@@ -3752,19 +5518,30 @@ function calClickDia(fechaStr, esPasado) {
 
   let listaHTML = '';
   if (registradosDelDia.length > 0) {
-    listaHTML += `<div style="font-size:12px; font-weight:700; color:#2b1070; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Registrados</div>`;
+    listaHTML += `<div style="font-size:12px; font-weight:700; color:${seccionClr}; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px;">Registrados</div>`;
     registradosDelDia.forEach(p => {
-      listaHTML += `<div style="background:#ede9fe; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:#2b1070; font-weight:600;">${p.nombre} <span style="font-weight:400; color:#7c3aed;">· ${p.estado}</span></div>`;
+      listaHTML += `<div style="background:${regChipBg}; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:${regChipClr}; font-weight:600;">${p.nombre} <span style="font-weight:400; color:${regEstadoClr};">· ${p.estado}</span></div>`;
     });
   }
   if (programadosDelDia.length > 0) {
-    listaHTML += `<div style="font-size:12px; font-weight:700; color:#166534; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; margin-top:10px;">Programados</div>`;
+    listaHTML += `<div style="font-size:12px; font-weight:700; color:${seccionVerde}; margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; margin-top:10px;">Programados</div>`;
     programadosDelDia.forEach(p => {
-      listaHTML += `<div style="background:#dcfce7; border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:13px; color:#166534; font-weight:600;">📅 ${p.nombre} <span style="font-weight:400;">· ${p.medico}</span></div>`;
+      const progId = p.id || p.dni || '';
+      listaHTML += `
+        <div style="display:flex; align-items:center; gap:8px; background:${progChipBg}; border-radius:8px; padding:8px 12px; margin-bottom:6px;">
+          <span style="flex:1; font-size:13px; color:${progChipClr}; font-weight:600;">📅 ${p.nombre} <span style="font-weight:400;">· ${p.medico}</span></span>
+          <button onclick="confirmarEliminarProgramacion('${progId}', '${fechaStr}')"
+            title="Eliminar programación"
+            style="flex-shrink:0; background:transparent; border:none; cursor:pointer; color:#ef4444; font-size:14px; padding:5px 7px; border-radius:6px; line-height:1; transition:background 0.15s;"
+            onmouseover="this.style.background='rgba(239,68,68,0.15)'"
+            onmouseout="this.style.background='transparent'">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>`;
     });
   }
   if (listaHTML === '') {
-    listaHTML = `<div style="color:#94a3b8; font-size:13px; text-align:center; padding:10px;">Sin pacientes este día</div>`;
+    listaHTML = `<div style="color:${sinDatosClr}; font-size:13px; text-align:center; padding:10px;">Sin pacientes este día</div>`;
   }
 
   Swal.fire({
@@ -3790,8 +5567,8 @@ function calClickDia(fechaStr, esPasado) {
       <div style="
         margin-top:16px;
         width:100%;
-        background:#f1f5f9;
-        color:#94a3b8;
+        background:${esDark ? 'rgba(255,255,255,0.06)' : '#f1f5f9'};
+        color:${esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8'};
         border-radius:10px;
         padding:12px;
         font-size:13px;
@@ -3803,7 +5580,41 @@ function calClickDia(fechaStr, esPasado) {
     `,
     showConfirmButton: false,
     showCloseButton: true,
-    width: 420
+    width: 420,
+    background: modalBg,
+    color: tituloClr
+  });
+}
+
+function confirmarEliminarProgramacion(id, fechaStr) {
+  const esDark = document.body.classList.contains('dark');
+  Swal.fire({
+    title: '¿Eliminar programación?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: esDark ? '#334155' : '#64748b',
+    background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+    color: esDark ? '#ffffff' : '#1e293b'
+  }).then(result => {
+    if (!result.isConfirmed) return;
+    Swal.fire({ title: 'Eliminando...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    google.script.run
+      .withSuccessHandler(function() {
+        iniciarCalendario();
+        Swal.fire({ icon: 'success', title: 'Eliminado', timer: 1200, showConfirmButton: false,
+          background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+          color: esDark ? '#ffffff' : '#1e293b' });
+      })
+      .withFailureHandler(function() {
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo eliminar. Intenta de nuevo.',
+          background: esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#ffffff',
+          color: esDark ? '#ffffff' : '#1e293b' });
+      })
+      .eliminarProgramacion(id);
   });
 }
 
@@ -3980,8 +5791,17 @@ function renderizarMiniCalLista() {
   const total = registradosMes.length + programadosMes.length;
   if (badge) badge.textContent = total;
 
+  const esDark = document.body.classList.contains('dark');
+
+  const filaBorde   = esDark ? 'rgba(255,255,255,0.07)' : '#f8fafc';
+  const filaBg      = esDark ? 'transparent'            : 'white';
+  const filaHover   = esDark ? 'rgba(255,255,255,0.08)' : '#f8fafc';
+  const textoNombre = esDark ? 'rgba(255,255,255,0.85)' : '#1e293b';
+  const textoFecha  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const sinDatosClr = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+
   if (total === 0) {
-    contenedor.innerHTML = `<div style="text-align:center; padding:30px 16px; color:#94a3b8; font-size:12px; font-weight:600;">Sin casos este mes</div>`;
+    contenedor.innerHTML = `<div style="text-align:center; padding:30px 16px; color:${sinDatosClr}; font-size:12px; font-weight:600;">Sin casos este mes</div>`;
     return;
   }
 
@@ -4000,18 +5820,19 @@ function renderizarMiniCalLista() {
       <div onclick="abrirModalLectura('${p.id || p.dni}')" style="
         display:flex; align-items:center; gap:10px;
         padding:10px 16px;
-        border-bottom:1px solid #f8fafc;
+        border-bottom:1px solid ${filaBorde};
+        background:${filaBg};
         cursor:pointer;
         transition:background 0.15s;
       "
-      onmouseover="this.style.background='#f8fafc'"
-      onmouseout="this.style.background='white'">
+      onmouseover="this.style.background='${filaHover}'"
+      onmouseout="this.style.background='${filaBg}'">
         <div style="width:8px; height:8px; border-radius:50%; background:${color}; flex-shrink:0;"></div>
         <div style="flex:1; min-width:0;">
-          <div style="font-size:12px; font-weight:700; color:#1e293b; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre || '—'}</div>
-          <div style="font-size:10px; color:#94a3b8; font-weight:600;">${p.fechaCreacion ? p.fechaCreacion.split(' ')[0] : '—'}</div>
+          <div style="font-size:12px; font-weight:700; color:${textoNombre}; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.nombre || '—'}</div>
+          <div style="font-size:10px; color:${textoFecha}; font-weight:600;">${p.fechaCreacion ? p.fechaCreacion.split(' ')[0] : '—'}</div>
         </div>
-        <span style="background:${color}20; color:${color}; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">${textoEstado}</span>
+        <span style="background:${color}; color:#ffffff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">${textoEstado}</span>
       </div>
     `;
   });
@@ -4020,20 +5841,26 @@ function renderizarMiniCalLista() {
   programadosMes.forEach(p => {
     const fechaP = new Date(p.fechaProgramada + 'T00:00:00');
     const esFuturo = fechaP > hoy;
+    const progBg = esDark
+      ? (esFuturo ? 'rgba(16,185,129,0.10)' : 'transparent')
+      : (esFuturo ? '#f0fdf4' : 'white');
+    const progNomClr = esDark ? '#6ee7b7' : '#166534';
+    const progBadgeBg = esDark ? 'rgba(16,185,129,0.20)' : '#dcfce7';
+    const progBadgeClr = esDark ? '#6ee7b7' : '#166534';
 
     html += `
       <div style="
         display:flex; align-items:center; gap:10px;
         padding:10px 16px;
-        border-bottom:1px solid #f8fafc;
-        background:${esFuturo ? '#f0fdf4' : 'white'};
+        border-bottom:1px solid ${filaBorde};
+        background:${progBg};
       ">
         <div style="width:8px; height:8px; border-radius:50%; background:#166534; flex-shrink:0;"></div>
         <div style="flex:1; min-width:0;">
-          <div style="font-size:12px; font-weight:700; color:#166534; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre || '—'}</div>
-          <div style="font-size:10px; color:#94a3b8; font-weight:600;">${p.fechaProgramada || '—'} · ${p.medico || '—'}</div>
+          <div style="font-size:12px; font-weight:700; color:${progNomClr}; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📅 ${p.nombre || '—'}</div>
+          <div style="font-size:10px; color:${textoFecha}; font-weight:600;">${p.fechaProgramada || '—'} · ${p.medico || '—'}</div>
         </div>
-        <span style="background:#dcfce7; color:#166534; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">Programado</span>
+        <span style="background:${progBadgeBg}; color:${progBadgeClr}; font-size:9px; font-weight:700; padding:2px 7px; border-radius:6px; white-space:nowrap; flex-shrink:0;">Programado</span>
       </div>
     `;
   });
@@ -4324,23 +6151,28 @@ function renderizarListaMedicosPersonal(filtro) {
     return;
   }
 
+  const esDark = document.body.classList.contains('dark');
   const term = (filtro || '').toLowerCase().trim();
+
+  const filaBorde   = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const textoNombre = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoEsp    = esDark ? 'rgba(255,255,255,0.55)' : '#475569';
+  const textoFecha  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+  const sinDatosClr = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
 
   const filas = medicosEspecialidades
     .map((m, i) => ({ m: m, i: i }))
     .filter(o => !term || (o.m.nombre || '').toLowerCase().includes(term))
     .map(o => `
     <div data-idx="${o.i}" onclick="mostrarFichaMedico(${o.i})"
-      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid #f1f5f9; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;"
-      onmouseover="if(!this.classList.contains('fila-activa')) this.style.background='#f8fafc'"
-      onmouseout="if(!this.classList.contains('fila-activa')) this.style.background='white'">
-      <div style="font-weight:600; color:#1e293b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.nombre || '—'}</div>
-      <div style="color:#475569; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.especialidad || '—'}</div>
-      <div style="color:#94a3b8;">${o.m.fechaRegistro || '—'}</div>
+      style="display:grid; grid-template-columns: 2fr 1.5fr 1fr; padding:11px 20px; border-bottom:1px solid ${filaBorde}; font-size:13px; cursor:pointer; transition:background 0.15s; border-left:3px solid transparent;">
+      <div style="font-weight:600; color:${textoNombre}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.nombre || '—'}</div>
+      <div style="color:${textoEsp}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${o.m.especialidad || '—'}</div>
+      <div style="color:${textoFecha};">${o.m.fechaRegistro || '—'}</div>
     </div>
   `).join('');
 
-  lista.innerHTML = filas || '<div style="padding:20px; text-align:center; color:#94a3b8; font-size:13px; font-weight:600;">Sin resultados</div>';
+  lista.innerHTML = filas || `<div style="padding:20px; text-align:center; color:${sinDatosClr}; font-size:13px; font-weight:600;">Sin resultados</div>`;
 }
 
 function filtrarMedicosPersonal(termino) {
@@ -4350,17 +6182,19 @@ function filtrarMedicosPersonal(termino) {
 function mostrarFichaMedico(idx) {
   const m = medicosEspecialidades[idx];
   if (!m) return;
+  medicoSeleccionado = idx;
 
+  const esDark = document.body.classList.contains('dark');
   document.querySelectorAll('#listaMedicosPersonal > div').forEach(el => {
     el.classList.remove('fila-activa');
-    el.style.background = 'white';
+    el.style.background = '';
     el.style.borderLeft = '3px solid transparent';
   });
   const fila = document.querySelector(`#listaMedicosPersonal > div[data-idx="${idx}"]`);
   if (fila) {
     fila.classList.add('fila-activa');
-    fila.style.background = '#ede9fe';
-    fila.style.borderLeft = '3px solid #2b1070';
+    fila.style.background = esDark ? 'rgba(99,102,241,0.18)' : '#ede9fe';
+    fila.style.borderLeft  = esDark ? '3px solid #818cf8'    : '3px solid #2b1070';
   }
 
   const reg = bdPacientes.filter(p => p.medico === m.nombre).length;
@@ -4375,54 +6209,70 @@ function mostrarFichaMedico(idx) {
   const bloque7 = document.getElementById('bloque7');
   if (!bloque7) return;
 
+  const hexTema    = (!esDark && sessionStorage.getItem('sislab_color')) || '';
+  const divisor    = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
+  const textoVal   = esDark ? 'rgba(255,255,255,0.90)' : 'var(--text, #1e293b)';
+  const textoLabel = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const miniCardBg = esDark ? 'rgba(255,255,255,0.06)' : 'var(--bg, #f8fafc)';
+  const numRegClr  = esDark ? '#a5b4fc'                : 'var(--accent, #2b1070)';
+  const avatarBg   = hexTema ? ('linear-gradient(135deg,' + _colorDarken(hexTema,0.25) + ',' + hexTema + ')') : 'linear-gradient(135deg,#2b1070,#6d5bf0)';
+  const btnBg      = hexTema || '#2b1070';
+  const btnBgHvr   = hexTema ? _colorDarken(hexTema, 0.15) : '#3b238f';
+  const btnTxt     = hexTema ? ('var(--on-accent, white)') : 'white';
+
   bloque7.innerHTML = `
-    <div style="padding:24px; display:flex; flex-direction:column; gap:18px; overflow-y:auto; height:100%; box-sizing:border-box;">
+    <div style="padding:16px 18px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box; flex:1; min-height:0;">
 
-      <div style="display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center;">
-        <div style="width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
-        <div style="font-size:20px; font-weight:900; color:#1e293b; line-height:1.2;">${m.nombre}</div>
-        <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
-      </div>
-
-      <div style="border-top:1px solid #f1f5f9;"></div>
-
+      <!-- Sección superior: avatar + datos -->
       <div style="display:flex; flex-direction:column; gap:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">CMP</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.cmp || '—'}</span>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:7px; text-align:center;">
+          <div style="width:56px; height:56px; border-radius:50%; background:${avatarBg}; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white; flex-shrink:0;">${iniciales}</div>
+          <div style="font-size:18px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre}</div>
+          <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:3px 12px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">RNE / RNA</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.rne || '—'}</span>
+
+        <div style="border-top:1px solid ${divisor};"></div>
+
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">CMP</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Edad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
+          </div>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Fecha de Registro</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.fechaRegistro || '—'}</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Nacionalidad</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.nacionalidad || '—'}</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; font-weight:600; color:#94a3b8;">Edad</span>
-          <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.edad || '—'}</span>
-        </div>
+
+        <div style="border-top:1px solid ${divisor};"></div>
       </div>
 
-      <div style="border-top:1px solid #f1f5f9;"></div>
-
+      <!-- Sección media: mini cards -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div style="background:#f8fafc; border-radius:12px; padding:16px; text-align:center;">
-          <div style="font-size:30px; font-weight:900; color:#2b1070; line-height:1;">${reg}</div>
-          <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px; line-height:1.4;">Pacientes<br>Registrados</div>
+        <div style="background:${miniCardBg}; border-radius:10px; padding:12px 8px; text-align:center;">
+          <div style="font-size:26px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
+          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:4px; line-height:1.3;">Pacientes Registrados</div>
         </div>
-        <div style="background:#f8fafc; border-radius:12px; padding:16px; text-align:center;">
-          <div style="font-size:30px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
-          <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px; line-height:1.4;">Pacientes<br>Leídos</div>
+        <div style="background:${miniCardBg}; border-radius:10px; padding:12px 8px; text-align:center;">
+          <div style="font-size:26px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
+          <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:4px; line-height:1.3;">Pacientes Leídos</div>
         </div>
       </div>
 
-      <button onclick="verFichaMedico(${idx})" style="background:#2b1070; color:white; border:none; border-radius:12px; padding:13px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='#3b238f';" onmouseout="this.style.background='#2b1070';">
+      <!-- Botón -->
+      <button onclick="verFichaMedico(${idx})" style="background:${btnBg}; color:${btnTxt}; border:none; border-radius:10px; padding:12px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" onmouseover="this.style.background='${btnBgHvr}';" onmouseout="this.style.background='${btnBg}';">
         <i class="fas fa-id-card"></i> Ver Ficha
       </button>
 
@@ -4433,6 +6283,11 @@ function mostrarFichaMedico(idx) {
 function renderizarMedicoLectorMes() {
   const cont = document.getElementById('bloque6Contenido');
   if (!cont) return;
+
+  const esDark = document.body.classList.contains('dark');
+  const textoNombre = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const textoLabel  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+  const textoVacio  = esDark ? 'rgba(255,255,255,0.30)' : '#cbd5e1';
 
   const ahora = new Date();
   const mes = ahora.getMonth();
@@ -4455,7 +6310,7 @@ function renderizarMedicoLectorMes() {
     .sort((a, b) => b.total - a.total);
 
   if (ranking.length === 0) {
-    cont.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:#cbd5e1;"><i class="fas fa-user-md" style="font-size:30px;"></i><span style="font-size:12px; font-weight:600; color:#94a3b8;">Sin lecturas este mes</span></div>';
+    cont.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:${textoVacio};"><i class="fas fa-user-md" style="font-size:30px;"></i><span style="font-size:12px; font-weight:600; color:${textoLabel};">Sin lecturas este mes</span></div>`;
     return;
   }
 
@@ -4468,10 +6323,10 @@ function renderizarMedicoLectorMes() {
         <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white;">${iniciales}</div>
         <div style="position:absolute; bottom:-3px; right:-3px; background:#fbbf24; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white;"><i class="fas fa-trophy" style="color:white; font-size:9px;"></i></div>
       </div>
-      <div style="font-size:14px; font-weight:800; color:#1e293b; line-height:1.2;">${top.nombre}</div>
+      <div style="font-size:14px; font-weight:800; color:${textoNombre}; line-height:1.2;">${top.nombre}</div>
       <div style="display:flex; align-items:baseline; gap:5px;">
         <span style="font-size:28px; font-weight:900; color:#10b981; line-height:1;">${top.total}</span>
-        <span style="font-size:11px; font-weight:600; color:#94a3b8;">lectura${top.total === 1 ? '' : 's'}</span>
+        <span style="font-size:11px; font-weight:600; color:${textoLabel};">lectura${top.total === 1 ? '' : 's'}</span>
       </div>
     </div>
   `;
@@ -4567,7 +6422,7 @@ function setTabActivo(tab) {
   const pill = document.getElementById('tabPersonalPill');
   bar.querySelectorAll('button[data-tab]').forEach(btn => {
     const activo = btn.getAttribute('data-tab') === tab;
-    btn.style.color = activo ? '#ffffff' : '#64748b';
+    btn.style.color = activo ? '#004EE0' : '#64748b';
     if (activo && pill) {
       pill.style.left = btn.offsetLeft + 'px';
       pill.style.top = btn.offsetTop + 'px';
@@ -4579,7 +6434,6 @@ function setTabActivo(tab) {
 }
 
 function seleccionarTabPersonal(tab) {
-  setTabActivo(tab);
   if (tab === 'medico') abrirModalMedico();
   else if (tab === 'ejecutivo') abrirModalEjecutivos();
   else if (tab === 'busqueda') toggleBuscadorMedico();
@@ -4700,6 +6554,7 @@ function verFichaMedico(idx) {
   const m = medicosEspecialidades[idx];
   if (!m) return;
 
+  const esDark = document.body.classList.contains('dark');
   const reg = bdPacientes.filter(p => p.medico === m.nombre).length;
   const leidos = bdPacientes.filter(p => p.medicoLector === m.nombre).length;
   const iniciales = (m.nombre || '?').split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
@@ -4709,8 +6564,18 @@ function verFichaMedico(idx) {
   if (esp.includes('pediatr')) { espColor = '#0369a1'; espBg = '#e0f2fe'; }
   else if (esp.includes('general')) { espColor = '#166534'; espBg = '#dcfce7'; }
 
+  const swalBg      = esDark ? '#0f1e3d'                  : '#ffffff';
+  const textoVal    = esDark ? 'rgba(255,255,255,0.92)'   : '#1e293b';
+  const textoLabel  = esDark ? 'rgba(255,255,255,0.45)'   : '#94a3b8';
+  const divisor     = esDark ? 'rgba(255,255,255,0.07)'   : '#f1f5f9';
+  const miniCardBg  = esDark ? 'linear-gradient(145deg,#1a3a6e,#0a1220)' : '#f8fafc';
+  const miniCardBrd = esDark ? '1px solid rgba(255,255,255,0.08)'        : '1px solid transparent';
+  const numRegClr   = esDark ? '#a5b4fc'                  : '#2b1070';
+
   Swal.fire({
     width: 430,
+    background: swalBg,
+    color: textoVal,
     showCloseButton: true,
     showConfirmButton: true,
     showDenyButton: true,
@@ -4722,41 +6587,41 @@ function verFichaMedico(idx) {
       <div style="display:flex; flex-direction:column; gap:16px; text-align:left;">
         <div style="display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center;">
           <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#2b1070,#6d5bf0); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:white;">${iniciales}</div>
-          <div style="font-size:19px; font-weight:900; color:#1e293b; line-height:1.2;">${m.nombre || '—'}</div>
+          <div style="font-size:19px; font-weight:900; color:${textoVal}; line-height:1.2;">${m.nombre || '—'}</div>
           <span style="background:${espBg}; color:${espColor}; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;">${m.especialidad || 'General'}</span>
         </div>
-        <div style="border-top:1px solid #f1f5f9;"></div>
+        <div style="border-top:1px solid ${divisor};"></div>
         <div style="display:flex; flex-direction:column; gap:11px;">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">CMP</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.cmp || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">CMP</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.cmp || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">RNE / RNA</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.rne || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">RNE / RNA</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.rne || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Fecha de Registro</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.fechaRegistro || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Fecha de Registro</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.fechaRegistro || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Nacionalidad</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.nacionalidad || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Nacionalidad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.nacionalidad || '—'}</span>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:600; color:#94a3b8;">Edad</span>
-            <span style="font-size:13px; font-weight:700; color:#1e293b;">${m.edad || '—'}</span>
+            <span style="font-size:12px; font-weight:600; color:${textoLabel};">Edad</span>
+            <span style="font-size:13px; font-weight:700; color:${textoVal};">${m.edad || '—'}</span>
           </div>
         </div>
-        <div style="border-top:1px solid #f1f5f9;"></div>
+        <div style="border-top:1px solid ${divisor};"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div style="background:#f8fafc; border-radius:12px; padding:14px; text-align:center;">
-            <div style="font-size:28px; font-weight:900; color:#2b1070; line-height:1;">${reg}</div>
-            <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px;">Pacientes Registrados</div>
+          <div style="background:${miniCardBg}; border:${miniCardBrd}; border-radius:12px; padding:14px; text-align:center;">
+            <div style="font-size:28px; font-weight:900; color:${numRegClr}; line-height:1;">${reg}</div>
+            <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px;">Pacientes Registrados</div>
           </div>
-          <div style="background:#f8fafc; border-radius:12px; padding:14px; text-align:center;">
+          <div style="background:${miniCardBg}; border:${miniCardBrd}; border-radius:12px; padding:14px; text-align:center;">
             <div style="font-size:28px; font-weight:900; color:#10b981; line-height:1;">${leidos}</div>
-            <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:6px;">Pacientes Leídos</div>
+            <div style="font-size:11px; font-weight:600; color:${textoLabel}; margin-top:6px;">Pacientes Leídos</div>
           </div>
         </div>
       </div>
@@ -4908,27 +6773,50 @@ function eliminarMedicoModal(idx) {
 }
 
 function abrirModalEjecutivos() {
+  const esDark = document.body.classList.contains('dark');
+  const swalBg      = esDark ? '#0f1e3d'                  : '#ffffff';
+  const titleColor  = esDark ? '#a5b4fc'                  : '#2b1070';
+  const emptyColor  = esDark ? 'rgba(255,255,255,0.35)'   : '#94a3b8';
+  const addBtnBg    = esDark ? 'rgba(255,255,255,0.05)'   : '#f5f3ff';
+  const addBtnBgHov = esDark ? 'rgba(255,255,255,0.10)'   : '#ede9fe';
+  const addBtnBrd   = esDark ? 'rgba(255,255,255,0.18)'   : '#c7d2fe';
+  const addBtnClr   = esDark ? 'rgba(255,255,255,0.85)'   : '#2b1070';
+
   Swal.fire({
-    title: '<span style="font-size:18px; font-weight:800; color:#2b1070;">Ejecutivos Registrados</span>',
+    title: `<span style="font-size:18px; font-weight:800; color:${titleColor};">Ejecutivos Registrados</span>`,
+    background: swalBg,
+    color: esDark ? 'rgba(255,255,255,0.85)' : '#1e293b',
     width: 440,
     html: ''
-      + '<div id="swalEjecLista" style="text-align:center; color:#94a3b8; font-size:13px; padding:24px;">Cargando...</div>'
-      + '<button onclick="abrirModalNuevoEjecutivo()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:11px; border:2px dashed #c7d2fe; background:#f5f3ff; color:#2b1070; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background=\'#ede9fe\';" onmouseout="this.style.background=\'#f5f3ff\';"><i class="fas fa-plus"></i> Add Ejecutivo</button>',
+      + `<div id="swalEjecLista" style="text-align:center; color:${emptyColor}; font-size:13px; padding:24px;">Cargando...</div>`
+      + `<button onclick="abrirModalNuevoEjecutivo()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:6px; padding:11px; border:2px dashed ${addBtnBrd}; background:${addBtnBg}; color:${addBtnClr}; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='${addBtnBgHov}';" onmouseout="this.style.background='${addBtnBg}';"><i class="fas fa-plus"></i> Add Ejecutivo</button>`,
     showConfirmButton: false,
     showCloseButton: true,
     didOpen: () => {
-      // Render instantáneo desde la caché cargada al iniciar
-      renderModalEjecutivos({ ejecutivosConPin: ejecutivosDatosPin || [] });
+      // La tabla de personal muestra solo ejecutivos (sin supervisores)
+      renderModalEjecutivos({ ejecutivosConPin: ejecutivosData || [] });
     }
   });
 }
 
 var ejecutivosModalData = [];
 
+function _toggleAuthPinField() {
+  var tipo = document.getElementById('swalEjecTipo');
+  var wrap = document.getElementById('swalAuthPinWrap');
+  if (!tipo || !wrap) return;
+  wrap.style.display = tipo.value === 'Supervisor' ? 'block' : 'none';
+  if (tipo.value !== 'Supervisor') {
+    var ap = document.getElementById('swalAuthPin');
+    if (ap) ap.value = '';
+  }
+}
+
 function abrirModalNuevoEjecutivo(ejec) {
   const esEdicion = !!ejec;
   const nombreVal = esEdicion ? (ejec.nombre || '').replace(/"/g, '&quot;') : '';
-  const pinVal = esEdicion ? (ejec.pin || '').replace(/"/g, '&quot;') : '';
+  const pinVal    = esEdicion ? (ejec.pin    || '').replace(/"/g, '&quot;') : '';
+  const tipoVal   = esEdicion ? (ejec.rol    || '') : '';
 
   Swal.fire({
     title: '<span style="font-size:18px; font-weight:800; color:#2b1070;">' + (esEdicion ? 'Editar Ejecutivo' : 'Registrar Ejecutivo') + '</span>',
@@ -4944,10 +6832,18 @@ function abrirModalNuevoEjecutivo(ejec) {
           <input id="swalEjecPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="••••••" value="` + pinVal + `">
         </div>
         <div>
-          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Usuario</label>
-          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" disabled>
-            <option value="">Próximamente...</option>
+          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Registro</label>
+          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" onchange="_toggleAuthPinField()">
+            <option value="">-- Seleccionar --</option>
+            <option value="Ejecutivo"  ` + (tipoVal === 'Ejecutivo'  ? 'selected' : '') + `>Ejecutivo</option>
+            <option value="Supervisor" ` + (tipoVal === 'Supervisor' ? 'selected' : '') + `>Supervisor</option>
           </select>
+        </div>
+        <div id="swalAuthPinWrap" style="display:none;">
+          <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">
+            PIN de Autorización <span style="color:#ef4444; font-size:11px;">(Solo Admin o Supervisor)</span>
+          </label>
+          <input id="swalAuthPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="PIN de Admin o Supervisor">
         </div>
       </div>
     `,
@@ -4957,19 +6853,42 @@ function abrirModalNuevoEjecutivo(ejec) {
     confirmButtonColor: '#2b1070',
     cancelButtonColor: '#64748b',
     reverseButtons: true,
+    didOpen: function() {
+      // Si ya es Supervisor en edición, mostrar el campo de auth pin
+      if (tipoVal === 'Supervisor') _toggleAuthPinField();
+    },
     preConfirm: () => {
       const nombre = document.getElementById('swalEjecNombre').value.trim();
-      const pin = document.getElementById('swalEjecPin').value.trim();
+      const pin    = document.getElementById('swalEjecPin').value.trim();
+      const tipo   = document.getElementById('swalEjecTipo').value;
       if (!nombre || !pin) {
         Swal.showValidationMessage('Ingresa el nombre y el PIN de seguridad.');
         return false;
       }
-      return { nombre: nombre, pin: pin };
+      if (!tipo) {
+        Swal.showValidationMessage('Selecciona el Tipo de Registro.');
+        return false;
+      }
+      if (tipo === 'Supervisor') {
+        const authPin = document.getElementById('swalAuthPin').value.trim();
+        if (!authPin) {
+          Swal.showValidationMessage('Ingresa el PIN de autorización para registrar un Supervisor.');
+          return false;
+        }
+        const autorizado = (ejecutivosDatosPin || []).some(function(e) {
+          return e.pin === authPin && (e.rol === 'Admin' || e.rol === 'Supervisor');
+        });
+        if (!autorizado) {
+          Swal.showValidationMessage('PIN de autorización incorrecto o sin permisos suficientes.');
+          return false;
+        }
+      }
+      return { nombre: nombre, pin: pin, tipo: tipo };
     }
   }).then(result => {
     if (!result.isConfirmed) return;
     if (esEdicion) {
-      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin });
+      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin, tipo: result.value.tipo });
     } else {
       guardarEjecutivo(result.value);
     }
@@ -5016,20 +6935,25 @@ function renderModalEjecutivos(listas) {
     return;
   }
 
+  const esDark = document.body.classList.contains('dark');
+  const rowBrd  = esDark ? 'rgba(255,255,255,0.09)' : '#eef2f7';
+  const avBg    = esDark ? 'rgba(99,102,241,0.22)'  : '#ede9fe';
+  const avClr   = esDark ? '#a5b4fc'                : '#2b1070';
+  const nameClr = esDark ? 'rgba(255,255,255,0.90)' : '#1e293b';
+  const dotClr  = esDark ? 'rgba(255,255,255,0.30)' : '#475569';
+
   const filas = ejecutivos.map(function(e, i) {
     const inicial = (e.nombre || '?').charAt(0).toUpperCase();
     return ''
-      + '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; border:1px solid #eef2f7; border-radius:12px; margin-bottom:8px;">'
+      + `<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; border:1px solid ${rowBrd}; border-radius:12px; margin-bottom:8px;">`
       +   '<div style="display:flex; align-items:center; gap:10px; min-width:0;">'
-      +     '<div style="width:34px; height:34px; border-radius:50%; background:#ede9fe; color:#2b1070; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">' + inicial + '</div>'
-      +     '<span style="font-size:14px; font-weight:600; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (e.nombre || '') + '</span>'
+      +     `<div style="width:34px; height:34px; border-radius:50%; background:${avBg}; color:${avClr}; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${inicial}</div>`
+      +     `<span style="font-size:14px; font-weight:600; color:${nameClr}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.nombre || ''}</span>`
       +   '</div>'
       +   '<div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">'
-      +     '<span style="font-family:monospace; font-size:14px; font-weight:700; color:#475569; letter-spacing:2px; text-align:right;">'
-      +       '••••••'
-      +     '</span>'
-      +     '<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#2563eb; font-size:13px; width:18px; text-align:center;"></i>'
-      +     '<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(' + i + ')" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>'
+      +     `<span style="font-family:monospace; font-size:14px; font-weight:700; color:${dotClr}; letter-spacing:2px; text-align:right;">••••••</span>`
+      +     `<i class="fas fa-pen" title="Editar" onclick="editarEjecutivoModal(${i})" style="cursor:pointer; color:#004EE0; font-size:13px; width:18px; text-align:center;"></i>`
+      +     `<i class="fas fa-trash" title="Eliminar" onclick="eliminarEjecutivoModal(${i})" style="cursor:pointer; color:#ef4444; font-size:13px; width:18px; text-align:center;"></i>`
       +   '</div>'
       + '</div>';
   }).join('');
@@ -5070,5 +6994,30 @@ function eliminarEjecutivoModal(i) {
       .eliminarEjecutivo(e.nombre);
   });
 }
+
+
+// Función para abrir/cerrar el menú lateral en pantallas pequeñas
+function toggleMobileDrawer() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('mobileDrawerOverlay');
+  
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+  }
+}
+
+// Para asegurar que si el usuario hace clic en el menú, este se cierre automáticamente
+document.querySelectorAll('.mob-nav-btn, .menu-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    }
+  });
+});
 
 </script>

@@ -5,6 +5,7 @@ function doGet() {
     .createTemplateFromFile('index')
     .evaluate()
     .setTitle('LabSystem - Gestión de Pacientes')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no') // <--- ESTA ES LA LÍNEA QUE ACTIVA EL MODO APP
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
@@ -12,6 +13,54 @@ function include(nombreArchivo){
   return HtmlService
     .createHtmlOutputFromFile(nombreArchivo)
     .getContent();
+}
+
+////////////// Usuario actual (saludo personalizado) //////////////
+const ADMIN_EMAIL = "gtaminezr@gmail.com";
+
+function getUsuarioActual() {
+  var email = "";
+  try { email = (Session.getActiveUser().getEmail() || "").toLowerCase(); } catch (e) {}
+
+  var nombre = "";
+
+  // 1) Nombre real desde la cuenta de Google (requiere habilitar la "People API")
+  try {
+    var me = People.People.get("people/me", { personFields: "names" });
+    if (me && me.names && me.names.length) {
+      var n = me.names[0];
+      nombre = n.displayName || ((n.givenName || "") + " " + (n.familyName || "")).trim();
+    }
+  } catch (e) {}
+
+  // 2) Fallback: usar la parte antes del @ del correo
+  if (!nombre && email) {
+    nombre = email.split("@")[0];
+  }
+
+  return {
+    email: email,
+    nombre: nombre || "Usuario",
+    esAdmin: (email === ADMIN_EMAIL)
+  };
+}
+
+// Función de diagnóstico: ejecútala desde el editor y revisa "Registro de ejecución"
+function probarUsuario() {
+  Logger.log("Resultado final: " + JSON.stringify(getUsuarioActual()));
+
+  try {
+    Logger.log("Correo: " + Session.getActiveUser().getEmail());
+  } catch (e) {
+    Logger.log("Error correo: " + e);
+  }
+
+  try {
+    var me = People.People.get("people/me", { personFields: "names" });
+    Logger.log("People OK -> names: " + JSON.stringify(me.names));
+  } catch (e) {
+    Logger.log("People ERROR: " + e);
+  }
 }
 
 ////////////// Obtener Listas Desplegables Dinámicas //////////////
@@ -27,8 +76,11 @@ function obtenerListasDesplegables() {
     let ejecutivosConPin = [];
 
     if (hojaEjecutivos && hojaEjecutivos.getLastRow() >= 2) {
-      let dataEjec = hojaEjecutivos.getRange(2, 1, hojaEjecutivos.getLastRow() - 1, 4).getValues();
-      ejecutivos = dataEjec.map(fila => fila[0].toString().trim()).filter(String);
+      let dataEjec = hojaEjecutivos.getRange(2, 1, hojaEjecutivos.getLastRow() - 1, 6).getValues();
+      // El desplegable "Ejecutivo que registra" excluye a los Supervisores
+      ejecutivos = dataEjec
+        .filter(fila => fila[0].toString().trim() !== "" && (fila[5] ? fila[5].toString().trim() : "") !== "Supervisor")
+        .map(fila => fila[0].toString().trim());
       ejecutivosConPin = dataEjec.filter(fila => fila[0].toString().trim() !== "").map(fila => {
         let fechaEjec = "—";
         if (fila[3]) {
@@ -36,7 +88,7 @@ function obtenerListasDesplegables() {
             ? Utilities.formatDate(fila[3], Session.getScriptTimeZone(), "dd/MM/yyyy")
             : fila[3].toString().trim();
         }
-        return { nombre: fila[0].toString().trim(), pin: fila[1] ? fila[1].toString().trim() : "", tipoRegistro: fila[2] ? fila[2].toString().trim() : "", fechaRegistro: fechaEjec };
+        return { nombre: fila[0].toString().trim(), pin: fila[1] ? fila[1].toString().trim() : "", tipoRegistro: fila[2] ? fila[2].toString().trim() : "", fechaRegistro: fechaEjec, rol: fila[5] ? fila[5].toString().trim() : "Ejecutivo" };
       });
     }
 
@@ -512,6 +564,29 @@ function obtenerConteoMedicos() {
   }
 }
 
+////////////// Generar Usuario Automático //////////////
+function _generarUsuario_(nombre, hoja) {
+  var partes = nombre.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z\s]/g, "").trim().split(/\s+/);
+  if (partes.length === 0 || !partes[0]) return "";
+  if (partes.length === 1) return partes[0];
+  var apellido = partes[partes.length - 1];
+  var prefijo  = partes.slice(0, -1).map(function(p){ return p[0]; }).join('');
+  var base     = prefijo + apellido;
+  var existentes = [];
+  var lastRow = hoja.getLastRow();
+  if (lastRow >= 2) {
+    existentes = hoja.getRange(2, 5, lastRow - 1, 1).getValues()
+      .map(function(r){ return r[0].toString().trim().toLowerCase(); })
+      .filter(function(v){ return v !== ""; });
+  }
+  if (existentes.indexOf(base) === -1) return base;
+  var i = 2;
+  while (existentes.indexOf(base + i) !== -1) i++;
+  return base + i;
+}
+
 ////////////// Registrar Nuevo Ejecutivo //////////////
 function registrarEjecutivo(datos) {
   try {
@@ -520,15 +595,19 @@ function registrarEjecutivo(datos) {
     if (!hojaEjecutivos) throw new Error('No se encontró la hoja "Ejecutivos".');
 
     const nombre = (datos.nombre || "").toString().trim();
-    const pin = (datos.pin || "").toString().trim();
+    const pin    = (datos.pin    || "").toString().trim();
+    const tipo   = (datos.tipo   || "Ejecutivo").toString().trim();
     if (!nombre) throw new Error("El nombre del ejecutivo es obligatorio.");
-    if (!pin) throw new Error("El PIN de seguridad es obligatorio.");
+    if (!pin)    throw new Error("El PIN de seguridad es obligatorio.");
 
     // Fecha de registro automática
     const fecha = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy");
 
-    // Columnas: A=Nombre, B=PIN, C=Tipo de Registro, D=Fecha de Registro
-    hojaEjecutivos.appendRow([nombre, pin, "", fecha]);
+    // Generar usuario automáticamente: inicial(es) + apellido completo
+    const usuario = _generarUsuario_(nombre, hojaEjecutivos);
+
+    // Columnas: A=Nombre, B=PIN, C=legacy, D=Fecha, E=Usuario, F=Rol
+    hojaEjecutivos.appendRow([nombre, pin, "", fecha, usuario, tipo]);
 
     return "Ejecutivo registrado correctamente.";
   } catch (error) {
@@ -722,4 +801,267 @@ function PRUEBA_medicos() {
   const r = obtenerListasDesplegables();
   Logger.log("Cantidad de médicos: " + r.medicos.length);
   Logger.log(JSON.stringify(r.medicos));
+}
+
+////////////// Autenticación de usuarios //////////////
+function validarCredenciales(usuario, pin) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Ejecutivos");
+    if (!hoja || hoja.getLastRow() < 2) return { ok: false };
+
+    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol, G=ColorTema
+    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 7).getValues();
+
+    for (var i = 0; i < data.length; i++) {
+      var usuarioHoja = (data[i][4] || "").toString().trim();
+      var pinHoja     = (data[i][1] || "").toString().trim();
+      var nombreHoja  = (data[i][0] || "").toString().trim();
+      var rolHoja     = (data[i][5] || "Admin").toString().trim();
+      var colorTema   = (data[i][6] || "").toString().trim();
+
+      if (usuarioHoja.toLowerCase() === usuario.toLowerCase().trim()
+          && pinHoja === pin.toString().trim()) {
+        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja, colorTema: colorTema };
+      }
+    }
+    return { ok: false };
+  } catch (e) {
+    Logger.log("Error en validarCredenciales: " + e);
+    return { ok: false };
+  }
+}
+
+////////////// Guardar color de tema del usuario //////////////
+function guardarColorTema(usuario, color) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Ejecutivos");
+    if (!hoja || hoja.getLastRow() < 2) return { ok: false };
+
+    const data = hoja.getRange(2, 5, hoja.getLastRow() - 1, 1).getValues();
+    for (var i = 0; i < data.length; i++) {
+      if ((data[i][0] || "").toString().trim().toLowerCase() === usuario.toString().trim().toLowerCase()) {
+        hoja.getRange(i + 2, 7).setValue(color); // Col G
+        return { ok: true };
+      }
+    }
+    return { ok: false, error: 'Usuario no encontrado.' };
+  } catch (e) {
+    Logger.log("Error en guardarColorTema: " + e);
+    return { ok: false, error: e.message };
+  }
+}
+
+////////////// Generar Excel con Top Exámenes y gráfico de columnas //////////////
+function crearTopExamenesExcel(filas, etiquetaMes) {
+  try {
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Top Exámenes - ' + label);
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Top Exámenes');
+
+    // Encabezados
+    var header = sheet.getRange(1, 1, 1, 3);
+    header.setValues([['Posición', 'Examen', 'Cantidad']]);
+    header.setFontWeight('bold');
+    header.setBackground('#004EE0');
+    header.setFontColor('#FFFFFF');
+    header.setHorizontalAlignment('center');
+
+    // Datos con filas alternadas
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, 3).setValues(filas);
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, 3).setBackground('#EEF4FF');
+        }
+      }
+    }
+
+    // Anchos de columna
+    sheet.setColumnWidth(1, 80);
+    sheet.setColumnWidth(2, 300);
+    sheet.setColumnWidth(3, 100);
+    sheet.setFrozenRows(1);
+
+    // Paleta multicolor para las columnas
+    var colores = [
+      '#004EE0','#E03A00','#00A86B','#9B00E0','#E0A800',
+      '#00C4E0','#E05C00','#0094E0','#C4E000','#E000A8'
+    ];
+
+    // Gráfico de columnas (Examen vs Cantidad)
+    var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
+    var chart = sheet.newChart()
+      .setChartType(Charts.ChartType.COLUMN)
+      .addRange(dataRange)
+      .setPosition(2, 5, 0, 0)
+      .setOption('title', 'Top Exámenes — ' + label)
+      .setOption('titleTextStyle', { fontSize: 16, bold: true, color: '#1e293b' })
+      .setOption('isStacked', false)
+      .setOption('legend', { position: 'labeled', textStyle: { fontSize: 11 } })
+      .setOption('hAxis', { title: 'Examen', slantedText: true, slantedTextAngle: 45, textStyle: { fontSize: 11 } })
+      .setOption('vAxis', { title: 'Cantidad de usos', minValue: 0, textStyle: { fontSize: 11 } })
+      .setOption('colors', colores)
+      .setOption('width', 820)
+      .setOption('height', 520)
+      .build();
+    sheet.insertChart(chart);
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
+  } catch (e) {
+    Logger.log('Error crearTopExamenesExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
+  }
+}
+
+////////////// Generar Excel con Pacientes por Seguro y gráfico de columnas //////////////
+function crearSeguroExcel(filas, etiquetaMes) {
+  try {
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Pacientes por Seguro - ' + label);
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Por Seguro');
+
+    // Encabezados
+    var header = sheet.getRange(1, 1, 1, 3);
+    header.setValues([['Posición', 'Seguro', 'Pacientes']]);
+    header.setFontWeight('bold');
+    header.setBackground('#004EE0');
+    header.setFontColor('#FFFFFF');
+    header.setHorizontalAlignment('center');
+
+    // Datos con filas alternadas
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, 3).setValues(filas);
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, 3).setBackground('#EEF4FF');
+        }
+      }
+    }
+
+    // Anchos de columna
+    sheet.setColumnWidth(1, 80);
+    sheet.setColumnWidth(2, 280);
+    sheet.setColumnWidth(3, 100);
+    sheet.setFrozenRows(1);
+
+    // Paleta multicolor
+    var colores = [
+      '#004EE0','#E03A00','#00A86B','#9B00E0','#E0A800',
+      '#00C4E0','#E05C00','#0094E0','#C4E000','#E000A8'
+    ];
+
+    // Gráfico de columnas (Seguro vs Pacientes)
+    var dataRange = sheet.getRange(1, 2, filas.length + 1, 2);
+    var chart = sheet.newChart()
+      .setChartType(Charts.ChartType.COLUMN)
+      .addRange(dataRange)
+      .setPosition(2, 5, 0, 0)
+      .setOption('title', 'Pacientes por Seguro — ' + label)
+      .setOption('titleTextStyle', { fontSize: 16, bold: true, color: '#1e293b' })
+      .setOption('isStacked', false)
+      .setOption('legend', { position: 'labeled', textStyle: { fontSize: 11 } })
+      .setOption('hAxis', { title: 'Seguro', slantedText: true, slantedTextAngle: 45, textStyle: { fontSize: 11 } })
+      .setOption('vAxis', { title: 'Cantidad de pacientes', minValue: 0, textStyle: { fontSize: 11 } })
+      .setOption('colors', colores)
+      .setOption('width', 820)
+      .setOption('height', 520)
+      .build();
+    sheet.insertChart(chart);
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
+  } catch (e) {
+    Logger.log('Error crearSeguroExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
+  }
+}
+
+////////////// Generar Excel Base del Mes (tabla completa de pacientes) //////////////
+function crearBaseMesExcel(filas, etiquetaMes) {
+  try {
+    var label = etiquetaMes || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMMM yyyy');
+    var ss = SpreadsheetApp.create('Base del Mes - ' + label);
+    var sheet = ss.getActiveSheet();
+    sheet.setName('Base ' + label);
+
+    var encabezados = [
+      'FECHA DE REGISTRO',
+      'ESTADO DEL CASO',
+      'NÚMERO DE CASO',
+      'DNI',
+      'NOMBRE DE PACIENTE',
+      'EXÁMENES',
+      'CELULAR',
+      'SEGURO',
+      'MÉDICO SOLICITANTE',
+      'FECHA DE RECOJO',
+      'FECHA DE ENVÍO DE RESULTADOS',
+      'EJECUTIVO',
+      'PRECIO DE EXÁMENES',
+      'MÉDICO LECTOR',
+      'FECHA DE VENCIMIENTO',
+      'RESULTADO CIERRE'
+    ];
+
+    var numCols = encabezados.length;
+
+    // Encabezados
+    var headerRange = sheet.getRange(1, 1, 1, numCols);
+    headerRange.setValues([encabezados]);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#004EE0');
+    headerRange.setFontColor('#FFFFFF');
+    headerRange.setHorizontalAlignment('center');
+    headerRange.setVerticalAlignment('middle');
+    sheet.setRowHeight(1, 36);
+
+    // Datos
+    if (filas.length > 0) {
+      sheet.getRange(2, 1, filas.length, numCols).setValues(filas);
+      // Filas alternadas
+      for (var i = 0; i < filas.length; i++) {
+        if (i % 2 === 1) {
+          sheet.getRange(i + 2, 1, 1, numCols).setBackground('#EEF4FF');
+        }
+      }
+      // Columna RESULTADO CIERRE: color según valor
+      for (var j = 0; j < filas.length; j++) {
+        var cierre = (filas[j][15] || '').toString().trim();
+        var cierreCell = sheet.getRange(j + 2, 16);
+        if (cierre === 'Completado') {
+          cierreCell.setBackground('#D1FAE5');
+          cierreCell.setFontColor('#065F46');
+          cierreCell.setFontWeight('bold');
+        } else if (cierre === 'Desestimado') {
+          cierreCell.setBackground('#FEE2E2');
+          cierreCell.setFontColor('#991B1B');
+          cierreCell.setFontWeight('bold');
+        }
+      }
+    }
+
+    // Anchos de columna
+    var anchos = [130, 110, 120, 85, 200, 250, 100, 130, 180, 120, 170, 140, 110, 180, 130, 120];
+    for (var c = 0; c < anchos.length; c++) {
+      sheet.setColumnWidth(c + 1, anchos[c]);
+    }
+    sheet.setFrozenRows(1);
+
+    // Borde exterior de la tabla
+    if (filas.length > 0) {
+      sheet.getRange(1, 1, filas.length + 1, numCols)
+        .setBorder(true, true, true, true, true, true, '#CBD5E1', SpreadsheetApp.BorderStyle.SOLID);
+    }
+
+    SpreadsheetApp.flush();
+    return { ok: true, fileId: ss.getId() };
+  } catch (e) {
+    Logger.log('Error crearBaseMesExcel: ' + e);
+    return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
+  }
 }
