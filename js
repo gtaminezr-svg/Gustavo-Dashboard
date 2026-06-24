@@ -1141,10 +1141,14 @@
     }).join('');
   }
 
-  function _mobStatsSetMes(delta) {
-    _mobStatsMes += delta;
-    if (_mobStatsMes > 11) { _mobStatsMes = 0; _mobStatsAnio++; }
-    if (_mobStatsMes < 0)  { _mobStatsMes = 11; _mobStatsAnio--; }
+  function _mobStatsAplicarFecha() {
+    const m = document.getElementById('mobStatsPickerMes');
+    const a = document.getElementById('mobStatsPickerAnio');
+    if (!m || !a) return;
+    const anioVal = parseInt(a.value, 10);
+    if (isNaN(anioVal) || anioVal < 2000 || anioVal > 2100) return;
+    _mobStatsMes = parseInt(m.value, 10);
+    _mobStatsAnio = anioVal;
     _renderMobStats();
   }
 
@@ -1203,14 +1207,19 @@
         '</div>';
     }
 
+    const mesOptions = meses.map(function(m, i) {
+      return '<option value="' + i + '"' + (i === mes ? ' selected' : '') + '>' + m + '</option>';
+    }).join('');
+    const anioActual = new Date().getFullYear();
+    const anioOptions = Array.from({length: 6}, function(_, i) {
+      const y = anioActual - 2 + i;
+      return '<option value="' + y + '"' + (y === anio ? ' selected' : '') + '>' + y + '</option>';
+    }).join('');
     container.innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
-        '<button onclick="_mobStatsSetMes(-1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-left"></i></button>' +
-        '<div style="text-align:center;">' +
-          '<div style="font-size:17px;font-weight:800;color:#1e293b;">' + meses[mes] + '</div>' +
-          '<div style="font-size:12px;color:#94a3b8;font-weight:600;">' + anio + '</div>' +
-        '</div>' +
-        '<button onclick="_mobStatsSetMes(1)" style="width:36px;height:36px;border-radius:50%;border:none;background:#f1f5f9;color:#475569;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chevron-right"></i></button>' +
+      '<div style="background:white;border-radius:16px;padding:14px 16px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:16px;display:flex;align-items:center;gap:10px;">' +
+        '<i class="fas fa-calendar-alt" style="color:#2b1070;font-size:16px;flex-shrink:0;"></i>' +
+        '<select id="mobStatsPickerMes" onchange="_mobStatsAplicarFecha()" style="flex:1;border:none;background:transparent;font-size:15px;font-weight:700;color:#1e293b;cursor:pointer;outline:none;">' + mesOptions + '</select>' +
+        '<select id="mobStatsPickerAnio" onchange="_mobStatsAplicarFecha()" style="width:80px;border:none;background:transparent;font-size:15px;font-weight:700;color:#1e293b;cursor:pointer;outline:none;">' + anioOptions + '</select>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
         '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;">' +
