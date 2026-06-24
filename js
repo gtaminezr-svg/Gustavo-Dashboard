@@ -1032,6 +1032,64 @@
     abrirModalLectura(id);
   }
 
+  function mobAbrirListaStats(tipo) {
+    document.getElementById('mobSubStats').style.display = 'none';
+    const subLista = document.getElementById('mobSubStatsLista');
+    subLista.style.display = 'flex';
+    const hoy = new Date();
+    const mes = hoy.getMonth(); const anio = hoy.getFullYear();
+    const bd = bdPacientes || [];
+    const delMes = bd.filter(function(p) {
+      if (!p.fechaCreacion) return false;
+      const partes = p.fechaCreacion.toString().split(' ')[0].split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) - 1 === mes && parseInt(partes[2], 10) === anio;
+    });
+    let lista, titulo;
+    if (tipo === 'mes')       { lista = delMes; titulo = 'Total del Mes'; }
+    else if (tipo === 'cerrados')  { lista = delMes.filter(function(p) { return p.estado === 'Completado' || p.estado === 'Desestimado'; }); titulo = 'Cerrados del Mes'; }
+    else if (tipo === 'pendientes'){ lista = bd.filter(function(p) { return p.estado === 'Pendiente'; }); titulo = 'Pendientes'; }
+    else if (tipo === 'enproceso') { lista = bd.filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); }); titulo = 'En Proceso'; }
+    else { lista = []; titulo = ''; }
+    const tituloEl = document.getElementById('mobStatsListaTitulo');
+    if (tituloEl) tituloEl.textContent = titulo + ' (' + lista.length + ')';
+    _mobRenderListaStats(lista);
+  }
+
+  function mobVolverStats() {
+    document.getElementById('mobSubStatsLista').style.display = 'none';
+    document.getElementById('mobSubStats').style.display = 'flex';
+  }
+
+  function _mobRenderListaStats(lista) {
+    const container = document.getElementById('mobStatsListaCasos');
+    if (!container) return;
+    if (lista.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin registros</span></div>';
+      return;
+    }
+    const colores = { 'Pendiente': '#f59e0b', 'En Proceso': '#3b82f6', 'Completado': '#10b981', 'Desestimado': '#6b7280' };
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    container.innerHTML = lista.map(function(p) {
+      const estadoDisplay = p.estado && p.estado.startsWith('En Proceso') ? 'En Proceso' : p.estado;
+      const color = colores[estadoDisplay] || '#94a3b8';
+      const fechaVenc = p.vencimiento ? new Date(p.vencimiento + 'T00:00:00') : null;
+      const venc = fechaVenc ? fechaVenc.toLocaleDateString('es', { day: '2-digit', month: 'short' }) : '—';
+      const esVencido = fechaVenc && fechaVenc < hoy && p.estado === 'Pendiente';
+      return '<div class="mob-caso-card" onclick="mobVerPaciente(\'' + (p.id || p.dni) + '\')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+          '<div style="font-size:15px;font-weight:700;color:#1e293b;flex:1;margin-right:8px;line-height:1.3;">' + (p.nombre || '—') + '</div>' +
+          '<span style="background:' + color + '20;color:' + color + ';font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + estadoDisplay + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:14px;font-size:12px;color:#64748b;flex-wrap:wrap;">' +
+          '<span><i class="fas fa-id-card" style="margin-right:4px;color:#94a3b8;"></i>' + (p.dni != null ? p.dni : '—') + '</span>' +
+          '<span style="color:' + (esVencido ? '#ef4444' : 'inherit') + '"><i class="fas fa-calendar-day" style="margin-right:4px;color:' + (esVencido ? '#ef4444' : '#94a3b8') + ';"></i>' + venc + '</span>' +
+          (p.seguro ? '<span><i class="fas fa-shield-alt" style="margin-right:4px;color:#94a3b8;"></i>' + p.seguro + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   function _renderMobStats() {
     const container = document.getElementById('mobStatsContenido');
     if (!container) return;
@@ -1055,21 +1113,25 @@
     container.innerHTML =
       '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Resumen del Mes</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;">' +
+        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;active-opacity:.8;">' +
           '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
           '<div style="font-size:36px;font-weight:900;color:#2b1070;">' + delMes.length + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;">' +
+        '<div onclick="mobAbrirListaStats(\'cerrados\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;cursor:pointer;">' +
           '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Cerrados</div>' +
           '<div style="font-size:36px;font-weight:900;color:#10b981;">' + completados + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;">' +
+        '<div onclick="mobAbrirListaStats(\'pendientes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;cursor:pointer;">' +
           '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Pendientes</div>' +
           '<div style="font-size:36px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;">' +
+        '<div onclick="mobAbrirListaStats(\'enproceso\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;cursor:pointer;">' +
           '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">En Proceso</div>' +
           '<div style="font-size:36px;font-weight:900;color:#3b82f6;">' + enProceso + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
         '</div>' +
       '</div>' +
       '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
