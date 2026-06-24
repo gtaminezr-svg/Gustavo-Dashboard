@@ -14,6 +14,7 @@
   let dniFichaActual = "";
   let subEstadoSeleccionado = "";
   let medicoLectorSeleccionado = "";
+  let ejecutivoCierreSeleccionado = "";
   let motivoDesestimacion = "";
   let ejecutivosDatosPin = []; // NUEVA VARIABLE PARA LOS PINS
   let ejecutivosData = [];
@@ -1480,6 +1481,7 @@
     document.getElementById('medico').innerHTML ='<option value="">-- Seleccionar --</option>';
     subEstadoSeleccionado = "";
     medicoLectorSeleccionado = "";
+    ejecutivoCierreSeleccionado = "";
     actualizarColorBadgeSubEstado('');
     
     document.getElementById('textoSubEstadoBadge').textContent = "Sub-Estado";
@@ -2080,7 +2082,6 @@
     }
 
     Swal.fire({
-      target: document.getElementById('modalClinico'),
       title: 'Guardando registro...',
       text: 'Por favor espere.',
       allowOutsideClick: false,
@@ -2090,7 +2091,6 @@
     google.script.run
       .withSuccessHandler(function(mensaje) {
         Swal.fire({
-          target: document.getElementById('modalClinico'),
           icon: 'success',
           title: '¡Operación Exitosa!',
           text: mensaje,
@@ -2099,13 +2099,12 @@
         }).then(() => {
           cerrarModal();
           // Forzamos el salto de bandeja
-          bandejaActual = nuevaBandeja; 
+          bandejaActual = nuevaBandeja;
           cargarDatosDelServidor();
         });
       })
       .withFailureHandler(function(err) {
         Swal.fire({
-          target: document.getElementById('modalClinico'),
           icon: 'error',
           title: 'Oops...',
           text: err.message || 'Error desconocido.',
