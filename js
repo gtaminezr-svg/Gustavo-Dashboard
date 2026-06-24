@@ -564,6 +564,32 @@
     }
     const panel = document.getElementById('panelNotificaciones');
     if (panel && panel.dataset.abierto === 'true') renderPanelNotificaciones();
+    mostrarToast(msg, icono);
+  }
+
+  function mostrarToast(msg, icono) {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast-notif';
+    toast.innerHTML = `
+      <i class="${icono} toast-notif-icon"></i>
+      <span class="toast-notif-msg">${msg}</span>
+      <div class="toast-progress"></div>
+    `;
+    toast.addEventListener('click', () => {
+      toast.classList.add('toast-out');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    });
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('toast-out');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    }, 4000);
   }
 
   function limpiarNotificaciones() {
