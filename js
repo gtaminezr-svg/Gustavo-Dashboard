@@ -28,6 +28,12 @@
         #cuerpoTabla td:last-child .btn-table-view{width:100%!important;justify-content:center!important;margin-top:8px!important;}
         .modal-overlay{align-items:flex-start!important;padding:0!important;}
         .modal-content{width:100%!important;max-width:100%!important;height:100dvh!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:16px!important;}
+        .modal-header-inline{flex-direction:column!important;align-items:flex-start!important;gap:8px!important;}
+        .form-grid{grid-template-columns:1fr!important;}
+        .form-group.col-span-2{grid-column:1!important;}
+        .modal-actions{flex-direction:column!important;gap:10px!important;}
+        .modal-actions>div{width:100%!important;display:flex!important;flex-direction:column!important;gap:8px!important;}
+        .modal-actions .btn-primary,.modal-actions .btn-secondary,.modal-actions .btn-danger{width:100%!important;justify-content:center!important;}
         #mobileBottomNav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;position:fixed;bottom:0;left:0;right:0;height:64px;background:white;border-radius:26px 26px 0 0;box-shadow:0 -2px 24px rgba(15,23,42,0.10);z-index:500;justify-content:space-around!important;align-items:center;padding:0 4px;overflow:visible!important;}
         .mob-nav-btn{background:none;border:none;cursor:pointer;display:flex!important;flex-direction:column!important;align-items:center;gap:3px;padding:6px 4px;border-radius:12px;color:#94a3b8;font-size:11px;font-weight:600;flex:1!important;max-width:80px;}
         .mob-nav-fab-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex:1;max-width:80px;height:100%;}
