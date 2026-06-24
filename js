@@ -1,70 +1,4 @@
 <script>
-  // Detección de móvil — inyecta estilos directamente para evitar caché de GAS
-  (function() {
-    function _esMobile() {
-      return window.innerWidth <= 768 ||
-        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-    }
-    function _inyectarEstilosMobile() {
-      if (document.getElementById('_mobileStyles')) return;
-      var s = document.createElement('style');
-      s.id = '_mobileStyles';
-      s.textContent = `
-        #mobileTopbar{display:flex!important;position:fixed;top:0;left:0;right:0;height:54px;background:var(--surface,#fff);align-items:center;justify-content:space-between;padding:0 16px;z-index:500;box-shadow:0 2px 10px rgba(15,23,42,.10);}
-        .mobile-hamburger{background:none;border:none;cursor:pointer;font-size:20px;color:#1e293b;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;}
-        .mobile-brand{font-size:17px;font-weight:800;color:#2b1070;display:flex;align-items:center;gap:7px;}
-        .sidebar{transform:translateX(-100%)!important;transition:transform .28s ease!important;z-index:1000!important;width:240px!important;}
-        .sidebar.mobile-open{transform:translateX(0)!important;}
-        .main-content,.main-content.rail-only{margin-left:0!important;width:100%!important;padding:66px 12px 72px!important;}
-        .search-container{height:auto!important;min-height:56px!important;flex-wrap:wrap!important;padding:10px 12px!important;gap:8px!important;}
-        .cards-row-container{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-        .counter-card{padding:12px 10px!important;}
-        .counter-number{font-size:26px!important;}
-        .counter-label{font-size:11px!important;}
-        #encabezadoTabla tr th{display:none!important;}
-        #cuerpoTabla tr{display:flex!important;flex-direction:column!important;background:var(--surface,#fff)!important;border-radius:14px!important;margin-bottom:10px!important;padding:12px 14px!important;box-shadow:0 2px 10px rgba(15,23,42,.07)!important;border:1px solid #e8ecf2!important;}
-        #cuerpoTabla td{display:block!important;border:none!important;padding:3px 0!important;font-size:13px!important;}
-        #cuerpoTabla td:first-child{font-size:15px!important;font-weight:700!important;color:#2b1070!important;border-bottom:1px solid #f1f5f9!important;padding-bottom:8px!important;margin-bottom:4px!important;}
-        #cuerpoTabla td:last-child .btn-table-view{width:100%!important;justify-content:center!important;margin-top:8px!important;}
-        .modal-overlay{align-items:flex-start!important;padding:0!important;}
-        .modal-content{width:100%!important;max-width:100%!important;height:100dvh!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:16px!important;}
-        #mobileBottomNav{display:flex!important;position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--surface,#fff);border-top:1px solid #e2e8f0;z-index:500;justify-content:space-around;align-items:center;padding:0 4px;}
-        .mob-nav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:12px;color:#94a3b8;font-size:11px;font-weight:600;min-width:52px;}
-        .mob-nav-btn i{font-size:18px;}
-        .mob-nav-btn.active{color:#2b1070;background:#ede9f8;}
-        .login-left{display:none!important;}
-        .login-right{width:100%!important;padding:48px 28px!important;background:#0a1628!important;}
-        .login-title{color:#fff!important;}
-        .login-subtitle{color:rgba(255,255,255,.60)!important;}
-        .login-label{color:rgba(255,255,255,.80)!important;}
-        .login-input{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.15)!important;color:#fff!important;}
-        .login-input::placeholder{color:rgba(255,255,255,.35)!important;}
-        #toastContainer{top:62px!important;right:10px!important;left:10px!important;}
-        .toast-notif{min-width:unset!important;max-width:100%!important;}
-        #mobileDrawerOverlay.active{display:block!important;}
-      `;
-      document.head.appendChild(s);
-    }
-    function _quitarEstilosMobile() {
-      var s = document.getElementById('_mobileStyles');
-      if (s) s.remove();
-    }
-    function _aplicarMobile() {
-      if (_esMobile()) {
-        document.body.classList.add('mobile-view');
-        _inyectarEstilosMobile();
-      } else {
-        document.body.classList.remove('mobile-view');
-        _quitarEstilosMobile();
-      }
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', _aplicarMobile);
-    } else {
-      _aplicarMobile();
-    }
-    window.addEventListener('resize', _aplicarMobile);
-  })();
   let bdPacientes = [];
   let pacientesFiltrados = [];
   let medicosEspecialidades = [];
@@ -6555,5 +6489,30 @@ function eliminarEjecutivoModal(i) {
       .eliminarEjecutivo(e.nombre);
   });
 }
+
+
+// Función para abrir/cerrar el menú lateral en pantallas pequeñas
+function toggleMobileDrawer() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('mobileDrawerOverlay');
+  
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
+  }
+}
+
+// Para asegurar que si el usuario hace clic en el menú, este se cierre automáticamente
+document.querySelectorAll('.mob-nav-btn, .menu-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    
+    if (sidebar && sidebar.classList.contains('mobile-open')) {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    }
+  });
+});
 
 </script>
