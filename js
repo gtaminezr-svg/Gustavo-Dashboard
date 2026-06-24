@@ -2001,7 +2001,6 @@
     
     if (camposFaltantes.length > 0) {
       Swal.fire({
-        target: document.getElementById('modalClinico'),
         icon: 'error',
         title: 'Campos requeridos',
         html: `<div style="text-align:left; font-size:14px; line-height:1.7;">Faltan completar:<br><br>${camposFaltantes.map(c => `• ${c}`).join('<br>')}</div>`,
@@ -2021,7 +2020,6 @@
 
     if (document.getElementById('estado').value === 'En Proceso' && (esLecturaRealizada || esDesestimado)) {
       Swal.fire({
-        target: document.getElementById('modalClinico'),
         icon: 'question',
         title: esDesestimado ? 'Desestimar Caso' : 'Completar Caso',
         html: esDesestimado ? `¿Desea cerrar este caso como <b>DESESTIMADO</b>?` : `¿Desea marcar este caso como COMPLETADO?`,
