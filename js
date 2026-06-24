@@ -1,5 +1,5 @@
 <script>
-  // Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  // v2026.06.24 — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
