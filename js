@@ -976,28 +976,34 @@
         localStorage.setItem('sislab_snap_med',  medicosEspecialidades.length);
         localStorage.setItem('sislab_snap_ejec', ejecutivosData.length);
 
-        // Refrescar el desplegable "Ejecutivo que registra" conservando la selección actual
-        const _selEjec = document.getElementById('ejecutivo');
-        const _prevEjecVal = _selEjec ? _selEjec.value : '';
-        rellenarSelect('ejecutivo', listas.ejecutivos);
-        if (_prevEjecVal && _selEjec) _selEjec.value = _prevEjecVal;
+        // Solo actualizar los dropdowns del formulario si el modal NO está abierto
+        const _modalAbierto = document.getElementById('modalClinico') &&
+                              document.getElementById('modalClinico').classList.contains('active');
 
-        // Refrescar médicos respetando el filtro de especialidad activo y conservando la selección
-        const _selMed = document.getElementById('medico');
-        const _prevMedVal = _selMed ? _selMed.value : '';
-        const _espActual = document.getElementById('especialidadFiltro') ? document.getElementById('especialidadFiltro').value : '';
-        if (_espActual) {
-          filtrarMedicosPorEspecialidad();
-        } else if (_selMed) {
-          _selMed.innerHTML = '<option value="">-- Seleccionar --</option>';
-          (listas.medicos || []).forEach(function(m) {
-            const opt = document.createElement('option');
-            opt.value = m.nombre;
-            opt.textContent = m.nombre;
-            _selMed.appendChild(opt);
-          });
+        if (!_modalAbierto) {
+          // Refrescar el desplegable "Ejecutivo que registra" conservando la selección actual
+          const _selEjec = document.getElementById('ejecutivo');
+          const _prevEjecVal = _selEjec ? _selEjec.value : '';
+          rellenarSelect('ejecutivo', listas.ejecutivos);
+          if (_prevEjecVal && _selEjec) _selEjec.value = _prevEjecVal;
+
+          // Refrescar médicos respetando el filtro de especialidad activo y conservando la selección
+          const _selMed = document.getElementById('medico');
+          const _prevMedVal = _selMed ? _selMed.value : '';
+          const _espActual = document.getElementById('especialidadFiltro') ? document.getElementById('especialidadFiltro').value : '';
+          if (_espActual) {
+            filtrarMedicosPorEspecialidad();
+          } else if (_selMed) {
+            _selMed.innerHTML = '<option value="">-- Seleccionar --</option>';
+            (listas.medicos || []).forEach(function(m) {
+              const opt = document.createElement('option');
+              opt.value = m.nombre;
+              opt.textContent = m.nombre;
+              _selMed.appendChild(opt);
+            });
+          }
+          if (_prevMedVal && _selMed) _selMed.value = _prevMedVal;
         }
-        if (_prevMedVal && _selMed) _selMed.value = _prevMedVal;
 
         // Redibujar la tabla de pacientes para refrescar los badges de especialidad
         if (typeof renderizarTabla === 'function') renderizarTabla();
