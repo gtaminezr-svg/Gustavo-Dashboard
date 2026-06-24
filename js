@@ -1264,30 +1264,94 @@
       pieHtml;
   }
 
+  let _mobPersonalTabActual = 'medicos';
+
+  function mobPersonalTab(tab) {
+    _mobPersonalTabActual = tab;
+    const btnM = document.getElementById('mobPersonalTabMedicos');
+    const btnE = document.getElementById('mobPersonalTabEjecutivos');
+    if (btnM && btnE) {
+      if (tab === 'medicos') {
+        btnM.style.background = '#2b1070'; btnM.style.color = 'white'; btnM.style.border = 'none';
+        btnE.style.background = 'white'; btnE.style.color = '#475569'; btnE.style.border = '2px solid #e2e8f0';
+      } else {
+        btnE.style.background = '#2b1070'; btnE.style.color = 'white'; btnE.style.border = 'none';
+        btnM.style.background = 'white'; btnM.style.color = '#475569'; btnM.style.border = '2px solid #e2e8f0';
+      }
+    }
+    _renderMobPersonalContenido();
+  }
+
   function _renderMobAgenda() {
-    const container = document.getElementById('mobAgendaContenido');
+    _mobPersonalTabActual = 'medicos';
+    const btnM = document.getElementById('mobPersonalTabMedicos');
+    const btnE = document.getElementById('mobPersonalTabEjecutivos');
+    if (btnM) { btnM.style.background = '#2b1070'; btnM.style.color = 'white'; btnM.style.border = 'none'; }
+    if (btnE) { btnE.style.background = 'white'; btnE.style.color = '#475569'; btnE.style.border = '2px solid #e2e8f0'; }
+    _renderMobPersonalContenido();
+  }
+
+  function _renderMobPersonalContenido() {
+    const container = document.getElementById('mobPersonalContenido');
     if (!container) return;
-    const lista = typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : [];
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
-    const proximos = lista.filter(function(e) {
-      const f = e.fechaCita ? new Date(e.fechaCita) : null;
-      return f && f >= hoy;
-    }).sort(function(a, b) { return new Date(a.fechaCita) - new Date(b.fechaCita); }).slice(0, 20);
-    container.innerHTML =
-      '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Próximos Eventos</div>' +
-      (proximos.length === 0 ?
-        '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-calendar-times" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin eventos próximos</span></div>' :
-        proximos.map(function(e) {
-          const fecha = e.fechaCita ? new Date(e.fechaCita).toLocaleDateString('es', { weekday: 'short', day: '2-digit', month: 'short' }) : '—';
-          return '<div style="background:white;border-radius:14px;padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid #2b1070;display:flex;align-items:center;gap:14px;">' +
-            '<div style="flex-shrink:0;width:44px;height:44px;background:#ede9f8;border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-check" style="color:#2b1070;font-size:18px;"></i></div>' +
-            '<div style="flex:1;min-width:0;">' +
-              '<div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</div>' +
-              '<div style="font-size:12px;color:#64748b;">' + fecha + (e.hora ? ' · ' + e.hora : '') + '</div>' +
+    if (_mobPersonalTabActual === 'medicos') {
+      const medicos = typeof medicosEspecialidades !== 'undefined' ? medicosEspecialidades : [];
+      if (medicos.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-md" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin médicos registrados</span></div>';
+        return;
+      }
+      container.innerHTML = medicos.map(function(m) {
+        const esp = m.especialidad || '—';
+        const espColor = esp === 'General' ? '#2b1070' : esp === 'Pediatra' ? '#10b981' : '#3b82f6';
+        return '<div style="background:white;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);display:flex;align-items:center;gap:14px;">' +
+          '<div style="width:42px;height:42px;border-radius:12px;background:' + espColor + '20;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-md" style="color:' + espColor + ';font-size:18px;"></i></div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.nombre || '—') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' +
+              '<span style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;background:' + espColor + '20;color:' + espColor + ';">' + esp + '</span>' +
+              '<span style="font-size:11px;color:#94a3b8;">' + (m.fechaRegistro || '') + '</span>' +
             '</div>' +
-          '</div>';
-        }).join('')
-      );
+          '</div>' +
+        '</div>';
+      }).join('');
+    } else {
+      const ejecutivos = typeof ejecutivosData !== 'undefined' ? ejecutivosData : [];
+      if (ejecutivos.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-tie" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin ejecutivos registrados</span></div>';
+        return;
+      }
+      const colores = ['#2b1070','#4f46e5','#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
+      container.innerHTML = ejecutivos.map(function(e, i) {
+        const casos = (bdPacientes || []).filter(function(p) { return (p.ejecutivo || '').trim() === (e.nombre || '').trim(); });
+        const total = casos.length;
+        const pendientes = casos.filter(function(p) { return p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso'); }).length;
+        const cerrados = casos.filter(function(p) { return p.estado === 'Completado'; }).length;
+        const color = colores[i % colores.length];
+        return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';">' +
+          '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+            '<div style="width:38px;height:38px;border-radius:10px;background:' + color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-tie" style="color:white;font-size:16px;"></i></div>' +
+            '<div>' +
+              '<div style="font-size:14px;font-weight:800;color:#1e293b;">' + (e.nombre || '—') + '</div>' +
+              '<div style="font-size:11px;color:#94a3b8;">' + (e.rol || 'Ejecutivo') + (e.fechaRegistro ? ' · ' + e.fechaRegistro : '') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
+            '<div style="text-align:center;background:#f8fafc;border-radius:10px;padding:10px 4px;">' +
+              '<div style="font-size:20px;font-weight:900;color:#1e293b;">' + total + '</div>' +
+              '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Total</div>' +
+            '</div>' +
+            '<div style="text-align:center;background:#fffbeb;border-radius:10px;padding:10px 4px;">' +
+              '<div style="font-size:20px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
+              '<div style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;">Activos</div>' +
+            '</div>' +
+            '<div style="text-align:center;background:#f0fdf4;border-radius:10px;padding:10px 4px;">' +
+              '<div style="font-size:20px;font-weight:900;color:#10b981;">' + cerrados + '</div>' +
+              '<div style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;">Cerrados</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
   }
 
   function _renderMobPerfil() {
