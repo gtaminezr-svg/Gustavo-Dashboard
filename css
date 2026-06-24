@@ -3250,11 +3250,11 @@ body.dark .user-dropdown-item:hover {
    ========================================================================== */
 #toastContainer {
   position: fixed;
-  bottom: 28px;
+  top: 28px;
   right: 28px;
   z-index: 999999;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 10px;
   pointer-events: none;
 }
