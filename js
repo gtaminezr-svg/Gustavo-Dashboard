@@ -39,6 +39,7 @@
           agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario' : `Se agregaron ${n} eventos al calendario`, 'fas fa-calendar-plus');
         }
         _snapshot.programados = lista.length;
+        localStorage.setItem('sislab_snap_prog', lista.length);
         pacientesProgramados = lista;
         const vistaCalendario = document.getElementById('vistaCalendario');
         if (vistaCalendario && vistaCalendario.style.display !== 'none') {
@@ -58,7 +59,13 @@
     // Pre-cargar eventos del calendario para que el conteo de agendados sea correcto desde el inicio
     google.script.run
       .withSuccessHandler(function(lista) {
+        const _storedProg = parseInt(localStorage.getItem('sislab_snap_prog') || '-1', 10);
+        if (_storedProg >= 0 && lista.length > _storedProg) {
+          const n = lista.length - _storedProg;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 evento al calendario desde tu última sesión' : `Se agregaron ${n} eventos al calendario desde tu última sesión`, 'fas fa-calendar-plus');
+        }
         _snapshot.programados = lista.length;
+        localStorage.setItem('sislab_snap_prog', lista.length);
         pacientesProgramados = lista;
         actualizarNotificacionCampana(_notifData.vencidos, _notifData.porVencer);
       })
@@ -755,11 +762,16 @@
         const _prevPac = _snapshot.pacientes;
         bdPacientes = pacientes;
         console.log(bdPacientes);
+        const _storedPac = parseInt(localStorage.getItem('sislab_snap_pac') || '-1', 10);
         if (_prevPac >= 0 && pacientes.length > _prevPac) {
           const n = pacientes.length - _prevPac;
           agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo caso' : `Se agregaron ${n} nuevos casos`, 'fas fa-user-plus');
+        } else if (_prevPac < 0 && _storedPac >= 0 && pacientes.length > _storedPac) {
+          const n = pacientes.length - _storedPac;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo caso desde tu última sesión' : `Se agregaron ${n} nuevos casos desde tu última sesión`, 'fas fa-user-plus');
         }
         _snapshot.pacientes = pacientes.length;
+        localStorage.setItem('sislab_snap_pac', pacientes.length);
 
         /* TOTAL PACIENTES */
         document.getElementById('numeroTotalAbsoluto').textContent = bdPacientes.length;
@@ -900,8 +912,22 @@
         medicosEspecialidades = listas.medicos;
         // Datos para gráficos/conteos/tabla de personal: SIN supervisores
         ejecutivosData = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor');
-        _snapshot.medicos = (listas.medicos || []).length;
-        _snapshot.ejecutivos = (listas.ejecutivosConPin || []).length;
+        const _curMed  = (listas.medicos || []).length;
+        const _curEjec = (listas.ejecutivosConPin || []).length;
+        const _storedMed  = parseInt(localStorage.getItem('sislab_snap_med')  || '-1', 10);
+        const _storedEjec = parseInt(localStorage.getItem('sislab_snap_ejec') || '-1', 10);
+        if (_storedMed >= 0 && _curMed > _storedMed) {
+          const n = _curMed - _storedMed;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo médico desde tu última sesión' : `Se agregaron ${n} nuevos médicos desde tu última sesión`, 'fas fa-user-md');
+        }
+        if (_storedEjec >= 0 && _curEjec > _storedEjec) {
+          const n = _curEjec - _storedEjec;
+          agregarNotificacion(n === 1 ? 'Se agregó 1 nuevo ejecutivo desde tu última sesión' : `Se agregaron ${n} nuevos ejecutivos desde tu última sesión`, 'fas fa-briefcase');
+        }
+        _snapshot.medicos    = _curMed;
+        _snapshot.ejecutivos = _curEjec;
+        localStorage.setItem('sislab_snap_med',  _curMed);
+        localStorage.setItem('sislab_snap_ejec', _curEjec);
         listas.medicos.forEach(m => {
           let opt = document.createElement('option');
           opt.value = m.nombre;
@@ -947,6 +973,8 @@
         }
         _snapshot.medicos    = medicosEspecialidades.length;
         _snapshot.ejecutivos = ejecutivosData.length;
+        localStorage.setItem('sislab_snap_med',  medicosEspecialidades.length);
+        localStorage.setItem('sislab_snap_ejec', ejecutivosData.length);
 
         // Refrescar el desplegable "Ejecutivo que registra" del formulario de pacientes
         rellenarSelect('ejecutivo', listas.ejecutivos);
