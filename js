@@ -28,8 +28,10 @@
         #cuerpoTabla td:last-child .btn-table-view{width:100%!important;justify-content:center!important;margin-top:8px!important;}
         .modal-overlay{align-items:flex-start!important;padding:0!important;}
         .modal-content{width:100%!important;max-width:100%!important;height:100dvh!important;border-radius:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:16px!important;}
-        #mobileBottomNav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--surface,#fff);border-top:1px solid #e2e8f0;z-index:500;justify-content:space-around!important;align-items:center;padding:0 4px;}
+        #mobileBottomNav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--surface,#fff);border-top:1px solid #e2e8f0;z-index:500;justify-content:space-around!important;align-items:center;padding:0 4px;overflow:visible!important;}
         .mob-nav-btn{background:none;border:none;cursor:pointer;display:flex!important;flex-direction:column!important;align-items:center;gap:3px;padding:6px 4px;border-radius:12px;color:#94a3b8;font-size:11px;font-weight:600;flex:1!important;max-width:80px;}
+        .mob-nav-fab-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex:1;max-width:80px;}
+        #mobFAB{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2b1070,#4f46e5);border:4px solid #f1f5f9;color:white;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(43,16,112,.45);display:flex;align-items:center;justify-content:center;z-index:600;}
         .mob-nav-btn i{font-size:18px;}
         .mob-nav-btn.active{color:#2b1070;background:#ede9f8;}
         .login-left{display:none!important;}
@@ -899,17 +901,62 @@
 
   function mobSetFiltro(filtro) {
     _mobFiltroCasos = filtro;
-    document.querySelectorAll('.mob-chip').forEach(c => c.classList.remove('active'));
-    const chip = document.querySelector(`.mob-chip[data-filtro="${filtro}"]`);
-    if (chip) chip.classList.add('active');
-    _renderMobCasos();
   }
 
   function _renderMobCasos() {
+    // Siempre muestra la vista de resumen al llamarse
+    mobVolverResumen();
+    _renderMobResumen();
+  }
+
+  function _renderMobResumen() {
+    const container = document.getElementById('mobTarjetasResumen');
+    if (!container) return;
+    const estados = [
+      { key: 'Pendiente',   label: 'Pendiente',   icon: 'fas fa-clock',        color: '#f59e0b', bg: '#fffbeb', border: '#fde68a' },
+      { key: 'En Proceso',  label: 'En Proceso',  icon: 'fas fa-spinner',      color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' },
+      { key: 'Completado',  label: 'Completado',  icon: 'fas fa-check-circle', color: '#10b981', bg: '#f0fdf4', border: '#bbf7d0' },
+      { key: 'Desestimado', label: 'Desestimado', icon: 'fas fa-ban',          color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' }
+    ];
+    container.innerHTML = estados.map(function(e) {
+      const cnt = (bdPacientes || []).filter(function(p) { return p.estado === e.key; }).length;
+      return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + e.bg + ';border:2px solid ' + e.border + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="width:42px;height:42px;background:' + e.color + '20;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
+            '<i class="' + e.icon + '" style="font-size:18px;color:' + e.color + ';"></i>' +
+          '</div>' +
+          '<i class="fas fa-chevron-right" style="font-size:12px;color:#94a3b8;"></i>' +
+        '</div>' +
+        '<div style="font-size:36px;font-weight:900;color:' + e.color + ';line-height:1;">' + cnt + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:#475569;">' + e.label + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function mobAbrirLista(estado) {
+    _mobFiltroCasos = estado;
+    document.getElementById('mobSubResumen').style.display = 'none';
+    const subLista = document.getElementById('mobSubLista');
+    subLista.style.display = 'flex';
+    const titulo = document.getElementById('mobListaTitulo');
+    if (titulo) titulo.textContent = estado;
+    _renderMobLista();
+  }
+
+  function mobVolverResumen() {
+    const subLista = document.getElementById('mobSubLista');
+    const subResumen = document.getElementById('mobSubResumen');
+    if (subLista) subLista.style.display = 'none';
+    if (subResumen) subResumen.style.display = 'flex';
+    const inp = document.getElementById('mobBuscarPaciente');
+    if (inp) inp.value = '';
+  }
+
+  function _renderMobLista() {
     const container = document.getElementById('mobListaCasos');
     if (!container) return;
     const busqueda = (document.getElementById('mobBuscarPaciente') ? document.getElementById('mobBuscarPaciente').value : '').toLowerCase().trim();
-    const lista = (bdPacientes || []).filter(p => {
+    const lista = (bdPacientes || []).filter(function(p) {
       const matchEstado = p.estado === _mobFiltroCasos;
       const matchBusqueda = !busqueda ||
         (p.nombre || '').toLowerCase().includes(busqueda) ||
@@ -922,7 +969,7 @@
     }
     const colores = { 'Pendiente': '#f59e0b', 'En Proceso': '#3b82f6', 'Completado': '#10b981', 'Desestimado': '#6b7280' };
     const hoy = new Date(); hoy.setHours(0,0,0,0);
-    container.innerHTML = lista.map(p => {
+    container.innerHTML = lista.map(function(p) {
       const color = colores[p.estado] || '#94a3b8';
       const fechaVenc = p.vencimiento ? new Date(p.vencimiento + 'T00:00:00') : null;
       const venc = fechaVenc ? fechaVenc.toLocaleDateString('es', { day: '2-digit', month: 'short' }) : '—';
