@@ -813,11 +813,7 @@
 
     </div>
 
-    <!-- Mobile: navegación inferior con FAB central -->
-    <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro">
-      <i class="fas fa-plus"></i>
-    </button>
-
+    <!-- Mobile: navegación inferior -->
     <nav id="mobileBottomNav">
       <button class="mob-nav-btn active" id="mobnav-mob-casos" onclick="irASeccionMobile('casos')">
         <i class="fas fa-clock"></i><span>Casos</span>
@@ -834,6 +830,11 @@
     </nav>
 
   </div>
+
+  <!-- FAB flotante móvil (fuera de mobileApp para que position:fixed sea relativo al viewport) -->
+  <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro">
+    <i class="fas fa-plus"></i>
+  </button>
 
   <div class="modal-overlay" id="modalClinico">
     <div class="modal-content">
