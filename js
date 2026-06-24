@@ -959,8 +959,10 @@
       { key: 'Completado',  label: 'Completado',  icon: 'fas fa-check-circle', color: '#10b981', bg: '#f0fdf4', border: '#bbf7d0' },
       { key: 'Desestimado', label: 'Desestimado', icon: 'fas fa-ban',          color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' }
     ];
+    const counts = {};
+    estados.forEach(function(e) { counts[e.key] = _mobFiltrarEstado(bd, e.key).length; });
     container.innerHTML = estados.map(function(e) {
-      const cnt = _mobFiltrarEstado(bd, e.key).length;
+      const cnt = counts[e.key];
       return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + e.bg + ';border:2px solid ' + e.border + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
           '<div style="width:42px;height:42px;background:' + e.color + '20;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
@@ -972,6 +974,54 @@
         '<div style="font-size:13px;font-weight:700;color:#475569;">' + e.label + '</div>' +
       '</div>';
     }).join('');
+    _renderMobDonut(estados, counts);
+  }
+
+  function _renderMobDonut(estados, counts) {
+    const chartEl = document.getElementById('mobDonutChart');
+    if (!chartEl) return;
+    const total = estados.reduce(function(s, e) { return s + counts[e.key]; }, 0);
+    if (total === 0) { chartEl.innerHTML = ''; return; }
+    const size = 180, cx = size / 2, cy = size / 2, r = 72, stroke = 28;
+    const circumference = 2 * Math.PI * r;
+    let offset = 0;
+    const segments = estados.map(function(e) {
+      const pct = counts[e.key] / total;
+      const dash = pct * circumference;
+      const seg = { color: e.color, dash: dash, offset: offset, pct: pct };
+      offset += dash;
+      return seg;
+    });
+    const svgSegs = segments.map(function(s, i) {
+      if (s.dash < 0.5) return '';
+      return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none"' +
+        ' stroke="' + s.color + '" stroke-width="' + stroke + '"' +
+        ' stroke-dasharray="' + s.dash.toFixed(2) + ' ' + (circumference - s.dash).toFixed(2) + '"' +
+        ' stroke-dashoffset="' + (-(s.offset - circumference / 4)).toFixed(2) + '"' +
+        ' stroke-linecap="round"' +
+        '></circle>';
+    }).join('');
+    const legend = estados.map(function(e) {
+      const pct = total > 0 ? Math.round(counts[e.key] / total * 100) : 0;
+      return '<div style="display:flex;align-items:center;gap:8px;min-width:110px;">' +
+        '<div style="width:10px;height:10px;border-radius:3px;background:' + e.color + ';flex-shrink:0;"></div>' +
+        '<span style="font-size:12px;color:#475569;font-weight:600;">' + e.label + '</span>' +
+        '<span style="font-size:12px;color:#94a3b8;margin-left:auto;">' + pct + '%</span>' +
+      '</div>';
+    }).join('');
+    chartEl.innerHTML =
+      '<div style="background:white;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(15,23,42,.07);">' +
+        '<div style="font-size:13px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;">Distribución de Casos</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">' +
+          '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="flex-shrink:0;">' +
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#f1f5f9" stroke-width="' + stroke + '"></circle>' +
+            svgSegs +
+            '<text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="28" font-weight="900" fill="#1e293b">' + total + '</text>' +
+            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">Total</text>' +
+          '</svg>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;flex:1;">' + legend + '</div>' +
+        '</div>' +
+      '</div>';
   }
 
   function mobAbrirLista(estado) {
