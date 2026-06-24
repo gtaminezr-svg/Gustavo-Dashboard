@@ -816,6 +816,7 @@
       }
       if (typeof renderizarCalendario === 'function') renderizarCalendario();
       if (typeof renderizarListaMedicosPersonal === 'function') renderizarListaMedicosPersonal();
+      if (typeof _renderMobPersonalContenido === 'function') _renderMobPersonalContenido();
       if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
       if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
       if (typeof actualizarProgresoCasos === 'function') actualizarProgresoCasos();
@@ -1300,10 +1301,10 @@
         container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-md" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin médicos registrados</span></div>';
         return;
       }
-      container.innerHTML = medicos.map(function(m) {
+      container.innerHTML = medicos.map(function(m, i) {
         const esp = m.especialidad || '—';
         const espColor = esp === 'General' ? '#2b1070' : esp === 'Pediatra' ? '#10b981' : '#3b82f6';
-        return '<div style="background:white;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);display:flex;align-items:center;gap:14px;">' +
+        return '<div onclick="editarFichaMedico(' + i + ')" style="background:white;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);display:flex;align-items:center;gap:14px;cursor:pointer;">' +
           '<div style="width:42px;height:42px;border-radius:12px;background:' + espColor + '20;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-md" style="color:' + espColor + ';font-size:18px;"></i></div>' +
           '<div style="flex:1;min-width:0;">' +
             '<div style="font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.nombre || '—') + '</div>' +
@@ -1327,7 +1328,7 @@
         const pendientes = casos.filter(function(p) { return p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso'); }).length;
         const cerrados = casos.filter(function(p) { return p.estado === 'Completado'; }).length;
         const color = colores[i % colores.length];
-        return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';">' +
+        return '<div onclick="abrirModalNuevoEjecutivo(ejecutivosData[' + i + '])" style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';cursor:pointer;">' +
           '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
             '<div style="width:38px;height:38px;border-radius:10px;background:' + color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-tie" style="color:white;font-size:16px;"></i></div>' +
             '<div>' +
