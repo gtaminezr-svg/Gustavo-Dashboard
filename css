@@ -3246,6 +3246,257 @@ body.dark .user-dropdown-item:hover {
 }
 
 /* ==========================================================================
+   MOBILE ELEMENTS (hidden on desktop)
+   ========================================================================== */
+#mobileTopbar {
+  display: none;
+}
+#mobileDrawerOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 900;
+}
+#mobileDrawerOverlay.active {
+  display: block;
+}
+#mobileBottomNav {
+  display: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE — MÓVIL (≤ 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+
+  /* Topbar superior */
+  #mobileTopbar {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 54px;
+    background: var(--surface);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 500;
+    box-shadow: 0 2px 10px rgba(15,23,42,0.10);
+  }
+  .mobile-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-primary, #1e293b);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .mobile-hamburger:active { background: #f1f5f9; }
+  .mobile-brand {
+    font-size: 17px;
+    font-weight: 800;
+    color: #2b1070;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .mobile-brand i { color: #2b1070; }
+
+  /* Sidebar → drawer deslizante */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), width 0.28s ease, padding 0.28s ease;
+    z-index: 1000;
+    width: 240px !important;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .sidebar.collapsed {
+    width: 240px !important;
+  }
+
+  /* Contenido principal */
+  .main-content,
+  .main-content.rail-only {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 66px 12px 72px !important;
+  }
+
+  /* Search container compacto */
+  .search-container {
+    height: auto !important;
+    min-height: 56px !important;
+    flex-wrap: wrap !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  /* Tarjetas contadoras: 2 columnas */
+  .cards-row-container {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .counter-card {
+    padding: 12px 10px !important;
+  }
+  .counter-number {
+    font-size: 26px !important;
+  }
+  .counter-label {
+    font-size: 11px !important;
+  }
+
+  /* Tabla → tarjetas apiladas */
+  #encabezadoTabla tr th {
+    display: none !important;
+  }
+  #cuerpoTabla tr {
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--surface) !important;
+    border-radius: 14px !important;
+    margin-bottom: 10px !important;
+    padding: 12px 14px !important;
+    box-shadow: 0 2px 10px rgba(15,23,42,0.07) !important;
+    border: 1px solid #e8ecf2 !important;
+  }
+  #cuerpoTabla td {
+    display: block !important;
+    border: none !important;
+    padding: 3px 0 !important;
+    font-size: 13px !important;
+  }
+  #cuerpoTabla td:first-child {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #2b1070 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 4px !important;
+  }
+  #cuerpoTabla td:nth-child(2) {
+    color: #64748b !important;
+    font-size: 12px !important;
+  }
+  #cuerpoTabla td:nth-child(3) {
+    color: #94a3b8 !important;
+    font-size: 11px !important;
+  }
+  #cuerpoTabla td:last-child .btn-table-view {
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 8px !important;
+  }
+
+  /* Modal pantalla completa */
+  .modal-overlay {
+    align-items: flex-start !important;
+    padding: 0 !important;
+  }
+  .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 16px !important;
+  }
+
+  /* Estadísticas: 2 columnas */
+  .stats-top-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Toasts ajustados a ancho de pantalla */
+  #toastContainer {
+    top: 62px !important;
+    right: 10px !important;
+    left: 10px !important;
+  }
+  .toast-notif {
+    min-width: unset !important;
+    max-width: 100% !important;
+  }
+
+  /* Navegación inferior */
+  #mobileBottomNav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: var(--surface);
+    border-top: 1px solid #e2e8f0;
+    z-index: 500;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 4px;
+  }
+  .mob-nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 52px;
+    transition: color 0.18s, background 0.18s;
+  }
+  .mob-nav-btn i {
+    font-size: 18px;
+  }
+  .mob-nav-btn.active {
+    color: #2b1070;
+    background: #ede9f8;
+  }
+  .mob-nav-btn:active {
+    transform: scale(0.94);
+  }
+}
+
+/* Dark mode mobile */
+@media (max-width: 768px) {
+  body.dark #mobileTopbar {
+    background: #0f1e3a;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  body.dark .mobile-hamburger { color: #e2e8f0; }
+  body.dark .mobile-brand { color: #7aa4f0; }
+  body.dark .mobile-brand i { color: #7aa4f0; }
+  body.dark #mobileBottomNav {
+    background: #0f1e3a;
+    border-top-color: rgba(255,255,255,0.08);
+  }
+  body.dark .mob-nav-btn { color: #64748b; }
+  body.dark .mob-nav-btn.active {
+    color: #7aa4f0;
+    background: rgba(91,141,238,0.15);
+  }
+  body.dark #cuerpoTabla tr {
+    background: #1a2a4a !important;
+    border-color: rgba(255,255,255,0.07) !important;
+  }
+  body.dark #cuerpoTabla td:first-child {
+    color: #7aa4f0 !important;
+    border-bottom-color: rgba(255,255,255,0.06) !important;
+  }
+}
+
+/* ==========================================================================
    TOAST NOTIFICATIONS
    ========================================================================== */
 #toastContainer {

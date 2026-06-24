@@ -66,6 +66,18 @@
   <!-- ===== FIN LOGIN ===== -->
 
   <div class="app-container" id="appContainer" style="display:none;">
+
+    <!-- Mobile: barra superior -->
+    <div id="mobileTopbar">
+      <button class="mobile-hamburger" onclick="toggleMobileDrawer()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <span class="mobile-brand"><i class="fas fa-flask"></i> Sislab</span>
+      <div style="width:36px;"></div>
+    </div>
+    <!-- Mobile: overlay oscuro al abrir drawer -->
+    <div id="mobileDrawerOverlay" onclick="toggleMobileDrawer()"></div>
+
     <aside class="sidebar" id="sidebar">
 
       <!-- ENCABEZADO: logo + botón hamburguesa -->
@@ -733,6 +745,26 @@
         </div>
       </div>
     </main>
+
+    <!-- Mobile: navegación inferior -->
+    <nav id="mobileBottomNav">
+      <button class="mob-nav-btn active" id="mobnav-Pendiente" onclick="irASeccion('Pendiente')">
+        <i class="fas fa-clock"></i><span>Casos</span>
+      </button>
+      <button class="mob-nav-btn" id="mobnav-PanelCasos" onclick="irASeccion('PanelCasos')">
+        <i class="fas fa-clipboard-list"></i><span>Panel</span>
+      </button>
+      <button class="mob-nav-btn" id="mobnav-Estadisticas" onclick="irASeccion('Estadisticas')">
+        <i class="fas fa-chart-line"></i><span>Stats</span>
+      </button>
+      <button class="mob-nav-btn" id="mobnav-Calendario" onclick="irASeccion('Calendario')">
+        <i class="fas fa-calendar-alt"></i><span>Agenda</span>
+      </button>
+      <button class="mob-nav-btn" id="mobnav-RegistroPersonal" onclick="irASeccion('RegistroPersonal')">
+        <i class="fas fa-user-plus"></i><span>Personal</span>
+      </button>
+    </nav>
+
   </div>
 
   <div class="modal-overlay" id="modalClinico">

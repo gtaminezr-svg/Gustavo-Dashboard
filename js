@@ -774,10 +774,37 @@
       case 'Calendario': mostrarVistaBaseDashboard(); break;
       case 'RegistroPersonal': mostrarVistaRegistroPersonal(); break;
     }
-    // Sincronizar la sección activa (icono + nombre en una sola píldora)
     document.querySelectorAll('.menu-item[data-sec]').forEach(b => b.classList.remove('active'));
     const rb = document.querySelector('.menu-item[data-sec="' + key + '"]');
     if (rb) rb.classList.add('active');
+    // Sincronizar bottom nav móvil
+    const mobKeys = ['Pendiente','PanelCasos','Estadisticas','Calendario','RegistroPersonal'];
+    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+    if (mobKeys.indexOf(key) !== -1) {
+      const mb = document.getElementById('mobnav-' + key);
+      if (mb) mb.classList.add('active');
+    }
+    // Cerrar drawer si está abierto
+    if (window.innerWidth <= 768) _cerrarMobileDrawer();
+  }
+
+  function toggleMobileDrawer() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    if (!sidebar) return;
+    if (sidebar.classList.contains('mobile-open')) {
+      _cerrarMobileDrawer();
+    } else {
+      sidebar.classList.add('mobile-open');
+      if (overlay) overlay.classList.add('active');
+    }
+  }
+
+  function _cerrarMobileDrawer() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileDrawerOverlay');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (overlay) overlay.classList.remove('active');
   }
 
   function toggleSidebar() { toggleNamesPanel(); }
