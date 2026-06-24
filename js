@@ -907,6 +907,17 @@
     else if (key === 'stats') _renderMobStats();
     else if (key === 'agenda') _renderMobAgenda();
     else if (key === 'perfil') _renderMobPerfil();
+    const fab = document.getElementById('mobFAB');
+    if (fab) {
+      if (key === 'casos' || key === 'agenda') {
+        fab.classList.remove('mob-fab-hidden');
+        fab.onclick = key === 'casos'
+          ? function() { abrirModalNuevo(); }
+          : function() { _mobPersonalTabActual === 'medicos' ? abrirModalMedico() : abrirModalNuevoEjecutivo(null); };
+      } else {
+        fab.classList.add('mob-fab-hidden');
+      }
+    }
   }
 
   function mobSetFiltro(filtro) {

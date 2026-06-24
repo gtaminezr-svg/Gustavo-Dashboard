@@ -3360,33 +3360,10 @@ body.dark .user-dropdown-item:hover {
   border-color: #2b1070;
   color: white;
 }
-.mob-nav-fab-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  max-width: 80px;
-  height: 100%;
-}
-.mob-nav-fab-wrap::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 76px;
-  height: 76px;
-  background: white;
-  border-radius: 50%;
-  z-index: 598;
-  box-shadow: 0 -4px 14px rgba(15,23,42,0.06);
-}
 #mobFAB {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed;
+  bottom: 84px;
+  right: 20px;
   width: 58px;
   height: 58px;
   border-radius: 50%;
@@ -3399,11 +3376,16 @@ body.dark .user-dropdown-item:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform .18s ease;
+  transition: transform .18s ease, opacity .18s ease;
   z-index: 600;
 }
 #mobFAB:active {
-  transform: translateX(-50%) scale(0.93);
+  transform: scale(0.93);
+}
+#mobFAB.mob-fab-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
 }
 .mob-resumen-card:active {
   transform: scale(0.97);
