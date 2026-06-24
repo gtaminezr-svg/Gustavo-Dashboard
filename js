@@ -56,7 +56,7 @@
     cargarListasDesplegables();
     generarBarraMesesDinamica();
     cargarNombreUsuario();
-    setInterval(_autoRefreshSilente, 20 * 60 * 1000);
+    setInterval(_autoRefreshSilente, 2 * 60 * 1000);
     // Pre-cargar eventos del calendario para que el conteo de agendados sea correcto desde el inicio
     google.script.run
       .withSuccessHandler(function(lista) {
