@@ -43,6 +43,8 @@
         .toast-notif{min-width:unset!important;max-width:100%!important;}
         #mobileDrawerOverlay.active{display:block!important;}
         .table-card{display:none!important;}
+        body.mobile-view #desktopMain{display:none!important;}
+        body.mobile-view #mobileApp{display:flex!important;}
       `;
       document.head.appendChild(s);
     }
@@ -876,6 +878,207 @@
 
   function toggleSidebar() { toggleNamesPanel(); }
 
+  // ===== MOBILE APP =====
+  let _mobSeccionActual = 'casos';
+  let _mobFiltroCasos = 'Pendiente';
+
+  function irASeccionMobile(key) {
+    _mobSeccionActual = key;
+    document.querySelectorAll('.mob-view').forEach(v => { v.style.display = 'none'; });
+    const vistaMap = { casos: 'mobVistaCasos', stats: 'mobVistaStats', agenda: 'mobVistaAgenda', perfil: 'mobVistaPerfil' };
+    const el = document.getElementById(vistaMap[key]);
+    if (el) el.style.display = 'flex';
+    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('mobnav-mob-' + key);
+    if (btn) btn.classList.add('active');
+    if (key === 'casos') _renderMobCasos();
+    else if (key === 'stats') _renderMobStats();
+    else if (key === 'agenda') _renderMobAgenda();
+    else if (key === 'perfil') _renderMobPerfil();
+  }
+
+  function mobSetFiltro(filtro) {
+    _mobFiltroCasos = filtro;
+    document.querySelectorAll('.mob-chip').forEach(c => c.classList.remove('active'));
+    const chip = document.querySelector(`.mob-chip[data-filtro="${filtro}"]`);
+    if (chip) chip.classList.add('active');
+    _renderMobCasos();
+  }
+
+  function _renderMobCasos() {
+    const container = document.getElementById('mobListaCasos');
+    if (!container) return;
+    const busqueda = (document.getElementById('mobBuscarPaciente') ? document.getElementById('mobBuscarPaciente').value : '').toLowerCase().trim();
+    const lista = (bdPacientes || []).filter(p => {
+      const matchEstado = p.estado === _mobFiltroCasos;
+      const matchBusqueda = !busqueda ||
+        (p.nombre || '').toLowerCase().includes(busqueda) ||
+        (p.dni || '').toLowerCase().includes(busqueda);
+      return matchEstado && matchBusqueda;
+    });
+    if (lista.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin resultados</span></div>';
+      return;
+    }
+    const colores = { 'Pendiente': '#f59e0b', 'En Proceso': '#3b82f6', 'Completado': '#10b981', 'Desestimado': '#6b7280' };
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    container.innerHTML = lista.map(p => {
+      const color = colores[p.estado] || '#94a3b8';
+      const fechaVenc = p.vencimiento ? new Date(p.vencimiento + 'T00:00:00') : null;
+      const venc = fechaVenc ? fechaVenc.toLocaleDateString('es', { day: '2-digit', month: 'short' }) : '—';
+      const esVencido = fechaVenc && fechaVenc < hoy && p.estado === 'Pendiente';
+      return '<div class="mob-caso-card" onclick="mobVerPaciente(\'' + (p.id || p.dni) + '\')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+          '<div style="font-size:15px;font-weight:700;color:#1e293b;flex:1;margin-right:8px;line-height:1.3;">' + (p.nombre || '—') + '</div>' +
+          '<span style="background:' + color + '20;color:' + color + ';font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;">' + p.estado + '</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:14px;font-size:12px;color:#64748b;flex-wrap:wrap;">' +
+          '<span><i class="fas fa-id-card" style="margin-right:4px;color:#94a3b8;"></i>' + (p.dni || '—') + '</span>' +
+          '<span style="color:' + (esVencido ? '#ef4444' : 'inherit') + '"><i class="fas fa-calendar-day" style="margin-right:4px;color:' + (esVencido ? '#ef4444' : '#94a3b8') + ';"></i>' + venc + '</span>' +
+          (p.seguro ? '<span><i class="fas fa-shield-alt" style="margin-right:4px;color:#94a3b8;"></i>' + p.seguro + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function mobVerPaciente(id) {
+    abrirModalLectura(id);
+  }
+
+  function _renderMobStats() {
+    const container = document.getElementById('mobStatsContenido');
+    if (!container) return;
+    const hoy = new Date();
+    const mes = hoy.getMonth(); const anio = hoy.getFullYear();
+    const delMes = (bdPacientes || []).filter(p => {
+      if (!p.fechaCreacion) return false;
+      const partes = p.fechaCreacion.toString().split(' ')[0].split('/');
+      if (partes.length < 3) return false;
+      return parseInt(partes[1], 10) - 1 === mes && parseInt(partes[2], 10) === anio;
+    });
+    const completados = delMes.filter(p => p.estado === 'Completado' || p.estado === 'Desestimado').length;
+    const pendientes = (bdPacientes || []).filter(p => p.estado === 'Pendiente').length;
+    const enProceso = (bdPacientes || []).filter(p => p.estado === 'En Proceso' || (p.estado || '').startsWith('En Proceso')).length;
+    const pct = delMes.length > 0 ? Math.round(completados / delMes.length * 100) : 0;
+    const seguroCount = {};
+    (bdPacientes || []).forEach(p => { if (p.seguro) seguroCount[p.seguro] = (seguroCount[p.seguro] || 0) + 1; });
+    const topSeguros = Object.entries(seguroCount).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const coloresSeg = ['#2b1070', '#4f46e5', '#818cf8'];
+    const totalAll = (bdPacientes || []).length || 1;
+    container.innerHTML =
+      '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Resumen del Mes</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#2b1070;">' + delMes.length + '</div>' +
+        '</div>' +
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Cerrados</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#10b981;">' + completados + '</div>' +
+        '</div>' +
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Pendientes</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
+        '</div>' +
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">En Proceso</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#3b82f6;">' + enProceso + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+        '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:12px;">Progreso de Cierres</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+          '<span style="font-size:13px;font-weight:600;color:#475569;">' + completados + ' de ' + delMes.length + ' casos</span>' +
+          '<span style="font-size:20px;font-weight:900;color:#2b1070;">' + pct + '%</span>' +
+        '</div>' +
+        '<div style="width:100%;height:10px;background:#e2e8f0;border-radius:50px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#2b1070,#4f46e5);border-radius:50px;transition:width .6s ease;"></div>' +
+        '</div>' +
+      '</div>' +
+      (topSeguros.length ?
+        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);">' +
+          '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
+          topSeguros.map(function(entry, i) {
+            const seg = entry[0]; const cnt = entry[1];
+            const pctSeg = Math.round(cnt / totalAll * 100);
+            return '<div style="margin-bottom:14px;">' +
+              '<div style="display:flex;justify-content:space-between;margin-bottom:5px;">' +
+                '<span style="font-size:13px;font-weight:600;color:#1e293b;">' + seg + '</span>' +
+                '<span style="font-size:13px;font-weight:700;color:#2b1070;">' + cnt + '</span>' +
+              '</div>' +
+              '<div style="width:100%;height:7px;background:#e2e8f0;border-radius:50px;overflow:hidden;">' +
+                '<div style="height:100%;width:' + pctSeg + '%;background:' + (coloresSeg[i] || '#94a3b8') + ';border-radius:50px;"></div>' +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>' : '');
+  }
+
+  function _renderMobAgenda() {
+    const container = document.getElementById('mobAgendaContenido');
+    if (!container) return;
+    const lista = typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : [];
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    const proximos = lista.filter(function(e) {
+      const f = e.fechaCita ? new Date(e.fechaCita) : null;
+      return f && f >= hoy;
+    }).sort(function(a, b) { return new Date(a.fechaCita) - new Date(b.fechaCita); }).slice(0, 20);
+    container.innerHTML =
+      '<div style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:16px;">Próximos Eventos</div>' +
+      (proximos.length === 0 ?
+        '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-calendar-times" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin eventos próximos</span></div>' :
+        proximos.map(function(e) {
+          const fecha = e.fechaCita ? new Date(e.fechaCita).toLocaleDateString('es', { weekday: 'short', day: '2-digit', month: 'short' }) : '—';
+          return '<div style="background:white;border-radius:14px;padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid #2b1070;display:flex;align-items:center;gap:14px;">' +
+            '<div style="flex-shrink:0;width:44px;height:44px;background:#ede9f8;border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-check" style="color:#2b1070;font-size:18px;"></i></div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</div>' +
+              '<div style="font-size:12px;color:#64748b;">' + fecha + (e.hora ? ' · ' + e.hora : '') + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('')
+      );
+  }
+
+  function _renderMobPerfil() {
+    const container = document.getElementById('mobPerfilContenido');
+    if (!container) return;
+    const nombre = sessionStorage.getItem('sislabNombre') || '—';
+    const rol = sessionStorage.getItem('sislabRol') || '—';
+    const usuario = sessionStorage.getItem('sislabUsuario') || '—';
+    const total = (bdPacientes || []).length;
+    const misRegistros = (bdPacientes || []).filter(function(p) { return p.ejecutivo === nombre || p.ejecutivo === usuario; }).length;
+    container.innerHTML =
+      '<div style="text-align:center;margin-bottom:24px;padding-top:8px;">' +
+        '<div style="width:80px;height:80px;background:linear-gradient(135deg,#2b1070,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 16px rgba(43,16,112,.3);">' +
+          '<i class="fas fa-user" style="font-size:32px;color:white;"></i>' +
+        '</div>' +
+        '<div style="font-size:20px;font-weight:800;color:#1e293b;">' + nombre + '</div>' +
+        '<div style="font-size:13px;color:#64748b;margin-top:6px;">' + usuario + ' · <span style="background:#ede9f8;color:#2b1070;padding:2px 10px;border-radius:20px;font-weight:700;">' + rol + '</span></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">' +
+        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Mis Registros</div>' +
+          '<div style="font-size:34px;font-weight:900;color:#2b1070;">' + misRegistros + '</div>' +
+        '</div>' +
+        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
+          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total Sistema</div>' +
+          '<div style="font-size:34px;font-weight:900;color:#475569;">' + total + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="cerrarSesion()" style="width:100%;padding:16px;background:#fee2e2;border:none;border-radius:16px;font-size:15px;font-weight:700;color:#dc2626;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">' +
+        '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión' +
+      '</button>';
+  }
+
+  function _actualizarVistaMobile() {
+    if (!document.body.classList.contains('mobile-view')) return;
+    if (_mobSeccionActual === 'casos') _renderMobCasos();
+    else if (_mobSeccionActual === 'stats') _renderMobStats();
+    else if (_mobSeccionActual === 'agenda') _renderMobAgenda();
+  }
+  // ===== FIN MOBILE APP =====
+
   function cargarDatosDelServidor(silente) {
     if (!silente) mostrarCargandoTabla();
     google.script.run
@@ -972,6 +1175,8 @@
         actualizarProgresoCasos();
         // Verificar y mover programaciones vencidas
         google.script.run.moverProgramacionesVencidas();
+        // Actualizar vista mobile con datos frescos
+        _actualizarVistaMobile();
       })
       .withFailureHandler(function(err) {
         console.error("Error al cargar pacientes:", err);

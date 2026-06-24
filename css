@@ -3326,6 +3326,65 @@ body.dark .user-dropdown-item:hover {
 /* ==========================================================================
    RESPONSIVE — MÓVIL (≤ 768px)
    ========================================================================== */
+
+/* Mobile App — estilos globales (no dentro de media query para que el IIFE los use también) */
+.mob-caso-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(15,23,42,.07);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+  border: 1px solid #f1f5f9;
+}
+.mob-caso-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 4px rgba(15,23,42,.10);
+}
+.mob-chip {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 50px;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .18s ease;
+}
+.mob-chip.active {
+  background: #2b1070;
+  border-color: #2b1070;
+  color: white;
+}
+#mobFAB {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2b1070, #4f46e5);
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(43,16,112,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .18s ease, box-shadow .18s ease;
+  z-index: 10;
+}
+#mobFAB:active {
+  transform: scale(0.93);
+  box-shadow: 0 2px 10px rgba(43,16,112,.35);
+}
+#mobChips::-webkit-scrollbar { display: none; }
+
 @media (max-width: 768px) {
 
   /* Bandeja de pacientes oculta en móvil */
