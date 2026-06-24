@@ -3328,6 +3328,11 @@ body.dark .user-dropdown-item:hover {
    ========================================================================== */
 @media (max-width: 768px) {
 
+  /* Bandeja de pacientes oculta en móvil */
+  .table-card {
+    display: none !important;
+  }
+
   /* Topbar superior */
   #mobileTopbar {
     display: flex;
