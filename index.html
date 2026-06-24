@@ -831,11 +831,6 @@
 
   </div>
 
-  <!-- FAB flotante móvil (fuera de mobileApp para que position:fixed sea relativo al viewport) -->
-  <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro">
-    <i class="fas fa-plus"></i>
-  </button>
-
   <div class="modal-overlay" id="modalClinico">
     <div class="modal-content">
       <div class="modal-header-inline">
@@ -1003,5 +998,10 @@
   </div>
 
   <?!= include('js'); ?>
+
+  <!-- FAB móvil: al final del body para evitar cualquier containing block de padres -->
+  <button id="mobFAB" onclick="abrirModalNuevo()" title="Nuevo Registro" style="display:none;position:fixed;bottom:84px;right:20px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2b1070,#4f46e5);border:none;color:white;font-size:22px;cursor:pointer;box-shadow:0 6px 22px rgba(43,16,112,.50);align-items:center;justify-content:center;z-index:9999;transition:transform .18s ease,opacity .18s ease;">
+    <i class="fas fa-plus"></i>
+  </button>
 </body>
 </html>

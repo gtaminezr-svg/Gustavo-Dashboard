@@ -36,9 +36,7 @@
         .modal-actions .btn-primary,.modal-actions .btn-secondary,.modal-actions .btn-danger{width:100%!important;justify-content:center!important;}
         #mobileBottomNav{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;position:fixed;bottom:0;left:0;right:0;height:64px;background:white;border-radius:26px 26px 0 0;box-shadow:0 -2px 24px rgba(15,23,42,0.10);z-index:500;justify-content:space-around!important;align-items:center;padding:0 4px;overflow:visible!important;}
         .mob-nav-btn{background:none;border:none;cursor:pointer;display:flex!important;flex-direction:column!important;align-items:center;gap:3px;padding:6px 4px;border-radius:12px;color:#94a3b8;font-size:11px;font-weight:600;flex:1!important;max-width:80px;}
-        .mob-nav-fab-wrap{position:relative;display:flex;align-items:center;justify-content:center;flex:1;max-width:80px;height:100%;}
-        .mob-nav-fab-wrap::before{content:'';position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:76px;height:76px;background:white;border-radius:50%;z-index:598;box-shadow:0 -4px 14px rgba(15,23,42,0.06);}
-        #mobFAB{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2b1070,#4f46e5);border:none;color:white;font-size:22px;cursor:pointer;box-shadow:0 6px 22px rgba(43,16,112,.50);display:flex;align-items:center;justify-content:center;z-index:600;}
+        #mobFAB{position:fixed!important;bottom:84px!important;right:20px!important;top:auto!important;left:auto!important;transform:none!important;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#2b1070,#4f46e5);border:none;color:white;font-size:22px;cursor:pointer;box-shadow:0 6px 22px rgba(43,16,112,.50);display:flex;align-items:center;justify-content:center;z-index:9999;transition:transform .18s ease,opacity .18s ease;}
         .mob-nav-btn i{font-size:18px;}
         .mob-nav-btn.active{color:#2b1070;background:#ede9f8;}
         .login-left{display:none!important;}
@@ -910,12 +908,12 @@
     const fab = document.getElementById('mobFAB');
     if (fab) {
       if (key === 'casos' || key === 'agenda') {
-        fab.classList.remove('mob-fab-hidden');
+        fab.style.display = 'flex';
         fab.onclick = key === 'casos'
           ? function() { abrirModalNuevo(); }
           : function() { _mobPersonalTabActual === 'medicos' ? abrirModalMedico() : abrirModalNuevoEjecutivo(null); };
       } else {
-        fab.classList.add('mob-fab-hidden');
+        fab.style.display = 'none';
       }
     }
   }
