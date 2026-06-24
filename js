@@ -910,9 +910,18 @@
     _renderMobResumen();
   }
 
+  function _mobFiltrarEstado(lista, key) {
+    if (key === 'Pendiente')    return lista.filter(function(p) { return p.estado === 'Pendiente'; });
+    if (key === 'En Proceso')   return lista.filter(function(p) { return p.estado && p.estado.startsWith('En Proceso'); });
+    if (key === 'Completado')   return lista.filter(function(p) { return p.estado === 'Completado' && (p.subEstado || '').toLowerCase().trim() !== 'desestimado'; });
+    if (key === 'Desestimado')  return lista.filter(function(p) { return p.estado === 'Completado' && (p.subEstado || '').toLowerCase().trim() === 'desestimado'; });
+    return lista;
+  }
+
   function _renderMobResumen() {
     const container = document.getElementById('mobTarjetasResumen');
     if (!container) return;
+    const bd = bdPacientes || [];
     const estados = [
       { key: 'Pendiente',   label: 'Pendiente',   icon: 'fas fa-clock',        color: '#f59e0b', bg: '#fffbeb', border: '#fde68a' },
       { key: 'En Proceso',  label: 'En Proceso',  icon: 'fas fa-spinner',      color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' },
@@ -920,7 +929,7 @@
       { key: 'Desestimado', label: 'Desestimado', icon: 'fas fa-ban',          color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' }
     ];
     container.innerHTML = estados.map(function(e) {
-      const cnt = (bdPacientes || []).filter(function(p) { return p.estado === e.key; }).length;
+      const cnt = _mobFiltrarEstado(bd, e.key).length;
       return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + e.bg + ';border:2px solid ' + e.border + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
           '<div style="width:42px;height:42px;background:' + e.color + '20;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
@@ -957,12 +966,11 @@
     const container = document.getElementById('mobListaCasos');
     if (!container) return;
     const busqueda = (document.getElementById('mobBuscarPaciente') ? document.getElementById('mobBuscarPaciente').value : '').toLowerCase().trim();
-    const lista = (bdPacientes || []).filter(function(p) {
-      const matchEstado = p.estado === _mobFiltroCasos;
-      const matchBusqueda = !busqueda ||
+    const porEstado = _mobFiltrarEstado(bdPacientes || [], _mobFiltroCasos);
+    const lista = porEstado.filter(function(p) {
+      return !busqueda ||
         (p.nombre || '').toLowerCase().includes(busqueda) ||
         (p.dni || '').toLowerCase().includes(busqueda);
-      return matchEstado && matchBusqueda;
     });
     if (lista.length === 0) {
       container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin resultados</span></div>';
