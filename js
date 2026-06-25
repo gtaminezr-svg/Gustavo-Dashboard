@@ -151,6 +151,31 @@
       .obtenerPacientesProgramados();
     setTimeout(_abrirPanelNotificaciones, 600);
     _iniciarControlInactividad();
+    // Ocultar FAB móvil cuando cualquier modal esté abierto (Swal2 o modalClinico)
+    (new MutationObserver(function() {
+      const fab = document.getElementById('mobFAB');
+      if (!fab) return;
+      const swalOpen = document.body.classList.contains('swal2-shown');
+      const modalOpen = (document.getElementById('modalClinico') || {}).classList &&
+                        document.getElementById('modalClinico').classList.contains('active');
+      if (swalOpen || modalOpen) {
+        fab.style.display = 'none';
+      } else {
+        if (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda') fab.style.display = 'flex';
+      }
+    })).observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: false });
+    const _mclinico = document.getElementById('modalClinico');
+    if (_mclinico) {
+      (new MutationObserver(function() {
+        const fab = document.getElementById('mobFAB');
+        if (!fab) return;
+        if (_mclinico.classList.contains('active')) {
+          fab.style.display = 'none';
+        } else if (!document.body.classList.contains('swal2-shown')) {
+          if (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda') fab.style.display = 'flex';
+        }
+      })).observe(_mclinico, { attributes: true, attributeFilter: ['class'] });
+    }
   }
 
   // ===== Cierre de sesión automático por inactividad (30 min) =====
@@ -7008,7 +7033,7 @@ function abrirModalNuevoEjecutivo(ejec) {
   const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
   const esAdmin = (rolActual === 'admin' || rolActual === 'administrador');
   const esEjecutivo = (rolActual === 'ejecutivo');
-  const puedeEditarPin = !esEdicion || esAdmin;
+  const puedeEditarPin = !esEdicion || esAdmin || (esEjecutivo && esEdicion && (ejec.nombre || '').toLowerCase().trim() === (window.__nombreUsuario || sessionStorage.getItem('sislab_usuario') || '').toLowerCase().trim());
 
   // Bloquear nombre y rol si el usuario que abre el modal es un Ejecutivo
   const paramReadonly = esEjecutivo ? 'readonly style="background:#f1f5f9; cursor:not-allowed; opacity:0.8;"' : '';
