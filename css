@@ -3695,6 +3695,87 @@ body.dark .user-dropdown-item:hover {
     color: #7aa4f0 !important;
     border-bottom-color: rgba(255,255,255,0.06) !important;
   }
+
+  /* ── Dark mode: cards móviles ─────────────────────────────── */
+  body.dark #mobileApp {
+    background: #0a1628 !important;
+  }
+
+  /* Tiles de resumen (Pendiente / En Proceso / Completado / Desestimado) */
+  body.dark .mob-resumen-card {
+    background: #1a2a4a !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35) !important;
+  }
+
+  /* Cards de casos */
+  body.dark .mob-caso-card {
+    background: #1a2a4a !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30) !important;
+  }
+
+  /* Chips de filtro */
+  body.dark .mob-chip {
+    background: #1a2a4a !important;
+    color: #94a3b8 !important;
+    border-color: rgba(255,255,255,0.08) !important;
+  }
+  body.dark .mob-chip.mob-chip-active {
+    background: #2b1070 !important;
+    color: white !important;
+  }
+
+  /* Cards generadas inline en Personal, Stats, Perfil */
+  body.dark #mobPersonalContenido > div,
+  body.dark #mobPerfilContenido > div,
+  body.dark #mobSubStats > div {
+    background: #1a2a4a !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30) !important;
+  }
+
+  /* Sub-cells dentro de cards de personal/perfil */
+  body.dark #mobPersonalContenido [style*="background:#f8fafc"],
+  body.dark #mobPersonalContenido [style*="background: #f8fafc"],
+  body.dark #mobPerfilContenido [style*="background:#f8fafc"],
+  body.dark #mobPerfilContenido [style*="background: #f8fafc"] {
+    background: #0f1e3a !important;
+  }
+  body.dark #mobPersonalContenido [style*="background:#fffbeb"],
+  body.dark #mobPersonalContenido [style*="background: #fffbeb"] {
+    background: #2a1800 !important;
+  }
+  body.dark #mobPersonalContenido [style*="background:#f0fdf4"],
+  body.dark #mobPersonalContenido [style*="background: #f0fdf4"] {
+    background: #002a14 !important;
+  }
+  body.dark #mobPerfilContenido [style*="background:#ede9f8"],
+  body.dark #mobPerfilContenido [style*="background: #ede9f8"] {
+    background: #1e1040 !important;
+  }
+
+  /* Texto primario inline en toda la app móvil */
+  body.dark #mobileApp [style*="color:#1e293b"],
+  body.dark #mobileApp [style*="color: #1e293b"] {
+    color: #e2e8f0 !important;
+  }
+  body.dark #mobileApp [style*="color:#475569"],
+  body.dark #mobileApp [style*="color: #475569"],
+  body.dark #mobileApp [style*="color:#64748b"],
+  body.dark #mobileApp [style*="color: #64748b"] {
+    color: #94a3b8 !important;
+  }
+
+  /* Selectores del picker de mes/año en Stats */
+  body.dark #mobStatsPickerMes,
+  body.dark #mobStatsPickerAnio {
+    background: #0f1e3a !important;
+    color: #e2e8f0 !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Sección donut en Casos */
+  body.dark #mobDonutChart {
+    background: transparent !important;
+  }
 }
 
 /* ==========================================================================
