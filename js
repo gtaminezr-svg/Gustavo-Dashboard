@@ -94,6 +94,7 @@
   let motivoDesestimacion = "";
   let ejecutivosDatosPin = []; // NUEVA VARIABLE PARA LOS PINS
   let ejecutivosData = [];
+  let _todosEjecutivos = [];
   let stackEjecutivoIdx = 0;
 
   const mapaColoresSemaforo = {
@@ -1361,44 +1362,53 @@
       '</div>';
     }).join('');
   } else {
-    let ejecutivos = typeof ejecutivosData !== 'undefined' ? ejecutivosData : [];
-    
-    // ---> INICIO DEL CAMBIO: Filtrar la lista si es Ejecutivo <---
     const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
     const nombreUsuario = (window.__nombreUsuario || sessionStorage.getItem('sislab_usuario') || '').toLowerCase().trim();
-    
+    const esAdmin = (rolActual === 'admin' || rolActual === 'administrador');
+    const puedeEditarEjecutivo = esAdmin || rolActual === 'supervisor';
+
+    // Admin ve todos (incluyendo supervisores); ejecutivo solo se ve a sí mismo
+    let ejecutivos = esAdmin
+      ? (_todosEjecutivos.length ? _todosEjecutivos : (ejecutivosData || []))
+      : (ejecutivosData || []);
     if (rolActual === 'ejecutivo') {
       ejecutivos = ejecutivos.filter(function(e) {
         return (e.nombre || '').toLowerCase().trim() === nombreUsuario;
       });
     }
-    const puedeEditarEjecutivo = (rolActual === 'admin' || rolActual === 'administrador' || rolActual === 'supervisor');
-    // ---> FIN DEL CAMBIO <---
 
     if (ejecutivos.length === 0) {
       container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-tie" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin ejecutivos registrados</span></div>';
       return;
     }
     const colores = ['#2b1070','#4f46e5','#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
+    // Fuente de referencia para el modal: admin usa _todosEjecutivos (incluye supervisores)
+    const fuenteModal = esAdmin && _todosEjecutivos.length ? '_todosEjecutivos' : 'ejecutivosData';
     container.innerHTML = ejecutivos.map(function(e, i) {
-      // Identificamos el índice original para que al editar cargue los datos correctos
-      const idxOriginal = ejecutivosData.indexOf(e);
+      const idxModal = (esAdmin && _todosEjecutivos.length ? _todosEjecutivos : ejecutivosData).indexOf(e);
+      const esSupervisor = (e.rol || '').toLowerCase() === 'supervisor';
       const casos = (bdPacientes || []).filter(function(p) { return (p.ejecutivo || '').trim() === (e.nombre || '').trim(); });
       const total = casos.length;
       const pendientes = casos.filter(function(p) { return p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso'); }).length;
       const cerrados = casos.filter(function(p) { return p.estado === 'Completado'; }).length;
-      const color = colores[i % colores.length];
+      const color = esSupervisor ? '#f59e0b' : colores[i % colores.length];
+      const rolBadge = esSupervisor
+        ? '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;background:#fef3c7;color:#92400e;margin-left:6px;">Supervisor</span>'
+        : '';
 
-      return '<div onclick="abrirModalNuevoEjecutivo(ejecutivosData[' + idxOriginal + '])" style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';cursor:pointer;">' +
+      return '<div onclick="abrirModalNuevoEjecutivo(' + fuenteModal + '[' + idxModal + '])" style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';cursor:pointer;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">' +
           '<div style="display:flex;align-items:center;gap:12px;min-width:0;">' +
-            '<div style="width:38px;height:38px;border-radius:10px;background:' + color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-tie" style="color:white;font-size:16px;"></i></div>' +
+            '<div style="width:38px;height:38px;border-radius:10px;background:' + color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-' + (esSupervisor ? 'user-shield' : 'user-tie') + '" style="color:white;font-size:16px;"></i></div>' +
             '<div style="min-width:0;">' +
-              '<div style="font-size:14px;font-weight:800;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</div>' +
+              '<div style="display:flex;align-items:center;flex-wrap:wrap;">' +
+                '<span style="font-size:14px;font-weight:800;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</span>' +
+                rolBadge +
+              '</div>' +
               '<div style="font-size:11px;color:#94a3b8;">' + (e.rol || 'Ejecutivo') + (e.fechaRegistro ? ' · ' + e.fechaRegistro : '') + '</div>' +
             '</div>' +
           '</div>' +
-          (puedeEditarEjecutivo ? '<button type="button" onclick="event.stopPropagation();abrirModalNuevoEjecutivo(ejecutivosData[' + idxOriginal + '])" aria-label="Editar ejecutivo" style="width:34px;height:34px;border:none;border-radius:10px;background:#ede9f8;color:#2b1070;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;"><i class="fas fa-pen" style="font-size:13px;"></i></button>' : '') +
+          (puedeEditarEjecutivo ? '<button type="button" onclick="event.stopPropagation();abrirModalNuevoEjecutivo(' + fuenteModal + '[' + idxModal + '])" aria-label="Editar" style="width:34px;height:34px;border:none;border-radius:10px;background:#ede9f8;color:#2b1070;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;"><i class="fas fa-pen" style="font-size:13px;"></i></button>' : '') +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
           '<div style="text-align:center;background:#f8fafc;border-radius:10px;padding:10px 4px;">' +
@@ -1617,6 +1627,8 @@
         medicosEspecialidades = listas.medicos;
         // Datos para gráficos/conteos/tabla de personal: SIN supervisores
         ejecutivosData = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor');
+        // Lista completa (con supervisores) para que el admin los vea en móvil
+        _todosEjecutivos = listas.ejecutivosConPin || [];
         const _curMed  = (listas.medicos || []).length;
         const _curEjec = (listas.ejecutivosConPin || []).length;
         const _storedMed  = parseInt(localStorage.getItem('sislab_snap_med')  || '-1', 10);
