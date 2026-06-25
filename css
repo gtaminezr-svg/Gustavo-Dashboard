@@ -3724,12 +3724,24 @@ body.dark .user-dropdown-item:hover {
     color: white !important;
   }
 
-  /* Cards generadas inline en Personal, Stats, Perfil */
+  /* Cards generadas inline en Personal y Perfil */
   body.dark #mobPersonalContenido > div,
-  body.dark #mobPerfilContenido > div,
-  body.dark #mobSubStats > div {
+  body.dark #mobPerfilContenido > div {
     background: #1a2a4a !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.30) !important;
+  }
+
+  /* Cards de Stats (generadas con background:white inline) */
+  body.dark #mobStatsContenido [style*="background:white"],
+  body.dark #mobStatsContenido [style*="background: white"] {
+    background: #1a2a4a !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.30) !important;
+  }
+
+  /* Cabecera de lista sub-stats */
+  body.dark #mobSubStatsLista > div[style*="background:#f1f5f9"],
+  body.dark #mobSubStatsLista > div[style*="background: #f1f5f9"] {
+    background: #0f1e3a !important;
   }
 
   /* Sub-cells dentro de cards de personal/perfil */
