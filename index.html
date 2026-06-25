@@ -99,6 +99,7 @@
         <div class="menu-item" id="menu-PanelCasos" data-sec="PanelCasos" onclick="irASeccion('PanelCasos')" title="Panel de Casos"><i class="fas fa-clipboard-list"></i><span>Panel de Casos</span></div>
         <div class="menu-item" id="menu-BaseDashboard" data-sec="Calendario" onclick="irASeccion('Calendario')" title="Calendario"><i class="fas fa-database"></i><span>Calendario</span></div>
         <div class="menu-item" id="menu-RegistroPersonal" data-sec="RegistroPersonal" onclick="irASeccion('RegistroPersonal')" title="Registro de Personal"><i class="fas fa-user-plus"></i><span>Registro de Personal</span></div>
+        <div class="menu-item" id="menu-PlazoCotizacion" data-sec="PlazoCotizacion" onclick="irASeccion('PlazoCotizacion')" title="Plazo / Cotización"><i class="fas fa-file-invoice-dollar"></i><span>Plazo / Cotización</span></div>
       </nav>
 
       <!-- BLOQUE INFERIOR: Cerrar Sesión + progreso -->
@@ -716,6 +717,57 @@
   </div>
 
 </div>
+
+      <!-- ══ PLAZO / COTIZACIÓN ══════════════════════════════════════════════ -->
+      <div id="vistaPlazoCotizacion" style="display:none; height:calc(100vh - 72px); box-sizing:border-box; padding-bottom:16px; flex-direction:column; gap:0;">
+
+        <!-- Encabezado -->
+        <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0; margin:0 0 20px 0; border-radius:8px; height:80px; padding:0 24px; box-sizing:border-box;">
+          <div class="saludo-bloque">
+            <div class="saludo-icon" onclick="toggleMenuUsuario(event)" style="cursor:pointer;"><i class="far fa-user"></i></div>
+            <div class="saludo-texts">
+              <span class="welcome-text">Bienvenido</span>
+              <span class="saludo-sub">Dashboard de Registro de Pacientes de Laboratorio</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; margin-left:auto;">
+            <div style="position:relative;">
+              <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:13px; pointer-events:none;"></i>
+              <input type="text" id="inputBuscarTarifario" placeholder="Buscar examen..." oninput="filtrarTarifario(this.value)"
+                style="height:44px; padding:0 16px 0 40px; border:1.5px solid #e2e8f0; border-radius:40px; font-size:14px; color:#334155; background:#fff; outline:none; width:260px; transition:border-color .2s;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div style="display:flex; gap:8px; flex-shrink:0; margin-bottom:18px; padding:0 2px;">
+          <button id="tabCotizacion" onclick="seleccionarTabTarifario('cotizacion')"
+            style="padding:10px 22px; border-radius:40px; border:none; font-size:13px; font-weight:700; cursor:pointer; background:#2b1070; color:white; transition:all .2s;">
+            <i class="fas fa-file-invoice-dollar"></i> Cotización de Exámenes
+          </button>
+          <button id="tabPlazo" onclick="seleccionarTabTarifario('plazo')"
+            style="padding:10px 22px; border-radius:40px; border:2px solid #e2e8f0; font-size:13px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">
+            <i class="fas fa-clock"></i> Plazo de Atención
+          </button>
+          <div id="totalCotizacion" style="display:none; margin-left:auto; align-items:center; gap:10px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
+            <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total seleccionado:</span>
+            <span id="totalCotizacionValor" style="font-size:16px; font-weight:900; color:#166534;">S/. 0.00</span>
+            <button onclick="limpiarSeleccionTarifario()" style="background:none; border:none; cursor:pointer; color:#dc2626; font-size:13px; font-weight:700; padding:2px 6px; border-radius:6px;">✕ Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Contenedor de tabla -->
+        <div style="flex:1; overflow-y:auto; background:white; border-radius:16px; box-shadow:0 2px 12px rgba(15,23,42,.06);">
+          <div id="tablaTarifarioContenedor" style="padding:0;">
+            <div style="display:flex; align-items:center; justify-content:center; height:200px; color:#94a3b8; gap:10px;">
+              <i class="fas fa-spinner fa-spin" style="font-size:20px;"></i>
+              <span style="font-size:14px; font-weight:600;">Cargando tarifario...</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ══ FIN PLAZO / COTIZACIÓN ══════════════════════════════════════════ -->
 
       <div class="table-card">
         <div class="table-header-container">
