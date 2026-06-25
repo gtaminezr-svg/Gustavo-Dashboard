@@ -76,16 +76,30 @@
     window.addEventListener('resize', _aplicarMobile);
   })();
 
-  // ── Tema: siempre seguir la preferencia del sistema al cargar ──────────────
+  // ── Tema: móvil sigue el sistema; desktop respeta preferencia manual ────────
   (function() {
     function _applyTheme(dark) {
       document.body.classList.toggle('dark', dark);
       const t = document.querySelector('.theme-toggle');
       if (t) t.classList.toggle('dark', dark);
     }
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    _applyTheme(mq.matches);
-    mq.addEventListener('change', function(e) { _applyTheme(e.matches); });
+    const esMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (esMobile) {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      _applyTheme(mq.matches);
+      mq.addEventListener('change', function(e) { _applyTheme(e.matches); });
+    } else {
+      const saved = localStorage.getItem('sislab_tema');
+      if (saved) {
+        _applyTheme(saved === 'dark');
+      } else {
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        _applyTheme(mq.matches);
+        mq.addEventListener('change', function(e) {
+          if (!localStorage.getItem('sislab_tema')) _applyTheme(e.matches);
+        });
+      }
+    }
   })();
 
   let bdPacientes = [];
@@ -841,6 +855,7 @@
       const t = document.querySelector('.theme-toggle');
       if (t) t.classList.toggle('dark');
       document.body.classList.toggle('dark');
+      localStorage.setItem('sislab_tema', document.body.classList.contains('dark') ? 'dark' : 'light');
 
       if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
         dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
