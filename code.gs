@@ -1071,3 +1071,31 @@ function crearBaseMesExcel(filas, etiquetaMes) {
     return { ok: false, error: e.message || 'No se pudo generar el archivo.' };
   }
 }
+
+function obtenerTarifario() {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Tarifario");
+    if (!hoja || hoja.getLastRow() < 2) return [];
+    const data = hoja.getRange(1, 1, hoja.getLastRow(), 6).getValues();
+    const resultado = [];
+    for (let i = 0; i < data.length; i++) {
+      const r = data[i];
+      const nombre = (r[0] || '').toString().trim();
+      const codigo = (r[1] || '').toString().trim();
+      if (!nombre || !codigo || isNaN(Number(codigo))) continue;
+      resultado.push({
+        nombre: nombre,
+        codigo: codigo,
+        sinIgv: parseFloat(r[2]) || 0,
+        conIgv: parseFloat(r[3]) || 0,
+        particular: parseFloat(r[4]) || 0,
+        plazo: (r[5] || '').toString().trim()
+      });
+    }
+    return resultado;
+  } catch(e) {
+    Logger.log('Error obtenerTarifario: ' + e);
+    return [];
+  }
+}

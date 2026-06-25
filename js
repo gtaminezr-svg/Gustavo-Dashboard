@@ -904,6 +904,7 @@
       case 'PanelCasos': mostrarVistaPanelCasos(); break;
       case 'Calendario': mostrarVistaBaseDashboard(); break;
       case 'RegistroPersonal': mostrarVistaRegistroPersonal(); break;
+      case 'PlazoCotizacion': mostrarVistaPlazoCotizacion(); break;
     }
     document.querySelectorAll('.menu-item[data-sec]').forEach(b => b.classList.remove('active'));
     const rb = document.querySelector('.menu-item[data-sec="' + key + '"]');
@@ -2017,6 +2018,7 @@ function refrescarEjecutivosYAbrir() {
     document.getElementById('vistaBaseDashboard').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
     document.getElementById('vistaEstadisticas').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'none';
     document.querySelector('.table-card').style.display = 'block';
     document.querySelector('.cards-row-container').style.display = 'grid';
       
@@ -2973,6 +2975,7 @@ function refrescarEjecutivosYAbrir() {
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'none';
     document.getElementById('vistaEstadisticas').style.display = 'block';
 
     document.querySelectorAll('.menu-item').forEach(item=>{item.classList.remove('active');});
@@ -3026,9 +3029,10 @@ let anioBarraPanel = new Date().getMonth() > 0 ? new Date().getFullYear() : new 
 function mostrarVistaPanelCasos(){  
     document.querySelector('.table-card').style.display = 'none';  
     document.querySelector('.cards-row-container').style.display = 'none';  
-    document.getElementById('vistaEstadisticas').style.display = 'none';  
-    document.getElementById('vistaBaseDashboard').style.display = 'none';  
-    document.getElementById('vistaRegistroPersonal').style.display = 'none';  
+    document.getElementById('vistaEstadisticas').style.display = 'none';
+    document.getElementById('vistaBaseDashboard').style.display = 'none';
+    document.getElementById('vistaRegistroPersonal').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'block';  
       
     document.querySelectorAll('.menu-item').forEach(item=>{item.classList.remove('active');});  
@@ -3622,6 +3626,7 @@ function abrirSelectorFechaPanel() {
     document.getElementById('vistaEstadisticas').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'flex';
 
     document.querySelectorAll('.menu-item').forEach(item=>{item.classList.remove('active');});
@@ -3644,6 +3649,7 @@ function abrirSelectorFechaPanel() {
     document.getElementById('vistaEstadisticas').style.display = 'none';
     document.getElementById('vistaPanelCasos').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'none';
     document.getElementById('vistaRegistroPersonal').style.display = 'flex';
     
     document.querySelectorAll('.menu-item').forEach(item=>{item.classList.remove('active');});
@@ -3672,6 +3678,168 @@ function abrirSelectorFechaPanel() {
   })
   .obtenerConteoEjecutivos();
   }
+
+  // ══ PLAZO / COTIZACIÓN ═══════════════════════════════════════════════════
+  let _tarifarioData = [];
+  let _tarifarioFiltrado = [];
+  let _tarifarioTabActual = 'cotizacion';
+  let _tarifarioSeleccionados = {};
+
+  function mostrarVistaPlazoCotizacion() {
+    document.querySelector('.table-card').style.display = 'none';
+    document.querySelector('.cards-row-container').style.display = 'none';
+    document.getElementById('vistaEstadisticas').style.display = 'none';
+    document.getElementById('vistaPanelCasos').style.display = 'none';
+    document.getElementById('vistaBaseDashboard').style.display = 'none';
+    document.getElementById('vistaRegistroPersonal').style.display = 'none';
+    document.getElementById('vistaPlazoCotizacion').style.display = 'flex';
+    document.querySelectorAll('.menu-item').forEach(function(i) { i.classList.remove('active'); });
+    document.getElementById('menu-PlazoCotizacion').classList.add('active');
+    const sc = document.getElementById('searchContainer');
+    if (sc) { sc.innerHTML = ''; sc.style.display = 'none'; }
+    const ib = document.getElementById('inputBuscar');
+    if (ib) ib.style.display = 'none';
+    if (!_tarifarioData.length) {
+      _cargarTarifario();
+    } else {
+      _renderTarifario();
+    }
+  }
+
+  function _cargarTarifario() {
+    const cont = document.getElementById('tablaTarifarioContenedor');
+    if (cont) cont.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#94a3b8;gap:10px;"><i class="fas fa-spinner fa-spin" style="font-size:20px;"></i><span style="font-size:14px;font-weight:600;">Cargando tarifario...</span></div>';
+    google.script.run
+      .withSuccessHandler(function(data) {
+        _tarifarioData = data || [];
+        _tarifarioFiltrado = _tarifarioData.slice();
+        _renderTarifario();
+      })
+      .withFailureHandler(function() {
+        const c = document.getElementById('tablaTarifarioContenedor');
+        if (c) c.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#ef4444;gap:10px;"><i class="fas fa-exclamation-circle"></i><span style="font-size:14px;font-weight:600;">Error al cargar el tarifario. Verifica que la hoja "Tarifario" existe en Google Sheets.</span></div>';
+      })
+      .obtenerTarifario();
+  }
+
+  function filtrarTarifario(q) {
+    const texto = (q || '').toLowerCase().trim();
+    _tarifarioFiltrado = texto
+      ? _tarifarioData.filter(function(r) {
+          return r.nombre.toLowerCase().includes(texto) || r.codigo.includes(texto);
+        })
+      : _tarifarioData.slice();
+    _renderTarifario();
+  }
+
+  function seleccionarTabTarifario(tab) {
+    _tarifarioTabActual = tab;
+    const btnC = document.getElementById('tabCotizacion');
+    const btnP = document.getElementById('tabPlazo');
+    if (btnC && btnP) {
+      if (tab === 'cotizacion') {
+        btnC.style.background = '#2b1070'; btnC.style.color = 'white'; btnC.style.border = 'none';
+        btnP.style.background = 'white'; btnP.style.color = '#475569'; btnP.style.border = '2px solid #e2e8f0';
+      } else {
+        btnP.style.background = '#2b1070'; btnP.style.color = 'white'; btnP.style.border = 'none';
+        btnC.style.background = 'white'; btnC.style.color = '#475569'; btnC.style.border = '2px solid #e2e8f0';
+      }
+    }
+    const totalDiv = document.getElementById('totalCotizacion');
+    if (totalDiv) totalDiv.style.display = tab === 'cotizacion' ? 'flex' : 'none';
+    _renderTarifario();
+  }
+
+  function _renderTarifario() {
+    const cont = document.getElementById('tablaTarifarioContenedor');
+    if (!cont) return;
+    const datos = _tarifarioFiltrado;
+    if (!datos.length) {
+      cont.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#94a3b8;gap:10px;"><i class="fas fa-search"></i><span style="font-size:14px;font-weight:600;">Sin resultados para esa búsqueda</span></div>';
+      return;
+    }
+    const fmt = function(n) { return 'S/. ' + (parseFloat(n) || 0).toFixed(2); };
+    if (_tarifarioTabActual === 'cotizacion') {
+      let html = '<table style="width:100%;border-collapse:collapse;">';
+      html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
+        '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;width:40px;"></th>' +
+        '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
+        '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
+        '<th style="padding:14px 16px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Sin IGV</th>' +
+        '<th style="padding:14px 16px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Con IGV</th>' +
+        '<th style="padding:14px 16px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Particular</th>' +
+        '</tr></thead><tbody>';
+      datos.forEach(function(r, i) {
+        const sel = !!_tarifarioSeleccionados[r.codigo];
+        const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        html += '<tr style="background:' + (sel ? '#ede9f8' : bg) + ';border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.conIgv + ')">' +
+          '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.conIgv + ')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
+          '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
+          '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
+          '<td style="padding:12px 16px;text-align:right;font-size:13px;color:#475569;">' + fmt(r.sinIgv) + '</td>' +
+          '<td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:700;color:#2b1070;">' + fmt(r.conIgv) + '</td>' +
+          '<td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:700;color:#10b981;">' + fmt(r.particular) + '</td>' +
+          '</tr>';
+      });
+      html += '</tbody></table>';
+      cont.innerHTML = html;
+    } else {
+      const conPlazo = datos.filter(function(r) { return r.plazo; });
+      const sinPlazo = datos.filter(function(r) { return !r.plazo; });
+      const renderFila = function(r, i) {
+        const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        return '<tr style="background:' + bg + ';border-bottom:1px solid #f1f5f9;">' +
+          '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
+          '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
+          '<td style="padding:12px 16px;text-align:center;">' +
+            (r.plazo
+              ? '<span style="background:#ede9f8;color:#2b1070;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;"><i class="fas fa-clock" style="margin-right:5px;"></i>' + r.plazo + '</span>'
+              : '<span style="color:#cbd5e1;font-size:12px;">—</span>') +
+          '</td></tr>';
+      };
+      let html = '<table style="width:100%;border-collapse:collapse;">';
+      html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
+        '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
+        '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
+        '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Plazo de Atención</th>' +
+        '</tr></thead><tbody>';
+      if (conPlazo.length) {
+        conPlazo.forEach(function(r, i) { html += renderFila(r, i); });
+      }
+      if (sinPlazo.length && conPlazo.length) {
+        html += '<tr><td colspan="3" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid #e2e8f0;">Sin plazo registrado (' + sinPlazo.length + ')</td></tr>';
+      }
+      if (sinPlazo.length) {
+        sinPlazo.forEach(function(r, i) { html += renderFila(r, i + conPlazo.length); });
+      }
+      html += '</tbody></table>';
+      cont.innerHTML = html;
+    }
+  }
+
+  function toggleSeleccionTarifario(codigo, precio) {
+    if (_tarifarioSeleccionados[codigo]) {
+      delete _tarifarioSeleccionados[codigo];
+    } else {
+      _tarifarioSeleccionados[codigo] = precio;
+    }
+    const total = Object.values(_tarifarioSeleccionados).reduce(function(s, v) { return s + v; }, 0);
+    const totalDiv = document.getElementById('totalCotizacion');
+    const totalVal = document.getElementById('totalCotizacionValor');
+    if (totalDiv) totalDiv.style.display = Object.keys(_tarifarioSeleccionados).length ? 'flex' : 'none';
+    if (totalVal) totalVal.textContent = 'S/. ' + total.toFixed(2);
+    _renderTarifario();
+  }
+
+  function limpiarSeleccionTarifario() {
+    _tarifarioSeleccionados = {};
+    const totalDiv = document.getElementById('totalCotizacion');
+    const totalVal = document.getElementById('totalCotizacionValor');
+    if (totalDiv) totalDiv.style.display = 'none';
+    if (totalVal) totalVal.textContent = 'S/. 0.00';
+    _renderTarifario();
+  }
+  // ══ FIN PLAZO / COTIZACIÓN ════════════════════════════════════════════════
 
     function resetearPanelEstadisticas() {
       const panel = document.getElementById('panelMedico');
