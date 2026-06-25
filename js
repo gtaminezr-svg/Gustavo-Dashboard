@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25b — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  // v2026.06.25d — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -188,7 +188,7 @@
       if (swalOpen || modalOpen) {
         fab.style.display = 'none';
       } else {
-        if (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda') fab.style.display = 'flex';
+        if (document.body.classList.contains('mobile-view') && (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda')) fab.style.display = 'flex';
       }
     })).observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: false });
     const _mclinico = document.getElementById('modalClinico');
@@ -199,7 +199,7 @@
         if (_mclinico.classList.contains('active')) {
           fab.style.display = 'none';
         } else if (!document.body.classList.contains('swal2-shown')) {
-          if (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda') fab.style.display = 'flex';
+          if (document.body.classList.contains('mobile-view') && (_mobSeccionActual === 'casos' || _mobSeccionActual === 'agenda')) fab.style.display = 'flex';
         }
       })).observe(_mclinico, { attributes: true, attributeFilter: ['class'] });
     }
@@ -3699,6 +3699,8 @@ function abrirSelectorFechaPanel() {
     if (sc) { sc.innerHTML = ''; sc.style.display = 'none'; }
     const ib = document.getElementById('inputBuscar');
     if (ib) ib.style.display = 'none';
+    const fab = document.getElementById('mobFAB');
+    if (fab) fab.style.display = 'none';
     if (!_tarifarioData.length) {
       _cargarTarifario();
     } else {
@@ -3745,8 +3747,8 @@ function abrirSelectorFechaPanel() {
         btnC.style.background = 'white'; btnC.style.color = '#475569'; btnC.style.border = '2px solid #e2e8f0';
       }
     }
-    const totalDiv = document.getElementById('totalCotizacion');
-    if (totalDiv) totalDiv.style.display = tab === 'cotizacion' ? 'flex' : 'none';
+    const controles = document.getElementById('tarifarioControles');
+    if (controles) controles.style.display = tab === 'cotizacion' ? 'flex' : 'none';
     _renderTarifario();
   }
 
@@ -3759,6 +3761,8 @@ function abrirSelectorFechaPanel() {
       return;
     }
     const fmt = function(n) { return 'S/. ' + (parseFloat(n) || 0).toFixed(2); };
+    const controles = document.getElementById('tarifarioControles');
+    if (controles) controles.style.display = _tarifarioTabActual === 'cotizacion' ? 'flex' : 'none';
     if (_tarifarioTabActual === 'cotizacion') {
       let html = '<table style="width:100%;border-collapse:collapse;">';
       html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
@@ -3772,8 +3776,8 @@ function abrirSelectorFechaPanel() {
       datos.forEach(function(r, i) {
         const sel = !!_tarifarioSeleccionados[r.codigo];
         const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
-        html += '<tr style="background:' + (sel ? '#ede9f8' : bg) + ';border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.conIgv + ')">' +
-          '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.conIgv + ')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
+        html += '<tr style="background:' + (sel ? '#ede9f8' : bg) + ';border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')">' +
+          '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
           '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
           '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
           '<td style="padding:12px 16px;text-align:right;font-size:13px;color:#475569;">' + fmt(r.sinIgv) + '</td>' +
@@ -3817,26 +3821,34 @@ function abrirSelectorFechaPanel() {
     }
   }
 
-  function toggleSeleccionTarifario(codigo, precio) {
+  function toggleSeleccionTarifario(codigo, sinIgv, conIgv) {
     if (_tarifarioSeleccionados[codigo]) {
       delete _tarifarioSeleccionados[codigo];
     } else {
-      _tarifarioSeleccionados[codigo] = precio;
+      _tarifarioSeleccionados[codigo] = { sin: sinIgv, con: conIgv };
     }
-    const total = Object.values(_tarifarioSeleccionados).reduce(function(s, v) { return s + v; }, 0);
-    const totalDiv = document.getElementById('totalCotizacion');
-    const totalVal = document.getElementById('totalCotizacionValor');
-    if (totalDiv) totalDiv.style.display = Object.keys(_tarifarioSeleccionados).length ? 'flex' : 'none';
-    if (totalVal) totalVal.textContent = 'S/. ' + total.toFixed(2);
+    recalcularTotalTarifario();
     _renderTarifario();
+  }
+
+  function recalcularTotalTarifario() {
+    const chkIgv = document.getElementById('chkIgv');
+    const usarIgv = chkIgv ? chkIgv.checked : true;
+    let total = 0;
+    Object.values(_tarifarioSeleccionados).forEach(function(v) {
+      total += usarIgv ? v.con : v.sin;
+    });
+    const chkMov = document.getElementById('chkMovilidad');
+    if (chkMov && chkMov.checked) total += 40;
+    const totalVal = document.getElementById('totalCotizacionValor');
+    if (totalVal) totalVal.textContent = 'S/. ' + total.toFixed(2);
   }
 
   function limpiarSeleccionTarifario() {
     _tarifarioSeleccionados = {};
-    const totalDiv = document.getElementById('totalCotizacion');
-    const totalVal = document.getElementById('totalCotizacionValor');
-    if (totalDiv) totalDiv.style.display = 'none';
-    if (totalVal) totalVal.textContent = 'S/. 0.00';
+    const chkMov = document.getElementById('chkMovilidad');
+    if (chkMov) chkMov.checked = false;
+    recalcularTotalTarifario();
     _renderTarifario();
   }
   // ══ FIN PLAZO / COTIZACIÓN ════════════════════════════════════════════════
