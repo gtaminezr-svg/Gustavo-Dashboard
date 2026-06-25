@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25d — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  // v2026.06.25e — Auto-refresh ya no resetea la sección activa al ir a Pendientes
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -107,6 +107,7 @@
   let medicosEspecialidades = [];
   let medicoSeleccionado = null;
   let bandejaActual = 'Pendiente';
+  let _enVistaSeccion = false;
   let paginaActual = 1;
   const registrosPorPagina = 10;
   let _notifData = { vencidos: 0, porVencer: 0, pendientes: 0, agendados: 0 };
@@ -1625,7 +1626,7 @@
           cardPorVencer.classList.remove('card-por-vencer-activo');
         }
 
-        cambiarBandeja(bandejaActual);
+        if (!_enVistaSeccion) cambiarBandeja(bandejaActual);
         actualizarNotificacionCampana(pacientesVencidos, pacientesPorVencer);
 
         // Refrescar panel médico si hay búsqueda activa
@@ -1972,6 +1973,7 @@ function refrescarEjecutivosYAbrir() {
   }
 
   function cambiarBandeja(nombreBandeja) {
+    _enVistaSeccion = false;
     bandejaActual = nombreBandeja;
     paginaActual = 1;
 
@@ -2970,6 +2972,7 @@ function refrescarEjecutivosYAbrir() {
   }
 
   function mostrarVistaEstadisticas(){
+    _enVistaSeccion = true;
     document.querySelector('.table-card').style.display = 'none';
     document.querySelector('.cards-row-container').style.display = 'none';
     document.getElementById('vistaRegistroPersonal').style.display = 'none';
@@ -3026,8 +3029,9 @@ let ultimosPacientesPanelCasos = null;
 let mesInicioBarraPanel = new Date().getMonth() > 0 ? new Date().getMonth() - 1 : 11;
 let anioBarraPanel = new Date().getMonth() > 0 ? new Date().getFullYear() : new Date().getFullYear() - 1;
 
-function mostrarVistaPanelCasos(){  
-    document.querySelector('.table-card').style.display = 'none';  
+function mostrarVistaPanelCasos(){
+    _enVistaSeccion = true;
+    document.querySelector('.table-card').style.display = 'none';
     document.querySelector('.cards-row-container').style.display = 'none';  
     document.getElementById('vistaEstadisticas').style.display = 'none';
     document.getElementById('vistaBaseDashboard').style.display = 'none';
@@ -3621,6 +3625,7 @@ function abrirSelectorFechaPanel() {
 
 
   function mostrarVistaBaseDashboard(){
+    _enVistaSeccion = true;
     document.querySelector('.table-card').style.display = 'none';
     document.querySelector('.cards-row-container').style.display = 'none';
     document.getElementById('vistaEstadisticas').style.display = 'none';
@@ -3644,6 +3649,7 @@ function abrirSelectorFechaPanel() {
   }
 
   function mostrarVistaRegistroPersonal(){
+    _enVistaSeccion = true;
     document.querySelector('.table-card').style.display = 'none';
     document.querySelector('.cards-row-container').style.display = 'none';
     document.getElementById('vistaEstadisticas').style.display = 'none';
@@ -3686,6 +3692,7 @@ function abrirSelectorFechaPanel() {
   let _tarifarioSeleccionados = {};
 
   function mostrarVistaPlazoCotizacion() {
+    _enVistaSeccion = true;
     document.querySelector('.table-card').style.display = 'none';
     document.querySelector('.cards-row-container').style.display = 'none';
     document.getElementById('vistaEstadisticas').style.display = 'none';
