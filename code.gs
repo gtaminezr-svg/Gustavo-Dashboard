@@ -626,9 +626,12 @@ function editarEjecutivo(datos) {
     const nombreOriginal = (datos.nombreOriginal || "").toString().trim();
     const nombre = (datos.nombre || "").toString().trim();
     const pin = (datos.pin || "").toString().trim();
+    const tipo = (datos.tipo || "Ejecutivo").toString().trim();
+    const puedeCambiarPin = datos.puedeCambiarPin === true || datos.puedeCambiarPin === "true";
     if (!nombreOriginal) throw new Error("No se identificó al ejecutivo a editar.");
     if (!nombre) throw new Error("El nombre del ejecutivo es obligatorio.");
-    if (!pin) throw new Error("El PIN de seguridad es obligatorio.");
+    if (puedeCambiarPin && !pin) throw new Error("El PIN de seguridad es obligatorio.");
+    if (!tipo) throw new Error("El tipo de registro es obligatorio.");
 
     const ultimaFila = hojaEjecutivos.getLastRow();
     if (ultimaFila < 2) throw new Error("No hay ejecutivos registrados.");
@@ -638,7 +641,10 @@ function editarEjecutivo(datos) {
       if (nombres[i][0].toString().trim() === nombreOriginal) {
         const fila = i + 2;
         hojaEjecutivos.getRange(fila, 1).setValue(nombre); // A: Nombre
-        hojaEjecutivos.getRange(fila, 2).setValue(pin);    // B: PIN
+        if (puedeCambiarPin) {
+          hojaEjecutivos.getRange(fila, 2).setValue(pin);  // B: PIN
+        }
+        hojaEjecutivos.getRange(fila, 6).setValue(tipo);   // F: Rol
         return "Ejecutivo actualizado correctamente.";
       }
     }
