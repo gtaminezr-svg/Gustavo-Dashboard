@@ -1397,12 +1397,26 @@
     const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
     const nombreUsuario = (window.__nombreUsuario || sessionStorage.getItem('sislab_usuario') || '').toLowerCase().trim();
     const esAdmin = (rolActual === 'admin' || rolActual === 'administrador');
-    const puedeEditarEjecutivo = esAdmin || rolActual === 'supervisor';
+    const esSupervisor = rolActual === 'supervisor';
+    const puedeEditarEjecutivo = esAdmin || esSupervisor;
 
-    // Admin ve todos (incluyendo supervisores); ejecutivo solo se ve a sí mismo
-    let ejecutivos = esAdmin
-      ? (_todosEjecutivos.length ? _todosEjecutivos : (ejecutivosData || []))
-      : (ejecutivosData || []);
+    // Obtener lista base
+    let ejecutivos = (esAdmin && _todosEjecutivos.length) ? _todosEjecutivos : (ejecutivosData || []);
+
+    // Nadie ve al Admin/Administrador en la lista
+    ejecutivos = ejecutivos.filter(function(e) {
+      const r = (e.rol || '').toLowerCase().trim();
+      return r !== 'admin' && r !== 'administrador';
+    });
+
+    // Supervisor solo ve Ejecutivos (no otros supervisores)
+    if (esSupervisor) {
+      ejecutivos = ejecutivos.filter(function(e) {
+        return (e.rol || '').toLowerCase().trim() !== 'supervisor';
+      });
+    }
+
+    // Ejecutivo solo se ve a sí mismo
     if (rolActual === 'ejecutivo') {
       ejecutivos = ejecutivos.filter(function(e) {
         return (e.nombre || '').toLowerCase().trim() === nombreUsuario;
