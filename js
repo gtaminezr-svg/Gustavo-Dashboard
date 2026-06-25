@@ -893,30 +893,45 @@
   let _mobStatsAnio = new Date().getFullYear();
 
   function irASeccionMobile(key) {
-    _mobSeccionActual = key;
-    document.querySelectorAll('.mob-view').forEach(v => { v.style.display = 'none'; });
-    const vistaMap = { casos: 'mobVistaCasos', stats: 'mobVistaStats', agenda: 'mobVistaAgenda', perfil: 'mobVistaPerfil' };
-    const el = document.getElementById(vistaMap[key]);
-    if (el) el.style.display = 'flex';
-    document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById('mobnav-mob-' + key);
-    if (btn) btn.classList.add('active');
-    if (key === 'casos') _renderMobCasos();
-    else if (key === 'stats') _renderMobStats();
-    else if (key === 'agenda') _renderMobAgenda();
-    else if (key === 'perfil') _renderMobPerfil();
-    const fab = document.getElementById('mobFAB');
-    if (fab) {
-      if (key === 'casos' || key === 'agenda') {
+  _mobSeccionActual = key;
+  document.querySelectorAll('.mob-view').forEach(v => { v.style.display = 'none'; });
+  const vistaMap = { casos: 'mobVistaCasos', stats: 'mobVistaStats', agenda: 'mobVistaAgenda', perfil: 'mobVistaPerfil' };
+  const el = document.getElementById(vistaMap[key]);
+  if (el) el.style.display = 'flex';
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('mobnav-mob-' + key);
+  if (btn) btn.classList.add('active');
+  if (key === 'casos') _renderMobCasos();
+  else if (key === 'stats') _renderMobStats();
+  else if (key === 'agenda') _renderMobAgenda();
+  else if (key === 'perfil') _renderMobPerfil();
+  
+  const fab = document.getElementById('mobFAB');
+  const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase();
+  const esEjecutivo = (rolActual === 'ejecutivo');
+
+  // Controlar la visibilidad del botón "+" según el rol
+  if (fab) {
+    if (key === 'casos') {
+      fab.style.display = 'flex';
+      fab.onclick = function() { abrirModalNuevo(); };
+    } else if (key === 'agenda') {
+      if (_mobPersonalTabActual === 'medicos') {
         fab.style.display = 'flex';
-        fab.onclick = key === 'casos'
-          ? function() { abrirModalNuevo(); }
-          : function() { _mobPersonalTabActual === 'medicos' ? abrirModalMedico() : abrirModalNuevoEjecutivo(null); };
+        fab.onclick = function() { abrirModalMedico(); };
       } else {
-        fab.style.display = 'none';
+        if (esEjecutivo) {
+          fab.style.display = 'none'; // Ocultar el "+" a los ejecutivos
+        } else {
+          fab.style.display = 'flex';
+          fab.onclick = function() { abrirModalNuevoEjecutivo(null); };
+        }
       }
+    } else {
+      fab.style.display = 'none';
     }
   }
+}
 
   function mobSetFiltro(filtro) {
     _mobFiltroCasos = filtro;
@@ -1277,20 +1292,40 @@
   let _mobPersonalTabActual = 'medicos';
 
   function mobPersonalTab(tab) {
-    _mobPersonalTabActual = tab;
-    const btnM = document.getElementById('mobPersonalTabMedicos');
-    const btnE = document.getElementById('mobPersonalTabEjecutivos');
-    if (btnM && btnE) {
-      if (tab === 'medicos') {
-        btnM.style.background = '#2b1070'; btnM.style.color = 'white'; btnM.style.border = 'none';
-        btnE.style.background = 'white'; btnE.style.color = '#475569'; btnE.style.border = '2px solid #e2e8f0';
+  _mobPersonalTabActual = tab;
+  const btnM = document.getElementById('mobPersonalTabMedicos');
+  const btnE = document.getElementById('mobPersonalTabEjecutivos');
+  if (btnM && btnE) {
+    if (tab === 'medicos') {
+      btnM.style.background = '#2b1070'; btnM.style.color = 'white'; btnM.style.border = 'none';
+      btnE.style.background = 'white'; btnE.style.color = '#475569'; btnE.style.border = '2px solid #e2e8f0';
+    } else {
+      btnE.style.background = '#2b1070'; btnE.style.color = 'white'; btnE.style.border = 'none';
+      btnM.style.background = 'white'; btnM.style.color = '#475569'; btnM.style.border = '2px solid #e2e8f0';
+    }
+  }
+
+  const fab = document.getElementById('mobFAB');
+  const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase();
+  const esEjecutivo = (rolActual === 'ejecutivo');
+
+  // Ajustar el botón "+" también al cambiar de pestaña
+  if (fab && _mobSeccionActual === 'agenda') {
+    if (tab === 'medicos') {
+      fab.style.display = 'flex';
+      fab.onclick = function() { abrirModalMedico(); };
+    } else {
+      if (esEjecutivo) {
+        fab.style.display = 'none'; // Ocultar el "+" a los ejecutivos
       } else {
-        btnE.style.background = '#2b1070'; btnE.style.color = 'white'; btnE.style.border = 'none';
-        btnM.style.background = 'white'; btnM.style.color = '#475569'; btnM.style.border = '2px solid #e2e8f0';
+        fab.style.display = 'flex';
+        fab.onclick = function() { abrirModalNuevoEjecutivo(null); };
       }
     }
-    _renderMobPersonalContenido();
   }
+
+  _renderMobPersonalContenido();
+}
 
   function _renderMobAgenda() {
     _mobPersonalTabActual = 'medicos';
@@ -1302,67 +1337,87 @@
   }
 
   function _renderMobPersonalContenido() {
-    const container = document.getElementById('mobPersonalContenido');
-    if (!container) return;
-    if (_mobPersonalTabActual === 'medicos') {
-      const medicos = typeof medicosEspecialidades !== 'undefined' ? medicosEspecialidades : [];
-      if (medicos.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-md" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin médicos registrados</span></div>';
-        return;
-      }
-      container.innerHTML = medicos.map(function(m, i) {
-        const esp = m.especialidad || '—';
-        const espColor = esp === 'General' ? '#2b1070' : esp === 'Pediatra' ? '#10b981' : '#3b82f6';
-        return '<div onclick="editarFichaMedico(' + i + ')" style="background:white;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);display:flex;align-items:center;gap:14px;cursor:pointer;">' +
-          '<div style="width:42px;height:42px;border-radius:12px;background:' + espColor + '20;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-md" style="color:' + espColor + ';font-size:18px;"></i></div>' +
-          '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.nombre || '—') + '</div>' +
-            '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' +
-              '<span style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;background:' + espColor + '20;color:' + espColor + ';">' + esp + '</span>' +
-              '<span style="font-size:11px;color:#94a3b8;">' + (m.fechaRegistro || '') + '</span>' +
-            '</div>' +
+  const container = document.getElementById('mobPersonalContenido');
+  if (!container) return;
+  
+  if (_mobPersonalTabActual === 'medicos') {
+    const medicos = typeof medicosEspecialidades !== 'undefined' ? medicosEspecialidades : [];
+    if (medicos.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-md" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin médicos registrados</span></div>';
+      return;
+    }
+    container.innerHTML = medicos.map(function(m, i) {
+      const esp = m.especialidad || '—';
+      const espColor = esp === 'General' ? '#2b1070' : esp === 'Pediatra' ? '#10b981' : '#3b82f6';
+      return '<div onclick="editarFichaMedico(' + i + ')" style="background:white;border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);display:flex;align-items:center;gap:14px;cursor:pointer;">' +
+        '<div style="width:42px;height:42px;border-radius:12px;background:' + espColor + '20;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-md" style="color:' + espColor + ';font-size:18px;"></i></div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:14px;font-weight:700;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (m.nombre || '—') + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">' +
+            '<span style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;background:' + espColor + '20;color:' + espColor + ';">' + esp + '</span>' +
+            '<span style="font-size:11px;color:#94a3b8;">' + (m.fechaRegistro || '') + '</span>' +
           '</div>' +
-        '</div>';
-      }).join('');
-    } else {
-      const ejecutivos = typeof ejecutivosData !== 'undefined' ? ejecutivosData : [];
-      if (ejecutivos.length === 0) {
-        container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-tie" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin ejecutivos registrados</span></div>';
-        return;
-      }
-      const colores = ['#2b1070','#4f46e5','#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
-      container.innerHTML = ejecutivos.map(function(e, i) {
-        const casos = (bdPacientes || []).filter(function(p) { return (p.ejecutivo || '').trim() === (e.nombre || '').trim(); });
-        const total = casos.length;
-        const pendientes = casos.filter(function(p) { return p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso'); }).length;
-        const cerrados = casos.filter(function(p) { return p.estado === 'Completado'; }).length;
-        const color = colores[i % colores.length];
-        return '<div onclick="abrirModalNuevoEjecutivo(ejecutivosData[' + i + '])" style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';cursor:pointer;">' +
-          '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else {
+    let ejecutivos = typeof ejecutivosData !== 'undefined' ? ejecutivosData : [];
+    
+    // ---> INICIO DEL CAMBIO: Filtrar la lista si es Ejecutivo <---
+    const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+    const nombreUsuario = (window.__nombreUsuario || sessionStorage.getItem('sislab_usuario') || '').toLowerCase().trim();
+    
+    if (rolActual === 'ejecutivo') {
+      ejecutivos = ejecutivos.filter(function(e) {
+        return (e.nombre || '').toLowerCase().trim() === nombreUsuario;
+      });
+    }
+    const puedeEditarEjecutivo = (rolActual === 'admin' || rolActual === 'administrador' || rolActual === 'supervisor');
+    // ---> FIN DEL CAMBIO <---
+
+    if (ejecutivos.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:48px 0;color:#94a3b8;"><i class="fas fa-user-tie" style="font-size:36px;margin-bottom:12px;display:block;"></i><span style="font-size:14px;font-weight:600;">Sin ejecutivos registrados</span></div>';
+      return;
+    }
+    const colores = ['#2b1070','#4f46e5','#10b981','#f59e0b','#3b82f6','#ec4899','#8b5cf6'];
+    container.innerHTML = ejecutivos.map(function(e, i) {
+      // Identificamos el índice original para que al editar cargue los datos correctos
+      const idxOriginal = ejecutivosData.indexOf(e);
+      const casos = (bdPacientes || []).filter(function(p) { return (p.ejecutivo || '').trim() === (e.nombre || '').trim(); });
+      const total = casos.length;
+      const pendientes = casos.filter(function(p) { return p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso'); }).length;
+      const cerrados = casos.filter(function(p) { return p.estado === 'Completado'; }).length;
+      const color = colores[i % colores.length];
+
+      return '<div onclick="abrirModalNuevoEjecutivo(ejecutivosData[' + idxOriginal + '])" style="background:white;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(15,23,42,.07);border-left:4px solid ' + color + ';cursor:pointer;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;">' +
+          '<div style="display:flex;align-items:center;gap:12px;min-width:0;">' +
             '<div style="width:38px;height:38px;border-radius:10px;background:' + color + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-user-tie" style="color:white;font-size:16px;"></i></div>' +
-            '<div>' +
-              '<div style="font-size:14px;font-weight:800;color:#1e293b;">' + (e.nombre || '—') + '</div>' +
+            '<div style="min-width:0;">' +
+              '<div style="font-size:14px;font-weight:800;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (e.nombre || '—') + '</div>' +
               '<div style="font-size:11px;color:#94a3b8;">' + (e.rol || 'Ejecutivo') + (e.fechaRegistro ? ' · ' + e.fechaRegistro : '') + '</div>' +
             '</div>' +
           '</div>' +
-          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
-            '<div style="text-align:center;background:#f8fafc;border-radius:10px;padding:10px 4px;">' +
-              '<div style="font-size:20px;font-weight:900;color:#1e293b;">' + total + '</div>' +
-              '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Total</div>' +
-            '</div>' +
-            '<div style="text-align:center;background:#fffbeb;border-radius:10px;padding:10px 4px;">' +
-              '<div style="font-size:20px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
-              '<div style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;">Activos</div>' +
-            '</div>' +
-            '<div style="text-align:center;background:#f0fdf4;border-radius:10px;padding:10px 4px;">' +
-              '<div style="font-size:20px;font-weight:900;color:#10b981;">' + cerrados + '</div>' +
-              '<div style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;">Cerrados</div>' +
-            '</div>' +
+          (puedeEditarEjecutivo ? '<button type="button" onclick="event.stopPropagation();abrirModalNuevoEjecutivo(ejecutivosData[' + idxOriginal + '])" aria-label="Editar ejecutivo" style="width:34px;height:34px;border:none;border-radius:10px;background:#ede9f8;color:#2b1070;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;"><i class="fas fa-pen" style="font-size:13px;"></i></button>' : '') +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">' +
+          '<div style="text-align:center;background:#f8fafc;border-radius:10px;padding:10px 4px;">' +
+            '<div style="font-size:20px;font-weight:900;color:#1e293b;">' + total + '</div>' +
+            '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;">Total</div>' +
           '</div>' +
-        '</div>';
-      }).join('');
-    }
+          '<div style="text-align:center;background:#fffbeb;border-radius:10px;padding:10px 4px;">' +
+            '<div style="font-size:20px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
+            '<div style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;">Activos</div>' +
+          '</div>' +
+          '<div style="text-align:center;background:#f0fdf4;border-radius:10px;padding:10px 4px;">' +
+            '<div style="font-size:20px;font-weight:900;color:#10b981;">' + cerrados + '</div>' +
+            '<div style="font-size:10px;font-weight:700;color:#10b981;text-transform:uppercase;">Cerrados</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
+}
 
   function _renderMobPerfil() {
     const container = document.getElementById('mobPerfilContenido');
@@ -1668,13 +1723,27 @@
   }
 
   // Refresca cachés y reabre el modal de ejecutivos con datos frescos
-  function refrescarEjecutivosYAbrir() {
-    recargarListasGlobales(function() {
+function refrescarEjecutivosYAbrir() {
+  recargarListasGlobales(function() {
+    
+    // ---> INICIO DEL CAMBIO: Validar el rol antes de abrir el cuadro <---
+    const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase();
+    
+    // Si NO es ejecutivo, le abrimos la lista general. Si lo es, se queda oculto.
+    if (rolActual !== 'ejecutivo') {
       abrirModalEjecutivos();
-      if (typeof actualizarContadoresPersonal === 'function') actualizarContadoresPersonal();
-      if (typeof renderizarEjecutivosBloque8 === 'function') renderizarEjecutivosBloque8();
-    });
-  }
+    }
+    // ---> FIN DEL CAMBIO <---
+
+    if (typeof actualizarContadoresPersonal === 'function') actualizarContadoresPersonal();
+    if (typeof renderizarEjecutivosBloque8 === 'function') renderizarEjecutivosBloque8();
+    
+    // Actualizamos la vista en el celular para que refleje el cambio internamente
+    if (typeof _renderMobPersonalContenido === 'function') {
+      _renderMobPersonalContenido();
+    }
+  });
+}
 
 
   function rellenarSelect(idElemento, items) {
@@ -2406,152 +2475,158 @@
   }
 
   function abrirModalLectura(idPaciente) {
-    dniFichaActual = idPaciente;
-    const p = bdPacientes.find(item => (item.id || item.dni).toString() === idPaciente.toString());
-    if (!p) return;
-    
-    document.getElementById('modalTitulo').textContent = "Ficha del Paciente (Modo Lectura)";
-    document.getElementById('esEdicion').value = "true";
-    document.getElementById('dniOriginal').value = p.id || p.dni;
-    document.getElementById('nombre').value = p.nombre || '';
-    document.getElementById('dni').value = p.dni || '';
-    document.getElementById('edad').value = p.edad || '';
-    document.getElementById('telefono').value = p.telefono || '';
-    document.getElementById('caso').value = p.caso || '';
-    document.getElementById('grupoEspecialidadFiltro').style.display = "block";
-    document.getElementById('textoSubEstadoBadge').textContent = 'Sub-Estado';
-    
-    subEstadoSeleccionado = "";
+  dniFichaActual = idPaciente;
+  const p = bdPacientes.find(item => (item.id || item.dni).toString() === idPaciente.toString());
+  if (!p) return;
+  
+  document.getElementById('modalTitulo').textContent = "Ficha del Paciente (Modo Lectura)";
+  document.getElementById('esEdicion').value = "true";
+  document.getElementById('dniOriginal').value = p.id || p.dni;
+  document.getElementById('nombre').value = p.nombre || '';
+  document.getElementById('dni').value = p.dni || '';
+  document.getElementById('edad').value = p.edad || '';
+  document.getElementById('telefono').value = p.telefono || '';
+  document.getElementById('caso').value = p.caso || '';
+  document.getElementById('grupoEspecialidadFiltro').style.display = "block";
+  document.getElementById('textoSubEstadoBadge').textContent = 'Sub-Estado';
+  
+  subEstadoSeleccionado = "";
+  medicoLectorSeleccionado = p.medicoLector || "";
+  ejecutivoCierreSeleccionado = p.ejecutivoCierre || ""; 
+
+  let estadoBase = p.estado || 'Pendiente';
+  configurarOpcionCompletado(estadoBase === 'Completado');
+  if ((estadoBase && estadoBase.startsWith('En Proceso')) || estadoBase === 'Completado') {
+    document.getElementById('estado').value = estadoBase.startsWith('En Proceso') ? 'En Proceso' : estadoBase;
+    subEstadoSeleccionado = p.subEstado || "";
     medicoLectorSeleccionado = p.medicoLector || "";
-    ejecutivoCierreSeleccionado = p.ejecutivoCierre || ""; // Carga el dato de la base
+    actualizarColorBadgeSubEstado(subEstadoSeleccionado);
+    document.getElementById('textoSubEstadoBadge').textContent = subEstadoSeleccionado || 'Sub-Estado';
+  } else {
+    document.getElementById('estado').value = estadoBase;
+  }
 
-    let estadoBase = p.estado || 'Pendiente';
-    configurarOpcionCompletado(estadoBase === 'Completado');
-    if ((estadoBase && estadoBase.startsWith('En Proceso')) || estadoBase === 'Completado') {
-      document.getElementById('estado').value = estadoBase.startsWith('En Proceso') ? 'En Proceso' : estadoBase;
-      subEstadoSeleccionado = p.subEstado || "";
-      medicoLectorSeleccionado = p.medicoLector || "";
-      actualizarColorBadgeSubEstado(subEstadoSeleccionado);
-      document.getElementById('textoSubEstadoBadge').textContent = subEstadoSeleccionado || 'Sub-Estado';
-    } else {
-      document.getElementById('estado').value = estadoBase;
-    }
+  document.getElementById('ejecutivo').value = p.ejecutivo || '';
+  document.getElementById('seguro').value = p.seguro || '';
 
-    document.getElementById('ejecutivo').value = p.ejecutivo || '';
-    document.getElementById('seguro').value = p.seguro || '';
+  const selMedicoLectura = document.getElementById('medico');
+  selMedicoLectura.innerHTML = '<option value="">-- Seleccionar --</option>';
+  (medicosEspecialidades || []).forEach(function(m) {
+    const o = document.createElement('option');
+    o.value = m.nombre;
+    o.textContent = m.nombre;
+    selMedicoLectura.appendChild(o);
+  });
 
-    // Repoblar el select de médicos con TODOS (por si quedó vacío tras abrir "Nuevo Registro"),
-    // así el médico asignado siempre se puede seleccionar.
-    const selMedicoLectura = document.getElementById('medico');
-    selMedicoLectura.innerHTML = '<option value="">-- Seleccionar --</option>';
-    (medicosEspecialidades || []).forEach(function(m) {
-      const o = document.createElement('option');
-      o.value = m.nombre;
-      o.textContent = m.nombre;
-      selMedicoLectura.appendChild(o);
-    });
+  document.getElementById('medico').value = p.medico || '';
+  document.getElementById('especialidadFiltro').value = p.especialidad || '';
+  document.getElementById('vencimiento').value = p.vencimiento || '';
+  document.getElementById('observaciones').value = p.observaciones || '';
+  document.getElementById('precioTotal').value = p.precioTotal || '0.00';
+  
+  examenesSeleccionados = p.listaExamenes ? [...p.listaExamenes] : [];
+  dibujarTagsExamenes();
+  actualizarEspecialidadDestino();
+  actualizarSeguroInyectado();
+  alternarBloqueoInputs(true);
+  
+  document.getElementById('estado').disabled = true;
+  document.getElementById('btnGuardarFicha').style.display = "none";
+  document.getElementById('selectExamenes').style.display = "none";
+  document.getElementById('labelSelectExamenes').style.display = "none";
 
-    document.getElementById('medico').value = p.medico || '';
-    document.getElementById('especialidadFiltro').value = p.especialidad || '';
-    document.getElementById('vencimiento').value = p.vencimiento || '';
-    document.getElementById('observaciones').value = p.observaciones || '';
-    document.getElementById('precioTotal').value = p.precioTotal || '0.00';
-    
-    examenesSeleccionados = p.listaExamenes ? [...p.listaExamenes] : [];
-    dibujarTagsExamenes();
-    actualizarEspecialidadDestino();
-    actualizarSeguroInyectado();
-    alternarBloqueoInputs(true);
-    
-    document.getElementById('estado').disabled = true;
-    document.getElementById('btnGuardarFicha').style.display = "none";
+  document.getElementById('btnEliminarPaciente').innerHTML = '<i class="fas fa-trash"></i> Eliminar Paciente';
+  document.getElementById('btnEliminarPaciente').style.background = '#dc2626';
+  document.getElementById('btnEliminarPaciente').style.border = '1px solid #dc2626';
+  document.getElementById('btnEliminarPaciente').onclick = eliminarPaciente;
+
+  const esCompletado = p.estado === 'Completado';
+  const esDesestimado = (p.subEstado || '').toLowerCase().trim() === 'desestimado';
+  const ocultarEliminar = esCompletado || esDesestimado;
+
+  // ---> INICIO DEL CAMBIO: Validar si es Supervisor <---
+  const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase();
+  const esSupervisor = (rolActual === 'supervisor' || rolActual === 'admin');
+
+  document.getElementById('btnEliminarPaciente').style.display = ocultarEliminar ? "none" : "inline-flex";
+  
+  if (esCompletado || esDesestimado) {
+    document.getElementById('btnModoLecturaEditar').style.display = esSupervisor ? "block" : "none";
+  } else {
     document.getElementById('btnModoLecturaEditar').style.display = "block";
-    document.getElementById('selectExamenes').style.display = "none";
-    document.getElementById('labelSelectExamenes').style.display = "none";
+  }
+  // ---> FIN DEL CAMBIO <---
 
-    document.getElementById('btnEliminarPaciente').innerHTML = '<i class="fas fa-trash"></i> Eliminar Paciente';
-    document.getElementById('btnEliminarPaciente').style.background = '#dc2626';
-    document.getElementById('btnEliminarPaciente').style.border = '1px solid #dc2626';
-    document.getElementById('btnEliminarPaciente').onclick = eliminarPaciente;
+  if (esCompletado) {
+    document.getElementById('btnEliminarPaciente').style.display = "inline-flex";
+    document.getElementById('btnEliminarPaciente').innerHTML = 'Detalle de Lectura';
+    document.getElementById('btnEliminarPaciente').style.background = '#3b238f';
+    document.getElementById('btnEliminarPaciente').style.border = '1px solid #3b238f';
+    
+    const medicoLectorTexto = esDesestimado ? 'Sin registro' : (p.medicoLector || 'No asignado');
+    const especialidadTexto = esDesestimado ? 'Sin registro' : obtenerEspecialidadMedico(p.medicoLector);
+    
+    document.getElementById('btnEliminarPaciente').onclick = function () {
+      const esDark = document.body.classList.contains('dark');
+      const popupBg     = esDark ? 'linear-gradient(160deg,#0D1428 0%,#0A0F1E 50%,#070C18 100%)' : '#ffffff';
+      const tituloColor = esDark ? '#7BA7F5' : '#2b1070';
+      const labelColor  = esDark ? '#5B6585' : '#475569';
+      const fieldBg     = esDark ? '#1C2033' : '#f8fafc';
+      const fieldBorder = esDark ? 'rgba(255,255,255,0.10)' : '#cbd5e1';
+      const chipBg      = esDark ? '#252B45' : '#f1f5f9';
+      const chipColor   = esDark ? '#C9D1E9' : '#334155';
 
-    const esCompletado = p.estado === 'Completado';
-    const esDesestimado = (p.subEstado || '').toLowerCase().trim() === 'desestimado';
-    const ocultarEliminar = esCompletado || esDesestimado;
+      const chipStyle = `background:${chipBg}; color:${chipColor}; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;`;
+      const fieldStyle = `background:${fieldBg}; border:1px solid ${fieldBorder}; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;`;
 
-    document.getElementById('btnEliminarPaciente').style.display = ocultarEliminar ? "none" : "inline-flex";
-    document.getElementById('btnModoLecturaEditar').style.display = esDesestimado ? "none" : "block";
+      const fechaCierreHtml = p.fechaCierre
+        ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;">
+             <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span>
+             <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}</span>
+           </div>`
+        : `<span style="${chipStyle}">Sin fecha registrada</span>`;
 
-    if (esCompletado) {
-      document.getElementById('btnModoLecturaEditar').style.display = "none";
-      document.getElementById('btnEliminarPaciente').style.display = "inline-flex";
-      document.getElementById('btnEliminarPaciente').innerHTML = 'Detalle de Lectura';
-      document.getElementById('btnEliminarPaciente').style.background = '#3b238f';
-      document.getElementById('btnEliminarPaciente').style.border = '1px solid #3b238f';
-      // En casos desestimados no hay médico lector ni especialidad
-      const medicoLectorTexto = esDesestimado ? 'Sin registro' : (p.medicoLector || 'No asignado');
-      const especialidadTexto = esDesestimado ? 'Sin registro' : obtenerEspecialidadMedico(p.medicoLector);
-      document.getElementById('btnEliminarPaciente').onclick = function () {
-        const esDark = document.body.classList.contains('dark');
-        const popupBg     = esDark ? 'linear-gradient(160deg,#0D1428 0%,#0A0F1E 50%,#070C18 100%)' : '#ffffff';
-        const tituloColor = esDark ? '#7BA7F5' : '#2b1070';
-        const labelColor  = esDark ? '#5B6585' : '#475569';
-        const fieldBg     = esDark ? '#1C2033' : '#f8fafc';
-        const fieldBorder = esDark ? 'rgba(255,255,255,0.10)' : '#cbd5e1';
-        const chipBg      = esDark ? '#252B45' : '#f1f5f9';
-        const chipColor   = esDark ? '#C9D1E9' : '#334155';
-        const btnColor    = esDark ? 'linear-gradient(135deg,#3B5FD9,#5B3DB8)' : '#2b1070';
-
-        const chipStyle = `background:${chipBg}; color:${chipColor}; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:600;`;
-        const fieldStyle = `background:${fieldBg}; border:1px solid ${fieldBorder}; border-radius:14px; padding:12px; min-height:34px; display:flex; align-items:center;`;
-
-        const fechaCierreHtml = p.fechaCierre
-          ? `<div style="display:flex; gap:8px; align-items:center; white-space:nowrap;">
-               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleDateString('es-PE')}</span>
-               <span style="${chipStyle}">${new Date(p.fechaCierre).toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false})}</span>
-             </div>`
-          : `<span style="${chipStyle}">Sin fecha registrada</span>`;
-
-        Swal.fire({
-          target: document.getElementById('modalClinico'),
-          width: 470,
-          background: popupBg,
-          confirmButtonColor: esDark ? '#3B5FD9' : '#2b1070',
-          html: `
-            <div style="font-size:20px; font-weight:700; color:${tituloColor}; margin-bottom:27px; text-align:center;">Información de Lectura</div>
-            <div style="padding:14px; text-align:left;">
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div>
-                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Médico Lector</div>
-                  <div style="${fieldStyle}">
-                    <span style="${chipStyle}"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Especialidad</div>
-                  <div style="${fieldStyle}">
-                    <span style="${chipStyle}">${especialidadTexto}</span>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Ejecutivo de Cierre</div>
-                  <div style="${fieldStyle}">
-                    <span style="${chipStyle}">${p.ejecutivoCierre || 'No asignado'}</span>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Fecha de Cierre</div>
-                  <div style="${fieldStyle}">${fechaCierreHtml}</div>
+      Swal.fire({
+        target: document.getElementById('modalClinico'),
+        width: 470,
+        background: popupBg,
+        confirmButtonColor: esDark ? '#3B5FD9' : '#2b1070',
+        html: `
+          <div style="font-size:20px; font-weight:700; color:${tituloColor}; margin-bottom:27px; text-align:center;">Información de Lectura</div>
+          <div style="padding:14px; text-align:left;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Médico Lector</div>
+                <div style="${fieldStyle}">
+                  <span style="${chipStyle}"><i class="fas fa-user-md"></i> ${medicoLectorTexto}</span>
                 </div>
               </div>
+              <div>
+                <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Especialidad</div>
+                <div style="${fieldStyle}">
+                  <span style="${chipStyle}">${especialidadTexto}</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Ejecutivo de Cierre</div>
+                <div style="${fieldStyle}">
+                  <span style="${chipStyle}">${p.ejecutivoCierre || 'No asignado'}</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:14px; font-weight:700; color:${labelColor}; margin-bottom:8px;">Fecha de Cierre</div>
+                <div style="${fieldStyle}">${fechaCierreHtml}</div>
+              </div>
             </div>
-          `
-        });
-      };
-    }
-
-    document.getElementById('modalClinico').classList.add('active');
-    actualizarCamposProceso();
+          </div>
+        `
+      });
+    };
   }
+
+  document.getElementById('modalClinico').classList.add('active');
+  actualizarCamposProceso();
+}
 
 
 
@@ -6896,8 +6971,10 @@ function _toggleAuthPinField() {
   var tipo = document.getElementById('swalEjecTipo');
   var wrap = document.getElementById('swalAuthPinWrap');
   if (!tipo || !wrap) return;
-  wrap.style.display = tipo.value === 'Supervisor' ? 'block' : 'none';
-  if (tipo.value !== 'Supervisor') {
+  var rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+  var esAdmin = rolActual === 'admin' || rolActual === 'administrador';
+  wrap.style.display = (tipo.value === 'Supervisor' && !esAdmin) ? 'block' : 'none';
+  if (tipo.value !== 'Supervisor' || esAdmin) {
     var ap = document.getElementById('swalAuthPin');
     if (ap) ap.value = '';
   }
@@ -6909,6 +6986,15 @@ function abrirModalNuevoEjecutivo(ejec) {
   const pinVal    = esEdicion ? (ejec.pin    || '').replace(/"/g, '&quot;') : '';
   const tipoVal   = esEdicion ? (ejec.rol    || '') : '';
 
+  const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+  const esAdmin = (rolActual === 'admin' || rolActual === 'administrador');
+  const esEjecutivo = (rolActual === 'ejecutivo');
+  const puedeEditarPin = !esEdicion || esAdmin;
+
+  // Bloquear nombre y rol si el usuario que abre el modal es un Ejecutivo
+  const paramReadonly = esEjecutivo ? 'readonly style="background:#f1f5f9; cursor:not-allowed; opacity:0.8;"' : '';
+  const paramDisabled = esEjecutivo ? 'disabled style="background:#f1f5f9; cursor:not-allowed; opacity:0.8;"' : '';
+
   Swal.fire({
     title: '<span style="font-size:18px; font-weight:800; color:#2b1070;">' + (esEdicion ? 'Editar Ejecutivo' : 'Registrar Ejecutivo') + '</span>',
     width: 420,
@@ -6916,7 +7002,7 @@ function abrirModalNuevoEjecutivo(ejec) {
       <div style="display:flex; flex-direction:column; gap:12px; text-align:left; margin-top:6px;">
         <div>
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Nombre de Ejecutivo</label>
-          <input id="swalEjecNombre" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="Ej. Gustavo" value="` + nombreVal + `">
+          <input id="swalEjecNombre" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="Ej. Gustavo" value="` + nombreVal + `" ` + paramReadonly + `>
         </div>
         <div>
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">PIN de Seguridad</label>
@@ -6924,7 +7010,7 @@ function abrirModalNuevoEjecutivo(ejec) {
         </div>
         <div>
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Registro</label>
-          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" onchange="_toggleAuthPinField()">
+          <select id="swalEjecTipo" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" onchange="_toggleAuthPinField()" ` + paramDisabled + `>
             <option value="">-- Seleccionar --</option>
             <option value="Ejecutivo"  ` + (tipoVal === 'Ejecutivo'  ? 'selected' : '') + `>Ejecutivo</option>
             <option value="Supervisor" ` + (tipoVal === 'Supervisor' ? 'selected' : '') + `>Supervisor</option>
@@ -6945,13 +7031,21 @@ function abrirModalNuevoEjecutivo(ejec) {
     cancelButtonColor: '#64748b',
     reverseButtons: true,
     didOpen: function() {
-      // Si ya es Supervisor en edición, mostrar el campo de auth pin
-      if (tipoVal === 'Supervisor') _toggleAuthPinField();
+      const pinInput = document.getElementById('swalEjecPin');
+      if (pinInput && !puedeEditarPin) {
+        pinInput.readOnly = true;
+        pinInput.title = 'Solo Admin puede cambiar este PIN';
+        pinInput.style.background = '#f1f5f9';
+        pinInput.style.cursor = 'not-allowed';
+        pinInput.style.opacity = '0.8';
+      }
+      if (tipoVal === 'Supervisor' && !esAdmin) _toggleAuthPinField();
     },
     preConfirm: () => {
       const nombre = document.getElementById('swalEjecNombre').value.trim();
       const pin    = document.getElementById('swalEjecPin').value.trim();
       const tipo   = document.getElementById('swalEjecTipo').value;
+
       if (!nombre || !pin) {
         Swal.showValidationMessage('Ingresa el nombre y el PIN de seguridad.');
         return false;
@@ -6960,7 +7054,7 @@ function abrirModalNuevoEjecutivo(ejec) {
         Swal.showValidationMessage('Selecciona el Tipo de Registro.');
         return false;
       }
-      if (tipo === 'Supervisor') {
+      if (tipo === 'Supervisor' && !esAdmin && !esEjecutivo) {
         const authPin = document.getElementById('swalAuthPin').value.trim();
         if (!authPin) {
           Swal.showValidationMessage('Ingresa el PIN de autorización para registrar un Supervisor.');
@@ -6974,12 +7068,12 @@ function abrirModalNuevoEjecutivo(ejec) {
           return false;
         }
       }
-      return { nombre: nombre, pin: pin, tipo: tipo };
+      return { nombre: nombre, pin: pin, tipo: tipo, puedeCambiarPin: puedeEditarPin };
     }
   }).then(result => {
     if (!result.isConfirmed) return;
     if (esEdicion) {
-      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin, tipo: result.value.tipo });
+      guardarEdicionEjecutivo({ nombreOriginal: ejec.nombre, nombre: result.value.nombre, pin: result.value.pin, tipo: result.value.tipo, puedeCambiarPin: result.value.puedeCambiarPin });
     } else {
       guardarEjecutivo(result.value);
     }
