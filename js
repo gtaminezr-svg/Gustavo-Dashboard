@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.24 — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  // v2026.06.25 — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -1334,7 +1334,14 @@
     const btnE = document.getElementById('mobPersonalTabEjecutivos');
     if (btnM) { btnM.style.background = '#2b1070'; btnM.style.color = 'white'; btnM.style.border = 'none'; }
     if (btnE) { btnE.style.background = 'white'; btnE.style.color = '#475569'; btnE.style.border = '2px solid #e2e8f0'; }
-    _renderMobPersonalContenido();
+    // Si es admin y la lista completa no está cargada, recargar desde el servidor
+    const rolActual = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+    const esAdmin = rolActual === 'admin' || rolActual === 'administrador';
+    if (esAdmin && !_todosEjecutivos.length) {
+      recargarListasGlobales(function() { _renderMobPersonalContenido(); });
+    } else {
+      _renderMobPersonalContenido();
+    }
   }
 
   function _renderMobPersonalContenido() {
