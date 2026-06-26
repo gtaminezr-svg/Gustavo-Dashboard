@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26a — Cobertura integrada en columnas de Cotización (cache bust)
+  // v2026.06.26b — Cobertura en columnas de Cotización y Plazo; fix workflow deploy
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3691,7 +3691,6 @@ function abrirSelectorFechaPanel() {
   let _tarifarioTabActual = 'cotizacion';
   let _tarifarioSeleccionados = {};
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
-  let _tarifarioSeguroSel = null;    // seguro seleccionado en la pestaña Cobertura
 
   function mostrarVistaPlazoCotizacion() {
     _enVistaSeccion = true;
@@ -3730,7 +3729,6 @@ function abrirSelectorFechaPanel() {
           _tarifarioData = data || [];
           _tarifarioSeguros = [];
         }
-        if (!_tarifarioSeguroSel && _tarifarioSeguros.length) _tarifarioSeguroSel = _tarifarioSeguros[0];
         _tarifarioFiltrado = _tarifarioData.slice();
         _renderTarifario();
       })
@@ -3765,32 +3763,6 @@ function abrirSelectorFechaPanel() {
     });
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = tab === 'cotizacion' ? 'flex' : 'none';
-    const cobCtrl = document.getElementById('coberturaControles');
-    if (cobCtrl) cobCtrl.style.display = tab === 'cobertura' ? 'flex' : 'none';
-    if (tab === 'cobertura') _renderSelectorSeguros();
-    _renderTarifario();
-  }
-
-  function _renderSelectorSeguros() {
-    const cont = document.getElementById('coberturaSeguros');
-    if (!cont) return;
-    if (!_tarifarioSeguros.length) {
-      cont.innerHTML = '<span style="font-size:12px;color:#94a3b8;">No hay seguros configurados en la hoja Tarifario (columnas desde la G).</span>';
-      return;
-    }
-    cont.innerHTML = _tarifarioSeguros.map(function(s) {
-      const activo = s === _tarifarioSeguroSel;
-      return '<button onclick="seleccionarSeguroCobertura(\'' + s.replace(/'/g, "\\'") + '\')" ' +
-        'style="padding:7px 16px;border-radius:30px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;' +
-        (activo
-          ? 'background:#2b1070;color:white;border:none;'
-          : 'background:white;color:#475569;border:1.5px solid #e2e8f0;') + '">' + s + '</button>';
-    }).join('');
-  }
-
-  function seleccionarSeguroCobertura(seguro) {
-    _tarifarioSeguroSel = seguro;
-    _renderSelectorSeguros();
     _renderTarifario();
   }
 
@@ -3844,15 +3816,28 @@ function abrirSelectorFechaPanel() {
       });
       html += '</tbody></table>';
       cont.innerHTML = html;
-    } else if (_tarifarioTabActual === 'cobertura') {
-      _renderCoberturaTabla(datos);
     } else {
+      const seguros = _tarifarioSeguros;
+      const colspanTotal = 3 + seguros.length;
+      const badgeCob = function(cubre) {
+        return cubre
+          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i></span>'
+          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i></span>';
+      };
+      const thSeg = seguros.map(function(s) {
+        return '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;">' + s + '</th>';
+      }).join('');
       const conPlazo = datos.filter(function(r) { return r.plazo; });
       const sinPlazo = datos.filter(function(r) { return !r.plazo; });
       const renderFila = function(r, i) {
         const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        const tdSeg = seguros.map(function(s) {
+          const cubre = r.coberturas && r.coberturas[s] === true;
+          return '<td style="padding:10px 10px;text-align:center;">' + badgeCob(cubre) + '</td>';
+        }).join('');
         return '<tr style="background:' + bg + ';border-bottom:1px solid #f1f5f9;">' +
           '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
+          tdSeg +
           '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
           '<td style="padding:12px 16px;text-align:center;">' +
             (r.plazo
@@ -3863,6 +3848,7 @@ function abrirSelectorFechaPanel() {
       let html = '<table style="width:100%;border-collapse:collapse;">';
       html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
+        thSeg +
         '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
         '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Plazo de Atención</th>' +
         '</tr></thead><tbody>';
@@ -3870,7 +3856,7 @@ function abrirSelectorFechaPanel() {
         conPlazo.forEach(function(r, i) { html += renderFila(r, i); });
       }
       if (sinPlazo.length && conPlazo.length) {
-        html += '<tr><td colspan="3" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid #e2e8f0;">Sin plazo registrado (' + sinPlazo.length + ')</td></tr>';
+        html += '<tr><td colspan="' + colspanTotal + '" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid #e2e8f0;">Sin plazo registrado (' + sinPlazo.length + ')</td></tr>';
       }
       if (sinPlazo.length) {
         sinPlazo.forEach(function(r, i) { html += renderFila(r, i + conPlazo.length); });
@@ -3878,52 +3864,6 @@ function abrirSelectorFechaPanel() {
       html += '</tbody></table>';
       cont.innerHTML = html;
     }
-  }
-
-  function _renderCoberturaTabla(datos) {
-    const cont = document.getElementById('tablaTarifarioContenedor');
-    if (!cont) return;
-    if (!_tarifarioSeguros.length) {
-      cont.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:220px;color:#94a3b8;gap:10px;text-align:center;padding:0 20px;"><i class="fas fa-shield-halved" style="font-size:24px;"></i><span style="font-size:14px;font-weight:600;">No hay seguros configurados.</span><span style="font-size:12px;">Agrega columnas con el nombre de cada seguro (desde la columna G) en la hoja "Tarifario" y marca SI / NO en cada examen.</span></div>';
-      return;
-    }
-    const seguro = _tarifarioSeguroSel || _tarifarioSeguros[0];
-    const cubre = function(r) { return r.coberturas && r.coberturas[seguro] === true; };
-    const cubiertos = datos.filter(cubre);
-    const noCubiertos = datos.filter(function(r) { return !cubre(r); });
-
-    const badge = function(ok) {
-      return ok
-        ? '<span style="background:#dcfce7;color:#166534;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;"><i class="fas fa-circle-check" style="margin-right:5px;"></i>Cubre</span>'
-        : '<span style="background:#fee2e2;color:#b91c1c;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;"><i class="fas fa-circle-xmark" style="margin-right:5px;"></i>No cubre</span>';
-    };
-    const renderFila = function(r, i) {
-      const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
-      return '<tr style="background:' + bg + ';border-bottom:1px solid #f1f5f9;">' +
-        '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
-        '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
-        '<td style="padding:12px 16px;text-align:center;">' + badge(cubre(r)) + '</td></tr>';
-    };
-    const subEncabezado = function(txt, n) {
-      return '<tr><td colspan="3" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid #e2e8f0;">' + txt + ' (' + n + ')</td></tr>';
-    };
-    let html = '<table style="width:100%;border-collapse:collapse;">';
-    html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
-      '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
-      '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
-      '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">' + seguro + '</th>' +
-      '</tr></thead><tbody>';
-    let idx = 0;
-    if (cubiertos.length) {
-      html += subEncabezado('Cobertura', cubiertos.length);
-      cubiertos.forEach(function(r) { html += renderFila(r, idx++); });
-    }
-    if (noCubiertos.length) {
-      html += subEncabezado('No cobertura', noCubiertos.length);
-      noCubiertos.forEach(function(r) { html += renderFila(r, idx++); });
-    }
-    html += '</tbody></table>';
-    cont.innerHTML = html;
   }
 
   function toggleSeleccionTarifario(codigo, sinIgv, conIgv) {
