@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27k — Tab "Precio con Seguro": casillas IGV y Movilidad
+  // v2026.06.27l — Movilidad como lista desplegable (40/80/120) en Cotización y Seguro
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4008,8 +4008,8 @@ function abrirSelectorFechaPanel() {
   function recalcularTotalSeguro() {
     var total = 0;
     Object.values(_seguroSeleccionados).forEach(function(v) { total += _precioSeguroConIgv(v); });
-    var chkMov = document.getElementById('chkSeguroMovilidad');
-    if (chkMov && chkMov.checked) total += 40;
+    var selMov = document.getElementById('selSeguroMovilidad');
+    total += selMov ? (parseFloat(selMov.value) || 0) : 0;
     var el = document.getElementById('totalSeguroValor');
     if (el) el.textContent = 'S/. ' + total.toFixed(2);
     _renderResumenSeguro();
@@ -4017,8 +4017,8 @@ function abrirSelectorFechaPanel() {
 
   function limpiarSeleccionSeguro() {
     _seguroSeleccionados = {};
-    var chkMov = document.getElementById('chkSeguroMovilidad');
-    if (chkMov) chkMov.checked = false;
+    var selMov = document.getElementById('selSeguroMovilidad');
+    if (selMov) selMov.value = '0';
     recalcularTotalSeguro();
     _renderPreciosSeguro();
   }
@@ -4033,8 +4033,8 @@ function abrirSelectorFechaPanel() {
     var labelMap = { mapfre: 'MAPFRE', vip: 'VIP', laPositiva: 'LA POSITIVA' };
     var colorMap = { mapfre: '#1d4ed8', vip: '#b45309', laPositiva: '#166534' };
     var subtotal = 0;
-    var chkMov = document.getElementById('chkSeguroMovilidad');
-    var conMov = chkMov && chkMov.checked;
+    var selMovSeg = document.getElementById('selSeguroMovilidad');
+    var movVal = selMovSeg ? (parseFloat(selMovSeg.value) || 0) : 0;
     var chkIgv = document.getElementById('chkSeguroIgv');
     var usarIgv = chkIgv ? chkIgv.checked : true;
     var filas = items.map(function(entry) {
@@ -4052,7 +4052,7 @@ function abrirSelectorFechaPanel() {
         '</div>' +
       '</div>';
     }).join('');
-    var total = subtotal + (conMov ? 40 : 0);
+    var total = subtotal + movVal;
     contenido.innerHTML =
       '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
@@ -4062,10 +4062,10 @@ function abrirSelectorFechaPanel() {
       '<div style="padding:8px 14px;background:#eef2ff;border-top:1px solid #c7d2fe;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;color:#4338ca;flex-shrink:0;">' +
         '<i class="fas fa-tag"></i> ' + labelMap[_seguroActivo] + (usarIgv ? ' · Con IGV' : ' · Sin IGV') +
       '</div>' +
-      (conMov
+      (movVal > 0
         ? '<div style="padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
             '<span style="font-size:12px;color:#475569;"><i class="fas fa-motorcycle" style="color:#2b1070;margin-right:4px;"></i>Movilidad</span>' +
-            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. 40.00</span>' +
+            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. ' + movVal.toFixed(2) + '</span>' +
           '</div>'
         : '') +
       '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
@@ -4345,8 +4345,8 @@ function abrirSelectorFechaPanel() {
     Object.values(_tarifarioSeleccionados).forEach(function(v) {
       total += usarIgv ? v.con : v.sin;
     });
-    const chkMov = document.getElementById('chkMovilidad');
-    if (chkMov && chkMov.checked) total += 40;
+    const selMov = document.getElementById('selMovilidad');
+    total += selMov ? (parseFloat(selMov.value) || 0) : 0;
     const totalVal = document.getElementById('totalCotizacionValor');
     if (totalVal) totalVal.textContent = 'S/. ' + total.toFixed(2);
     _renderResumenCotizacion();
@@ -4364,8 +4364,8 @@ function abrirSelectorFechaPanel() {
     panel.style.display = 'flex';
     var chkIgv = document.getElementById('chkIgv');
     var usarIgv = chkIgv ? chkIgv.checked : true;
-    var chkMov = document.getElementById('chkMovilidad');
-    var conMov = chkMov && chkMov.checked;
+    var selMov = document.getElementById('selMovilidad');
+    var movVal = selMov ? (parseFloat(selMov.value) || 0) : 0;
     var subtotal = 0;
     var filas = items.map(function(entry) {
       var codigo = entry[0], v = entry[1];
@@ -4382,17 +4382,17 @@ function abrirSelectorFechaPanel() {
         '</div>' +
         '</div>';
     }).join('');
-    var total = subtotal + (conMov ? 40 : 0);
+    var total = subtotal + movVal;
     contenido.innerHTML =
       '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
         '<button onclick="limpiarSeleccionTarifario()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:11px;font-weight:700;">✕ Limpiar</button>' +
       '</div>' +
       '<div style="flex:1;overflow-y:auto;">' + filas + '</div>' +
-      (conMov
+      (movVal > 0
         ? '<div style="padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
             '<span style="font-size:12px;color:#475569;"><i class="fas fa-motorcycle" style="color:#2b1070;margin-right:4px;"></i>Movilidad</span>' +
-            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. 40.00</span>' +
+            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. ' + movVal.toFixed(2) + '</span>' +
           '</div>'
         : '') +
       '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
@@ -4403,8 +4403,8 @@ function abrirSelectorFechaPanel() {
 
   function limpiarSeleccionTarifario() {
     _tarifarioSeleccionados = {};
-    const chkMov = document.getElementById('chkMovilidad');
-    if (chkMov) chkMov.checked = false;
+    const selMov = document.getElementById('selMovilidad');
+    if (selMov) selMov.value = '0';
     recalcularTotalTarifario();
     _renderTarifario();
   }
