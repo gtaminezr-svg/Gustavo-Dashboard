@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26u — Descargar Base: limpiar color inline al cambiar de tema (no se queda blanco)
+  // v2026.06.26v — Calendario se tiñe con la paleta de color seleccionada
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -363,6 +363,9 @@
         'body:not(.dark) .carrusel-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         /* .cal-panel: solo los blancos (excluir el panel oscuro de fecha actual) */
         'body:not(.dark) .cal-panel:not([style*="#1e293b"]) { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* fila de días de la semana del calendario (Dom, Lun...): tinte del tema */
+        'body:not(.dark) .cal-weekdays { background: ' + softBg2 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .cal-weekdays > div { color: ' + colHeaderTxt + ' !important; }',
         /* bloques sin clase: por ID */
         'body:not(.dark) #bloque7 { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         /* table-card: suave para que las filas sean legibles */
@@ -420,6 +423,7 @@
   function _elegirColorTema(hex, light) {
     aplicarColorTema(hex, light);
     sessionStorage.setItem('sislab_color', hex);
+    if (typeof renderizarCalendario === 'function') { try { renderizarCalendario(); } catch(e) {} }
     var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
     google.script.run
       .withSuccessHandler(function() {})
@@ -447,6 +451,7 @@
     var estilo = document.getElementById('_temaEstilo');
     if (estilo) estilo.remove();
     sessionStorage.removeItem('sislab_color');
+    if (typeof renderizarCalendario === 'function') { try { renderizarCalendario(); } catch(e) {} }
     var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
     google.script.run
       .withSuccessHandler(function() {})
@@ -5987,14 +5992,25 @@ function renderizarCalendario() {
   const primerDia = new Date(calAnio, calMes, 1).getDay();
   const diasEnMes = new Date(calAnio, calMes + 1, 0).getDate();
 
-  // Tokens de color según el tema
-  const borde       = esDark ? 'rgba(255,255,255,0.07)' : '#f1f5f9';
-  const bgVacia     = esDark ? 'rgba(0,0,0,0.15)'       : '#fafafa';
-  const bgNormal    = esDark ? 'rgba(255,255,255,0.03)'  : 'white';
-  const bgHoy       = esDark ? 'rgba(99,102,241,0.18)'   : '#faf5ff';
-  const bgHoverNorm = esDark ? 'rgba(255,255,255,0.08)'  : '#f8fafc';
-  const bgHoverHoy  = esDark ? 'rgba(99,102,241,0.28)'   : '#f3e8ff';
-  const circHoyBg   = esDark ? '#818cf8'                 : '#2b1070';
+  // Color del tema activo (solo en modo claro) para teñir las celdas
+  const _temaHexCal = (!esDark && sessionStorage.getItem('sislab_color')) || '';
+  function _calLighten(hex, amt) {
+    if (!hex || hex[0] !== '#') return hex;
+    var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255, Math.round(r + (255-r)*amt));
+    g = Math.min(255, Math.round(g + (255-g)*amt));
+    b = Math.min(255, Math.round(b + (255-b)*amt));
+    return '#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0');
+  }
+
+  // Tokens de color según el tema (si hay paleta activa, se tiñen con ese color)
+  const borde       = esDark ? 'rgba(255,255,255,0.07)' : (_temaHexCal ? _calLighten(_temaHexCal, 0.62) : '#f1f5f9');
+  const bgVacia     = esDark ? 'rgba(0,0,0,0.15)'       : (_temaHexCal ? _calLighten(_temaHexCal, 0.80) : '#fafafa');
+  const bgNormal    = esDark ? 'rgba(255,255,255,0.03)'  : (_temaHexCal ? _calLighten(_temaHexCal, 0.93) : 'white');
+  const bgHoy       = esDark ? 'rgba(99,102,241,0.18)'   : (_temaHexCal ? _calLighten(_temaHexCal, 0.74) : '#faf5ff');
+  const bgHoverNorm = esDark ? 'rgba(255,255,255,0.08)'  : (_temaHexCal ? _calLighten(_temaHexCal, 0.82) : '#f8fafc');
+  const bgHoverHoy  = esDark ? 'rgba(99,102,241,0.28)'   : (_temaHexCal ? _calLighten(_temaHexCal, 0.66) : '#f3e8ff');
+  const circHoyBg   = esDark ? '#818cf8'                 : (_temaHexCal ? _temaHexCal : '#2b1070');
   const numHoy      = 'white';
   const numPasado   = esDark ? 'rgba(255,255,255,0.28)'  : '#94a3b8';
   const numFuturo   = esDark ? 'rgba(255,255,255,0.85)'  : '#1e293b';
