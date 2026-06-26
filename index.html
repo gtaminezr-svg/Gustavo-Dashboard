@@ -469,18 +469,20 @@
 
               <div style="display: flex; flex-direction: column; gap: 20px; min-height: 0;">
                   
-                <div class="panel-casos-block" style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; flex: 1.5 1 0; min-height: 0; padding: 30px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 35px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; overflow: hidden;">
-                    
-                  <canvas id="donutSegurosPanelCasos" width="280" height="280"></canvas>
+                <div class="panel-casos-block" style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; flex: 1.5 1 0; min-height: 0; padding: 24px 30px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; overflow: hidden;">
 
-                  <div style="display: flex; flex-direction: column; width: 100%; max-width: 190px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%; gap: 10px; flex-wrap: wrap;">
-                      <div style="font-size: 14px; font-weight: 900; color: #2b1070; text-transform: uppercase; text-align: left; line-height: 1.2;">
-                        Pacientes por Seguro
-                      </div>
-                      <button onclick="verDetallesSeguros()" class="btn-ver-detalles">Ver Detalles</button>
+                  <!-- Título arriba, ocupando todo el ancho del bloque -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-shrink: 0;">
+                    <div style="font-size: 14px; font-weight: 900; color: #2b1070; text-transform: uppercase; text-align: left; line-height: 1.2;">
+                      Pacientes por Seguro
                     </div>
-                    <div id="leyendaDonutSeguros" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    <button onclick="verDetallesSeguros()" class="btn-ver-detalles">Ver Detalles</button>
+                  </div>
+
+                  <!-- Contenido: donut + leyenda al costado -->
+                  <div style="display: flex; align-items: center; justify-content: center; gap: 35px; flex: 1; min-height: 0; width: 100%;">
+                    <canvas id="donutSegurosPanelCasos" width="280" height="280"></canvas>
+                    <div id="leyendaDonutSeguros" style="display: flex; flex-direction: column; gap: 12px; max-width: 190px;"></div>
                   </div>
 
                 </div>

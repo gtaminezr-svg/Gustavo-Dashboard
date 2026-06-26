@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26r — Limpiar sessionStorage en beforeunload para evitar datos pegados
+  // v2026.06.26s — Pacientes por Seguro: título arriba en lugar de al costado
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
