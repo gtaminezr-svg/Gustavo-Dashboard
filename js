@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26t — Seguro Principal: mismo tamaño de texto en modo claro y oscuro
+  // v2026.06.26u — Descargar Base: limpiar color inline al cambiar de tema (no se queda blanco)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -869,6 +869,11 @@
       if (t) t.classList.toggle('dark');
       document.body.classList.toggle('dark');
       localStorage.setItem('sislab_tema', document.body.classList.contains('dark') ? 'dark' : 'light');
+
+      // Limpiar estilos inline del botón Descargar Base (los onmouseover/out dejan
+      // el color "pegado" del modo anterior; al limpiarlos vuelven a mandar el CSS)
+      var _btnDesc = document.getElementById('btnDescargarBase');
+      if (_btnDesc) { _btnDesc.style.color = ''; _btnDesc.style.background = ''; }
 
       if (typeof ultimoDonutMedico !== 'undefined' && ultimoDonutMedico) {
         dibujarDonutMedico(ultimoDonutMedico.solicitados, ultimoDonutMedico.leidos);
