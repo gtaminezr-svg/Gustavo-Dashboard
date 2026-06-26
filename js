@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26m — Lista de casos responde a la paleta de color del tema
+  // v2026.06.26n — Seguro Principal más grande, Ingresos del Mes más pequeño
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4726,7 +4726,7 @@ function renderizarPacientesJunio() {
     const textoIngreso = 'S/. ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     txtTotalIngresos.textContent = textoIngreso;
     const len = textoIngreso.length;
-    txtTotalIngresos.style.fontSize = len <= 10 ? '30px' : len <= 13 ? '26px' : len <= 16 ? '21px' : '16px';
+    txtTotalIngresos.style.fontSize = len <= 10 ? '24px' : len <= 13 ? '21px' : len <= 16 ? '17px' : '14px';
   }
 
   const cardSeguroTop = document.getElementById('cardSeguroTop');
@@ -4774,7 +4774,7 @@ function renderizarPacientesJunio() {
       labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = '#818cf8';
       iconoSeguroTop.style.opacity = '0.09';
-      textSeguroTop.innerHTML = '<span style="font-size: 32px; font-weight: 900; color: #2b1070;">-</span>';
+      textSeguroTop.innerHTML = '<span style="font-size: 38px; font-weight: 900; color: #2b1070;">-</span>';
 
     } else if (topSeguros.length === 1) {
       // 1 Ganador
@@ -4784,7 +4784,7 @@ function renderizarPacientesJunio() {
       labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = color1;
       iconoSeguroTop.style.opacity = '0.12';
-      textSeguroTop.innerHTML = `<span style="font-size: 30px; font-weight: 900; color: ${color1};">${seg1}</span>`;
+      textSeguroTop.innerHTML = `<span style="font-size: 35px; font-weight: 900; color: ${color1};">${seg1}</span>`;
 
     } else {
       // Empate — usar colores de marca (dark mode CSS fuerza blanco via !important)
@@ -4799,9 +4799,9 @@ function renderizarPacientesJunio() {
       iconoSeguroTop.style.opacity = '0.12';
 
       textSeguroTop.innerHTML = `
-        <span style="font-size: 18px; font-weight: 900; color: ${c1};">${seg1}</span>
-        <span style="font-size: 14px; font-weight: 700; color: #94a3b8;">vs</span>
-        <span style="font-size: 18px; font-weight: 900; color: ${c2};">${seg2}</span>
+        <span style="font-size: 23px; font-weight: 900; color: ${c1};">${seg1}</span>
+        <span style="font-size: 16px; font-weight: 700; color: #94a3b8;">vs</span>
+        <span style="font-size: 23px; font-weight: 900; color: ${c2};">${seg2}</span>
       `;
     }
   }
