@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26i — Donut más pequeño, % en cada porción, leyenda con texto más grande
+  // v2026.06.26j — Donut y leyenda alineados arriba (aprovecha espacio superior)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -5167,9 +5167,10 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const legendW = 250;
   const donutAreaW = width - legendW;
   const cx = donutAreaW / 2;
-  const cy = height / 2;
   // Radio reducido para que el donut entre completo con buen margen
   const outerR = Math.min(Math.min(donutAreaW / 2, height / 2) - 40, 118);
+  // Subimos el centro para aprovechar el espacio superior (no centrado vertical)
+  const cy = outerR + 22;
   const innerR = outerR * 0.6;
   const holeColor = esDark ? '#0f1b35' : '#f1f1f3';
 
@@ -5253,9 +5254,9 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
     // — Leyenda (texto más grande, sin colisiones) —
     const lx = donutAreaW + 14;
-    const itemH = Math.min(30, (height - 20) / lista.length);
+    const itemH = Math.min(30, (2 * outerR) / lista.length);
     const totalH = lista.length * itemH;
-    const ly0 = (height - totalH) / 2;
+    const ly0 = cy - totalH / 2;
 
     lista.forEach((item, idx) => {
       const nombreCompleto = item[0] === 'Sin asignar' ? 'Sin asignar' : item[0].split(' ')[0];
