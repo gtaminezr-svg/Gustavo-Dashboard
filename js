@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26c — Badges de cobertura con texto "Sí Cubre"/"No Cubre"
+  // v2026.06.26d — Panel resumen de exámenes seleccionados con precio por ítem
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3764,6 +3764,7 @@ function abrirSelectorFechaPanel() {
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = tab === 'cotizacion' ? 'flex' : 'none';
     _renderTarifario();
+    _renderResumenCotizacion();
   }
 
   function _renderTarifario() {
@@ -3870,7 +3871,13 @@ function abrirSelectorFechaPanel() {
     if (_tarifarioSeleccionados[codigo]) {
       delete _tarifarioSeleccionados[codigo];
     } else {
-      _tarifarioSeleccionados[codigo] = { sin: sinIgv, con: conIgv };
+      var examen = _tarifarioData.find(function(r) { return r.codigo === codigo; });
+      _tarifarioSeleccionados[codigo] = {
+        sin: sinIgv,
+        con: conIgv,
+        nombre: examen ? examen.nombre : codigo,
+        particular: examen ? (examen.particular || 0) : 0
+      };
     }
     recalcularTotalTarifario();
     _renderTarifario();
@@ -3887,6 +3894,56 @@ function abrirSelectorFechaPanel() {
     if (chkMov && chkMov.checked) total += 40;
     const totalVal = document.getElementById('totalCotizacionValor');
     if (totalVal) totalVal.textContent = 'S/. ' + total.toFixed(2);
+    _renderResumenCotizacion();
+  }
+
+  function _renderResumenCotizacion() {
+    var panel = document.getElementById('panelResumenCotizacion');
+    var contenido = document.getElementById('resumenCotizacionContenido');
+    if (!panel || !contenido) return;
+    var items = Object.entries(_tarifarioSeleccionados);
+    if (items.length === 0 || _tarifarioTabActual !== 'cotizacion') {
+      panel.style.display = 'none';
+      return;
+    }
+    panel.style.display = 'flex';
+    var chkIgv = document.getElementById('chkIgv');
+    var usarIgv = chkIgv ? chkIgv.checked : true;
+    var chkMov = document.getElementById('chkMovilidad');
+    var conMov = chkMov && chkMov.checked;
+    var subtotal = 0;
+    var filas = items.map(function(entry) {
+      var codigo = entry[0], v = entry[1];
+      var precio = usarIgv ? v.con : v.sin;
+      subtotal += precio;
+      return '<div style="padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:12px;font-weight:700;color:#1e293b;line-height:1.35;overflow-wrap:break-word;">' + v.nombre + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-top:2px;">' + codigo + '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">' +
+          '<span style="font-size:13px;font-weight:700;color:#2b1070;">S/. ' + precio.toFixed(2) + '</span>' +
+          '<button onclick="toggleSeleccionTarifario(\'' + codigo.replace(/'/g, '') + '\',' + v.sin + ',' + v.con + ')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:11px;font-weight:700;padding:0;line-height:1;">✕ quitar</button>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+    var total = subtotal + (conMov ? 40 : 0);
+    contenido.innerHTML =
+      '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+        '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
+        '<button onclick="limpiarSeleccionTarifario()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:11px;font-weight:700;">✕ Limpiar</button>' +
+      '</div>' +
+      '<div style="flex:1;overflow-y:auto;">' + filas + '</div>' +
+      (conMov
+        ? '<div style="padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+            '<span style="font-size:12px;color:#475569;"><i class="fas fa-motorcycle" style="color:#2b1070;margin-right:4px;"></i>Movilidad</span>' +
+            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. 40.00</span>' +
+          '</div>'
+        : '') +
+      '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+        '<span style="font-size:13px;font-weight:700;color:#166534;"><i class="fas fa-calculator" style="margin-right:4px;"></i>Total</span>' +
+        '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + total.toFixed(2) + '</span>' +
+      '</div>';
   }
 
   function limpiarSeleccionTarifario() {
