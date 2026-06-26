@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27b — Popup bienvenida: resetear _bienvenidaMostrada en logout para que salga a todos los roles
+  // v2026.06.27c — Mobile perfil: ya no muestra nombre anterior al cambiar de usuario
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -256,6 +256,9 @@
   function _ejecutarLogout() {
     clearTimeout(_inactividadTimer);
     _bienvenidaMostrada = false;
+    _mobSeccionActual = 'casos';
+    var _perfilCont = document.getElementById('mobPerfilContenido');
+    if (_perfilCont) _perfilCont.innerHTML = '';
     sessionStorage.removeItem('sislab_auth');
     sessionStorage.removeItem('sislab_usuario');
     sessionStorage.removeItem('sislab_rol');
@@ -1586,6 +1589,7 @@
     if (_mobSeccionActual === 'casos') _renderMobCasos();
     else if (_mobSeccionActual === 'stats') _renderMobStats();
     else if (_mobSeccionActual === 'agenda') _renderMobAgenda();
+    else if (_mobSeccionActual === 'perfil') _renderMobPerfil();
   }
   // ===== FIN MOBILE APP =====
 
