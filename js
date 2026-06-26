@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25e — Modo oscuro en sección Plazo / Cotización
+  // v2026.06.25f — Pestaña Cobertura por seguro en Plazo / Cotización
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
