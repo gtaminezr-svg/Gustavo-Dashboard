@@ -749,6 +749,16 @@
             style="padding:10px 22px; border-radius:40px; border:2px solid #e2e8f0; font-size:13px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">
             <i class="fas fa-clock"></i> Plazo de Atención
           </button>
+          <button id="tabCobertura" onclick="seleccionarTabTarifario('cobertura')"
+            style="padding:10px 22px; border-radius:40px; border:2px solid #e2e8f0; font-size:13px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">
+            <i class="fas fa-shield-heart"></i> Cobertura
+          </button>
+        </div>
+
+        <!-- Selector de seguro (pestaña Cobertura) -->
+        <div id="coberturaControles" style="display:none; align-items:center; gap:12px; flex-wrap:wrap; flex-shrink:0; margin-bottom:16px; padding:12px 20px; background:#f8fafc; border:1.5px solid #eef2f7; border-radius:14px;">
+          <span style="font-size:13px; font-weight:700; color:#475569;"><i class="fas fa-building-shield" style="color:#2b1070;"></i> Seguro:</span>
+          <div id="coberturaSeguros" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;"></div>
         </div>
 
         <!-- Barra de controles de cotización -->

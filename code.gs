@@ -1076,26 +1076,58 @@ function obtenerTarifario() {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const hoja = ss.getSheetByName("Tarifario");
-    if (!hoja || hoja.getLastRow() < 2) return [];
-    const data = hoja.getRange(1, 1, hoja.getLastRow(), 6).getValues();
+    if (!hoja || hoja.getLastRow() < 2) return { seguros: [], examenes: [] };
+    const lastCol = Math.max(6, hoja.getLastColumn());
+    const data = hoja.getRange(1, 1, hoja.getLastRow(), lastCol).getValues();
+
+    // Columnas A-F fijas; de la G (índice 6) en adelante son seguros.
+    // Los nombres de los seguros se toman de la fila de encabezados.
+    const idxSeguroInicio = 6;
+    let seguros = [];          // [{ col: índice, nombre: "MAPFRE" }, ...]
+
+    // Detectar la fila de encabezados: primera fila NO de datos (código no numérico)
+    // que tenga texto en alguna columna de seguros.
+    for (let i = 0; i < data.length; i++) {
+      const r = data[i];
+      const codigo = (r[1] || '').toString().trim();
+      const esDato = codigo && !isNaN(Number(codigo));
+      if (esDato) break; // ya llegamos a los datos sin encontrar encabezado de seguros
+      const candidatos = [];
+      for (let c = idxSeguroInicio; c < lastCol; c++) {
+        const nombre = (r[c] || '').toString().trim();
+        if (nombre) candidatos.push({ col: c, nombre: nombre });
+      }
+      if (candidatos.length) { seguros = candidatos; break; }
+    }
+
+    // Normaliza el valor de una celda de cobertura a booleano
+    const _cubre = function(v) {
+      const t = (v || '').toString().trim().toLowerCase();
+      if (!t) return false;
+      return ['si','sí','s','x','1','true','verdadero','cubre','cubierto','y','yes','✓','✔'].indexOf(t) !== -1;
+    };
+
     const resultado = [];
     for (let i = 0; i < data.length; i++) {
       const r = data[i];
       const nombre = (r[0] || '').toString().trim();
       const codigo = (r[1] || '').toString().trim();
       if (!nombre || !codigo || isNaN(Number(codigo))) continue;
+      const coberturas = {};
+      seguros.forEach(function(s) { coberturas[s.nombre] = _cubre(r[s.col]); });
       resultado.push({
         nombre: nombre,
         codigo: codigo,
         sinIgv: parseFloat(r[2]) || 0,
         conIgv: parseFloat(r[3]) || 0,
         particular: parseFloat(r[4]) || 0,
-        plazo: (r[5] || '').toString().trim()
+        plazo: (r[5] || '').toString().trim(),
+        coberturas: coberturas
       });
     }
-    return resultado;
+    return { seguros: seguros.map(function(s) { return s.nombre; }), examenes: resultado };
   } catch(e) {
     Logger.log('Error obtenerTarifario: ' + e);
-    return [];
+    return { seguros: [], examenes: [] };
   }
 }
