@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26z — Sidebar se acopla al color de la paleta (fondo, hover, barra de progreso)
+  // v2026.06.27a — Popup de bienvenida al iniciar sesión con resumen de notificaciones
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -113,6 +113,7 @@
   let _notifData = { vencidos: 0, porVencer: 0, pendientes: 0, agendados: 0 };
   let _notifDismissed = false;
   let _notifItems = [];
+  let _bienvenidaMostrada = false;
   let _snapshot = { pacientes: -1, medicos: -1, ejecutivos: -1, programados: -1 };
   let examenesSeleccionados = []; 
   let dniFichaActual = "";
@@ -559,6 +560,7 @@
               document.getElementById('appContainer').style.display = 'flex';
               _iniciarApp();
               _aplicarRestriccionesRol();
+              setTimeout(function() { _mostrarPopupBienvenida(result.nombre || usuario); }, 500);
             }, 420);
           } else {
             _resetLoginBtn('Usuario o PIN incorrecto. Inténtalo de nuevo.');
@@ -1692,6 +1694,115 @@
       .obtenerPacientes();
   }
 
+  function _getGreetingBvn() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Buenos días — aquí tienes tu resumen';
+    if (h < 18) return 'Buenas tardes — aquí tienes tu resumen';
+    return 'Buenas noches — aquí tienes tu resumen';
+  }
+
+  function _actualizarBvnNotificaciones() {
+    const cont = document.getElementById('_bvnNotifContenido');
+    if (!cont) return;
+    const esDark = document.body.classList.contains('dark');
+    const hex = sessionStorage.getItem('sislab_color') || '#004EE0';
+    const { vencidos, porVencer, pendientes, agendados } = _notifData;
+    const nuevosCasos = _notifItems.filter(i => i.icono === 'fas fa-user-plus');
+
+    const rows = [];
+    if (vencidos > 0)    rows.push({ bg:'#fef2f2', color:'#ef4444', icon:'fas fa-exclamation-circle', label: vencidos   + (vencidos   === 1 ? ' paciente vencido'    : ' pacientes vencidos'),    desc:'Fecha límite superada' });
+    if (porVencer > 0)   rows.push({ bg:'#fffbeb', color:'#f59e0b', icon:'fas fa-hourglass-half',     label: porVencer  + (porVencer  === 1 ? ' vence hoy'            : ' vencen hoy'),            desc:'Requieren atención inmediata' });
+    if (agendados > 0)   rows.push({ bg:'#f0fdf4', color:'#10b981', icon:'fas fa-calendar-check',    label: agendados  + (agendados  === 1 ? ' programado'           : ' programados'),           desc:'Con cita en el calendario' });
+    if (pendientes > 0)  rows.push({ bg:'#f8fafc', color:'#64748b', icon:'fas fa-clock',             label: pendientes + (pendientes === 1 ? ' caso pendiente'       : ' casos pendientes'),      desc:'En espera de atención' });
+    if (nuevosCasos.length > 0) rows.push({ bg:'#eff6ff', color:'#3b82f6', icon:'fas fa-user-plus',  label: nuevosCasos[0].msg, desc:'Desde tu última sesión' });
+
+    const bgRow   = esDark ? 'rgba(255,255,255,0.06)' : '';
+    const txtMain = esDark ? '#ffffff' : '#1e293b';
+    const txtSub  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+    const lblClr  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+
+    if (rows.length === 0) {
+      cont.innerHTML = '<div style="text-align:center;padding:14px 0;">' +
+        '<i class="fas fa-check-circle" style="color:#10b981;font-size:22px;display:block;margin-bottom:8px;"></i>' +
+        '<span style="font-size:13px;color:' + txtSub + ';">Todo al día — sin alertas pendientes</span></div>';
+      return;
+    }
+
+    cont.innerHTML =
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:' + lblClr + ';margin-bottom:8px;">Resumen del día</div>' +
+      rows.map(function(r) {
+        return '<div style="display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:12px;margin-bottom:6px;background:' + (esDark ? bgRow : r.bg) + ';">' +
+          '<div style="width:34px;height:34px;border-radius:9px;background:' + r.color + '22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          '<i class="' + r.icon + '" style="color:' + r.color + ';font-size:14px;"></i></div>' +
+          '<div><div style="font-size:13px;font-weight:700;color:' + txtMain + ';">' + r.label + '</div>' +
+          '<div style="font-size:11px;color:' + txtSub + ';">' + r.desc + '</div></div></div>';
+      }).join('');
+  }
+
+  function _mostrarPopupBienvenida(nombre) {
+    if (_bienvenidaMostrada) return;
+    _bienvenidaMostrada = true;
+
+    const esDark = document.body.classList.contains('dark');
+    const hex    = sessionStorage.getItem('sislab_color') || '#004EE0';
+    const dkHex  = _colorDarken(hex, 0.25);
+    const nombre1 = (nombre || '').split(' ')[0] || nombre;
+    const iniciales = (nombre || '').split(' ').slice(0, 2).map(function(w){ return w[0] || ''; }).join('').toUpperCase() || '?';
+
+    const bgCard   = esDark ? '#1a2744' : '#ffffff';
+    const txtMain  = esDark ? '#ffffff' : '#1e293b';
+    const txtSub   = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+    const closeCl  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+    const timerBg  = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+
+    const overlay = document.createElement('div');
+    overlay.id = '_popupBienvenida';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);animation:_fadeInBvn 0.35s ease;';
+
+    overlay.innerHTML =
+      '<style>' +
+        '@keyframes _fadeInBvn{from{opacity:0}to{opacity:1}}' +
+        '@keyframes _slideUpBvn{from{opacity:0;transform:translateY(28px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}' +
+      '</style>' +
+      '<div id="_bvnCard" style="background:' + bgCard + ';border-radius:24px;padding:32px 36px 28px;max-width:400px;width:calc(100% - 40px);box-shadow:0 28px 70px rgba(0,0,0,0.25);position:relative;animation:_slideUpBvn 0.42s cubic-bezier(0.34,1.56,0.64,1);">' +
+        /* close button */
+        '<button onclick="document.getElementById(\'_popupBienvenida\').remove()" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:17px;color:' + closeCl + ';padding:4px 8px;border-radius:8px;line-height:1;" onmouseover="this.style.background=\'' + (esDark?'rgba(255,255,255,0.08)':'#f1f5f9') + '\'" onmouseout="this.style.background=\'none\'">✕</button>' +
+        /* avatar */
+        '<div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,' + hex + ',' + dkHex + ');display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:white;margin:0 auto 16px;box-shadow:0 8px 24px ' + hex + '66;">' + iniciales + '</div>' +
+        /* greeting */
+        '<div style="text-align:center;margin-bottom:20px;">' +
+          '<div style="font-size:21px;font-weight:800;color:' + txtMain + ';margin-bottom:4px;">¡Bienvenido, ' + nombre1 + '!</div>' +
+          '<div style="font-size:13px;color:' + txtSub + ';">' + _getGreetingBvn() + '</div>' +
+        '</div>' +
+        /* notifications area */
+        '<div id="_bvnNotifContenido">' +
+          '<div style="text-align:center;padding:16px 0;color:' + txtSub + ';font-size:13px;"><i class="fas fa-circle-notch fa-spin"></i>&nbsp; Cargando datos...</div>' +
+        '</div>' +
+        /* action button */
+        '<button onclick="document.getElementById(\'_popupBienvenida\').remove();togglePanelNotificaciones(event);" style="margin-top:16px;width:100%;background:' + hex + ';color:white;border:none;border-radius:50px;padding:11px 0;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.85\'" onmouseout="this.style.opacity=\'1\'">' +
+          '<i class="fas fa-bell"></i>&nbsp; Ver todas las notificaciones' +
+        '</button>' +
+        /* timer bar */
+        '<div style="margin-top:14px;width:100%;height:3px;background:' + timerBg + ';border-radius:3px;overflow:hidden;">' +
+          '<div id="_bvnTimerBar" style="height:100%;width:100%;background:' + hex + ';border-radius:3px;transition:width 9s linear;"></div>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(overlay);
+
+    // Start drain animation
+    setTimeout(function() { var b = document.getElementById('_bvnTimerBar'); if (b) b.style.width = '0%'; }, 60);
+
+    // Auto-close after 9.5s
+    setTimeout(function() { var el = document.getElementById('_popupBienvenida'); if (el) { el.style.opacity='0'; el.style.transition='opacity 0.3s'; setTimeout(function(){ if(el.parentNode) el.remove(); }, 300); } }, 9500);
+
+    // Close on overlay click
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+
+    // If data already loaded, fill immediately
+    _actualizarBvnNotificaciones();
+  }
+
   function actualizarNotificacionCampana(vencidos, porVencer) {
     const pendientes = (bdPacientes || []).filter(p => p.estado === 'Pendiente' || (p.estado || '').startsWith('En Proceso')).length;
     const agendados = (typeof pacientesProgramados !== 'undefined' ? pacientesProgramados : []).length;
@@ -1717,6 +1828,8 @@
     // Si el panel está abierto, re-renderizarlo con los datos actualizados
     const _panel = document.getElementById('panelNotificaciones');
     if (_panel && _panel.dataset.abierto === 'true') renderPanelNotificaciones();
+    // Actualizar popup de bienvenida si aún está visible
+    _actualizarBvnNotificaciones();
   }
 
   // Barra de progreso del sidebar: % de casos cerrados (Completados, sea lectura realizada o desestimados)
