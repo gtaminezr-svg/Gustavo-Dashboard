@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27j — Tab "Precio con Seguro": selección de exámenes, total y panel resumen
+  // v2026.06.27k — Tab "Precio con Seguro": casillas IGV y Movilidad
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3993,18 +3993,34 @@ function abrirSelectorFechaPanel() {
     _renderResumenSeguro();
   }
 
+  function _precioSeguroConIgv(v) {
+    var base = v[_seguroActivo] || 0;
+    var chkIgv = document.getElementById('chkSeguroIgv');
+    var usarIgv = chkIgv ? chkIgv.checked : true;
+    // MAPFRE está en Sin IGV; VIP y LA POSITIVA están en Con IGV
+    if (_seguroActivo === 'mapfre') {
+      return usarIgv ? base * 1.18 : base;
+    } else {
+      return usarIgv ? base : base / 1.18;
+    }
+  }
+
   function recalcularTotalSeguro() {
     var total = 0;
-    Object.values(_seguroSeleccionados).forEach(function(v) { total += v[_seguroActivo] || 0; });
+    Object.values(_seguroSeleccionados).forEach(function(v) { total += _precioSeguroConIgv(v); });
+    var chkMov = document.getElementById('chkSeguroMovilidad');
+    if (chkMov && chkMov.checked) total += 40;
     var el = document.getElementById('totalSeguroValor');
     if (el) el.textContent = 'S/. ' + total.toFixed(2);
+    _renderResumenSeguro();
   }
 
   function limpiarSeleccionSeguro() {
     _seguroSeleccionados = {};
+    var chkMov = document.getElementById('chkSeguroMovilidad');
+    if (chkMov) chkMov.checked = false;
     recalcularTotalSeguro();
     _renderPreciosSeguro();
-    _renderResumenSeguro();
   }
 
   function _renderResumenSeguro() {
@@ -4017,9 +4033,13 @@ function abrirSelectorFechaPanel() {
     var labelMap = { mapfre: 'MAPFRE', vip: 'VIP', laPositiva: 'LA POSITIVA' };
     var colorMap = { mapfre: '#1d4ed8', vip: '#b45309', laPositiva: '#166534' };
     var subtotal = 0;
+    var chkMov = document.getElementById('chkSeguroMovilidad');
+    var conMov = chkMov && chkMov.checked;
+    var chkIgv = document.getElementById('chkSeguroIgv');
+    var usarIgv = chkIgv ? chkIgv.checked : true;
     var filas = items.map(function(entry) {
       var codigo = entry[0], v = entry[1];
-      var precio = v[_seguroActivo] || 0;
+      var precio = _precioSeguroConIgv(v);
       subtotal += precio;
       return '<div style="padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
         '<div style="flex:1;min-width:0;">' +
@@ -4032,6 +4052,7 @@ function abrirSelectorFechaPanel() {
         '</div>' +
       '</div>';
     }).join('');
+    var total = subtotal + (conMov ? 40 : 0);
     contenido.innerHTML =
       '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
@@ -4039,11 +4060,17 @@ function abrirSelectorFechaPanel() {
       '</div>' +
       '<div style="flex:1;overflow-y:auto;">' + filas + '</div>' +
       '<div style="padding:8px 14px;background:#eef2ff;border-top:1px solid #c7d2fe;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;color:#4338ca;flex-shrink:0;">' +
-        '<i class="fas fa-tag"></i> Precio ' + labelMap[_seguroActivo] +
+        '<i class="fas fa-tag"></i> ' + labelMap[_seguroActivo] + (usarIgv ? ' · Con IGV' : ' · Sin IGV') +
       '</div>' +
+      (conMov
+        ? '<div style="padding:10px 14px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+            '<span style="font-size:12px;color:#475569;"><i class="fas fa-motorcycle" style="color:#2b1070;margin-right:4px;"></i>Movilidad</span>' +
+            '<span style="font-size:13px;font-weight:700;color:#475569;">S/. 40.00</span>' +
+          '</div>'
+        : '') +
       '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:700;color:#166534;"><i class="fas fa-calculator" style="margin-right:4px;"></i>Total</span>' +
-        '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + subtotal.toFixed(2) + '</span>' +
+        '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + total.toFixed(2) + '</span>' +
       '</div>';
   }
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
