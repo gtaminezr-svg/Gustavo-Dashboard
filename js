@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26f — Ocultar Admin de vista/edición del Supervisor en Registro de Personal
+  // v2026.06.26g — Admin puede ver y editar a los Supervisores en Registro de Personal
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -7357,8 +7357,21 @@ function abrirModalEjecutivos() {
     showConfirmButton: false,
     showCloseButton: true,
     didOpen: () => {
-      // La tabla de personal muestra solo ejecutivos (sin supervisores)
-      renderModalEjecutivos({ ejecutivosConPin: ejecutivosData || [] });
+      // Admin ve y puede editar Ejecutivos y Supervisores (no a sí mismo / otro Admin).
+      // Otros roles ven solo ejecutivos (sin supervisores).
+      const _rol = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+      const _esAdmin = _rol === 'admin' || _rol === 'administrador';
+      let _lista;
+      if (_esAdmin) {
+        _lista = (_todosEjecutivos && _todosEjecutivos.length ? _todosEjecutivos : (ejecutivosData || []))
+          .filter(function(e) {
+            const r = (e.rol || '').toLowerCase().trim();
+            return r !== 'admin' && r !== 'administrador';
+          });
+      } else {
+        _lista = ejecutivosData || [];
+      }
+      renderModalEjecutivos({ ejecutivosConPin: _lista });
     }
   });
 }
