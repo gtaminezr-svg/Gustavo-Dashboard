@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25d — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
+  // v2026.06.25e — Modo oscuro en sección Plazo / Cotización
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
