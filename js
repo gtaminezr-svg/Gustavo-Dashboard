@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26s — Pacientes por Seguro: título arriba en lugar de al costado
+  // v2026.06.26t — Seguro Principal: mismo tamaño de texto en modo claro y oscuro
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||

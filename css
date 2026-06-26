@@ -2494,10 +2494,9 @@ body.dark #totalPacientesMesPanel {
 body.dark #totalIngresosMesPanel {
   color: rgba(255,255,255,0.12) !important;
 }
-/* Seguro top: nombre en blanco grande */
+/* Seguro top: nombre en blanco (tamaño lo controla el JS) */
 body.dark #seguroTopTexto span {
   color: #ffffff !important;
-  font-size: 26px !important;
 }
 body.dark #labelSeguroTop {
   color: rgba(255,255,255,0.65) !important;
