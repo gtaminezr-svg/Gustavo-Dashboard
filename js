@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27c — Mobile perfil: ya no muestra nombre anterior al cambiar de usuario
+  // v2026.06.27d — Mobile: _iniciarApp resetea la vista activa para evitar pantalla en blanco al re-login
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -159,6 +159,9 @@
   }
 
   function _iniciarApp() {
+    if (document.body.classList.contains('mobile-view')) {
+      irASeccionMobile(_mobSeccionActual);
+    }
     cargarListasDesplegables();
     generarBarraMesesDinamica();
     cargarNombreUsuario();
