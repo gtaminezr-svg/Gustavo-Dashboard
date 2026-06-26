@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26b — Cobertura en columnas de Cotización y Plazo; fix workflow deploy
+  // v2026.06.26a — Cobertura integrada en columnas de Cotización (cache bust)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
