@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26h — Panel de Casos: donut chart, seguro claro fix, ingresos más grandes, hover Descargar Base
+  // v2026.06.26i — Donut más pequeño, % en cada porción, leyenda con texto más grande
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -5163,13 +5163,14 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     return;
   }
 
-  // 3. Layout: donut a la izquierda, leyenda a la derecha
-  const legendW = 200;
+  // 3. Layout: donut a la izquierda (más pequeño), leyenda a la derecha
+  const legendW = 250;
   const donutAreaW = width - legendW;
   const cx = donutAreaW / 2;
   const cy = height / 2;
-  const outerR = Math.min(cx, cy) - 10;
-  const innerR = outerR * 0.54;
+  // Radio reducido para que el donut entre completo con buen margen
+  const outerR = Math.min(Math.min(donutAreaW / 2, height / 2) - 40, 118);
+  const innerR = outerR * 0.6;
   const holeColor = esDark ? '#0f1b35' : '#f1f1f3';
 
   const duration = 900;
@@ -5206,24 +5207,53 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     ctx.fillStyle = holeColor;
     ctx.fill();
 
+    // — Porcentaje sobre cada porción del pastel —
+    if (progress > 0.6) {
+      const alphaPct = Math.min(1, (progress - 0.6) * 2.5);
+      ctx.globalAlpha = alphaPct;
+      let aStart = -Math.PI / 2;
+      const midR = (innerR + outerR) / 2;
+      lista.forEach((item) => {
+        const frac = item[1] / total;
+        const slice = frac * Math.PI * 2;
+        const pct = Math.round(frac * 100);
+        // Sólo mostrar si la porción es suficientemente grande
+        if (pct >= 7) {
+          const midAng = aStart + slice / 2;
+          const tx = cx + Math.cos(midAng) * midR;
+          const ty = cy + Math.sin(midAng) * midR;
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold 14px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0,0,0,0.35)';
+          ctx.shadowBlur = 3;
+          ctx.fillText(pct + '%', tx, ty);
+          ctx.shadowBlur = 0;
+        }
+        aStart += slice;
+      });
+      ctx.globalAlpha = 1;
+    }
+
     // Texto central: total
     if (progress > 0.5) {
       const alpha = Math.min(1, (progress - 0.5) * 2);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = esDark ? 'rgba(255,255,255,0.90)' : '#2b1070';
-      ctx.font = `bold ${Math.round(innerR * 0.52)}px sans-serif`;
+      ctx.font = `bold ${Math.round(innerR * 0.55)}px sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(total, cx, cy - 7);
+      ctx.fillText(total, cx, cy - 6);
       ctx.fillStyle = esDark ? 'rgba(255,255,255,0.50)' : '#94a3b8';
-      ctx.font = `${Math.round(innerR * 0.26)}px sans-serif`;
-      ctx.fillText('casos', cx, cy + Math.round(innerR * 0.30));
+      ctx.font = `bold ${Math.round(innerR * 0.26)}px sans-serif`;
+      ctx.fillText('casos', cx, cy + Math.round(innerR * 0.32));
       ctx.globalAlpha = 1;
     }
 
-    // — Leyenda —
-    const lx = donutAreaW + 12;
-    const itemH = 22;
+    // — Leyenda (texto más grande, sin colisiones) —
+    const lx = donutAreaW + 14;
+    const itemH = Math.min(30, (height - 20) / lista.length);
     const totalH = lista.length * itemH;
     const ly0 = (height - totalH) / 2;
 
@@ -5232,27 +5262,27 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       const color = getColorEjecutivo(nombreCompleto);
       const valor = item[1];
       const pct = Math.round((valor / total) * 100);
-      const y = ly0 + idx * itemH;
+      const cyItem = ly0 + idx * itemH + itemH / 2;
 
       // pastilla de color
       ctx.beginPath();
-      ctx.roundRect(lx, y + 4, 12, 12, 3);
+      ctx.roundRect(lx, cyItem - 7, 14, 14, 4);
       ctx.fillStyle = color;
       ctx.fill();
 
-      // nombre
-      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
-      ctx.font = `bold 12px sans-serif`;
+      // nombre (más grande)
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.85)' : '#334155';
+      ctx.font = `bold 14px sans-serif`;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      const label = nombreCompleto.length > 10 ? nombreCompleto.slice(0, 10) + '.' : nombreCompleto;
-      ctx.fillText(label.toUpperCase(), lx + 18, y + 10);
+      const label = nombreCompleto.length > 9 ? nombreCompleto.slice(0, 9) + '…' : nombreCompleto;
+      ctx.fillText(label.toUpperCase(), lx + 22, cyItem);
 
-      // valor y %
+      // valor y % (alineado a la derecha, color del ejecutivo)
       ctx.fillStyle = color;
-      ctx.font = `bold 12px sans-serif`;
+      ctx.font = `bold 14px sans-serif`;
       ctx.textAlign = 'right';
-      ctx.fillText(`${valor} (${pct}%)`, width - 4, y + 10);
+      ctx.fillText(`${valor} · ${pct}%`, width - 6, cyItem);
     });
 
     if (progress < 1) {
