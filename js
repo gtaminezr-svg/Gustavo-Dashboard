@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26x — Cotización: buscador, controles y tabla se acoplan al color del tema
+  // v2026.06.26y — Médico Lector del Mes: flechas ◀ ▶ para navegar entre meses
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -6909,6 +6909,16 @@ function mostrarFichaMedico(idx) {
   `;
 }
 
+let _lectorMes  = new Date().getMonth();
+let _lectorAnio = new Date().getFullYear();
+
+function lectorNavegar(delta) {
+  _lectorMes += delta;
+  if (_lectorMes > 11) { _lectorMes = 0; _lectorAnio++; }
+  if (_lectorMes < 0)  { _lectorMes = 11; _lectorAnio--; }
+  renderizarMedicoLectorMes();
+}
+
 function renderizarMedicoLectorMes() {
   const cont = document.getElementById('bloque6Contenido');
   if (!cont) return;
@@ -6918,9 +6928,11 @@ function renderizarMedicoLectorMes() {
   const textoLabel  = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
   const textoVacio  = esDark ? 'rgba(255,255,255,0.30)' : '#cbd5e1';
 
-  const ahora = new Date();
-  const mes = ahora.getMonth();
-  const anio = ahora.getFullYear();
+  const mes  = _lectorMes;
+  const anio = _lectorAnio;
+
+  const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const mesLabel = MESES_ES[mes] + ' ' + anio;
 
   // Contar lecturas (pacientes con médico lector) cerradas este mes
   const conteo = {};
@@ -6938,8 +6950,19 @@ function renderizarMedicoLectorMes() {
     .map(n => ({ nombre: n, total: conteo[n] }))
     .sort((a, b) => b.total - a.total);
 
+  const btnStyle = `background:none;border:none;cursor:pointer;font-size:14px;color:${textoLabel};padding:2px 7px;border-radius:6px;line-height:1;`;
+  const navRow = `<div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:8px 0 0;">` +
+    `<button onclick="lectorNavegar(-1)" style="${btnStyle}">&#9664;</button>` +
+    `<span style="font-size:11px;font-weight:700;color:${textoLabel};text-transform:uppercase;letter-spacing:0.5px;">${mesLabel}</span>` +
+    `<button onclick="lectorNavegar(1)" style="${btnStyle}">&#9654;</button>` +
+    `</div>`;
+
   if (ranking.length === 0) {
-    cont.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:${textoVacio};"><i class="fas fa-user-md" style="font-size:30px;"></i><span style="font-size:12px; font-weight:600; color:${textoLabel};">Sin lecturas este mes</span></div>`;
+    cont.innerHTML = `<div style="width:100%;">` + navRow +
+      `<div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:10px;color:${textoVacio};">` +
+      `<i class="fas fa-user-md" style="font-size:30px;"></i>` +
+      `<span style="font-size:12px;font-weight:600;color:${textoLabel};">Sin lecturas este mes</span>` +
+      `</div></div>`;
     return;
   }
 
@@ -6947,8 +6970,8 @@ function renderizarMedicoLectorMes() {
   const iniciales = top.nombre.split(' ').slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
   const copaColor = esDark ? 'rgba(251,191,36,0.08)' : 'rgba(251,191,36,0.10)';
 
-  cont.innerHTML = `
-    <div style="position:relative; width:100%; display:flex; align-items:center; gap:22px; padding:10px 6px; overflow:hidden;">
+  cont.innerHTML = `<div style="width:100%;">` + navRow + `
+    <div style="position:relative; width:100%; display:flex; align-items:center; gap:22px; padding:6px 6px 10px; overflow:hidden;">
 
       <!-- Copa de fondo decorativa -->
       <i class="fas fa-trophy" style="position:absolute; right:-22px; top:50%; transform:translateY(-50%); font-size:140px; color:${copaColor}; pointer-events:none; z-index:0;"></i>
@@ -6971,7 +6994,7 @@ function renderizarMedicoLectorMes() {
       </div>
 
     </div>
-  `;
+  </div>`;
 }
 
 function renderizarEjecutivosBloque8() {
