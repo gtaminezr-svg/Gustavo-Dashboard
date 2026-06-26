@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27a — Popup de bienvenida al iniciar sesión con resumen de notificaciones
+  // v2026.06.27b — Popup bienvenida: resetear _bienvenidaMostrada en logout para que salga a todos los roles
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -255,6 +255,7 @@
   // Lógica compartida de logout (sin confirmación): limpia sesión y vuelve al login
   function _ejecutarLogout() {
     clearTimeout(_inactividadTimer);
+    _bienvenidaMostrada = false;
     sessionStorage.removeItem('sislab_auth');
     sessionStorage.removeItem('sislab_usuario');
     sessionStorage.removeItem('sislab_rol');
