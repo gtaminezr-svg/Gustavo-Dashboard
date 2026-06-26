@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27d — Mobile: _iniciarApp resetea la vista activa para evitar pantalla en blanco al re-login
+  // v2026.06.27e — Icono ojo para mostrar/ocultar PIN en login y modales de ejecutivo
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -512,6 +512,15 @@
     }
     // Si no hay sesión, la loginScreen ya es visible por defecto
   };
+
+  function _togglePinVis(inputId, btn) {
+    var inp = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
+    if (!inp) return;
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    var ico = btn.querySelector('i') || btn;
+    ico.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+  }
 
   function intentarLogin() {
     const usuario = (document.getElementById('loginUsuario').value || '').trim();
@@ -2635,6 +2644,25 @@ function refrescarEjecutivosYAbrir() {
           cancelButtonText: 'Cancelar',
           confirmButtonText: 'Verificar',
           reverseButtons: true,
+          didOpen: () => {
+            const _inp = Swal.getInput();
+            if (_inp) {
+              _inp.style.paddingRight = '40px';
+              const _wrap = _inp.parentElement;
+              if (_wrap && !_wrap.querySelector('._eye-btn')) {
+                _wrap.style.position = 'relative';
+                var _eyeBtn = document.createElement('button');
+                _eyeBtn.type = 'button';
+                _eyeBtn.className = '_eye-btn';
+                _eyeBtn.tabIndex = -1;
+                _eyeBtn.title = 'Mostrar / ocultar PIN';
+                _eyeBtn.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:15px;padding:4px;line-height:1;z-index:1;';
+                _eyeBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                _eyeBtn.addEventListener('click', function() { _togglePinVis(_inp, this); });
+                _wrap.appendChild(_eyeBtn);
+              }
+            }
+          },
           preConfirm: (pinIngresado) => {
             if (pinIngresado.trim() !== pinCorrecto) {
               Swal.showValidationMessage('PIN incorrecto. Intente nuevamente.');
@@ -7647,7 +7675,10 @@ function abrirModalNuevoEjecutivo(ejec) {
         </div>
         <div>
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">PIN de Seguridad</label>
-          <input id="swalEjecPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="••••••" value="` + pinVal + `">
+          <div style="position:relative;">
+            <input id="swalEjecPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px; padding-right:40px;" placeholder="••••••" value="` + pinVal + `">
+            <button type="button" onclick="_togglePinVis('swalEjecPin',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:15px;padding:4px;line-height:1;" title="Mostrar / ocultar PIN"><i class="fas fa-eye"></i></button>
+          </div>
         </div>
         <div>
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">Tipo de Registro</label>
@@ -7661,7 +7692,10 @@ function abrirModalNuevoEjecutivo(ejec) {
           <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:5px;">
             PIN de Autorización <span style="color:#ef4444; font-size:11px;">(Solo Admin o Supervisor)</span>
           </label>
-          <input id="swalAuthPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px;" placeholder="PIN de Admin o Supervisor">
+          <div style="position:relative;">
+            <input id="swalAuthPin" type="password" inputmode="numeric" class="swal2-input" style="margin:0; width:100%; box-sizing:border-box; height:42px; padding-right:40px;" placeholder="PIN de Admin o Supervisor">
+            <button type="button" onclick="_togglePinVis('swalAuthPin',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:15px;padding:4px;line-height:1;" title="Mostrar / ocultar PIN"><i class="fas fa-eye"></i></button>
+          </div>
         </div>
       </div>
     `,
