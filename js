@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26e — Casilla "Solo Sí Cubre" para filtrar exámenes cubiertos
+  // v2026.06.26f — Ocultar Admin de vista/edición del Supervisor en Registro de Personal
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -1702,8 +1702,18 @@
         selectMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
         medicosEspecialidades = listas.medicos;
         // Datos para gráficos/conteos/tabla de personal: SIN supervisores
-        ejecutivosData = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor');
-        // Lista completa (con supervisores) para que el admin los vea en móvil
+        // Además, si la sesión no es Admin, también excluye al Admin (no debe ser visible ni editable por otros roles)
+        {
+          const _rolSesion = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+          const _esAdminSesion = _rolSesion === 'admin' || _rolSesion === 'administrador';
+          ejecutivosData = (listas.ejecutivosConPin || []).filter(function(e) {
+            const r = (e.rol || '').toLowerCase().trim();
+            if (r === 'supervisor') return false;
+            if (!_esAdminSesion && (r === 'admin' || r === 'administrador')) return false;
+            return true;
+          });
+        }
+        // Lista completa (con supervisores y admin) para que el admin los vea en móvil
         _todosEjecutivos = listas.ejecutivosConPin || [];
         const _curMed  = (listas.medicos || []).length;
         const _curEjec = (listas.ejecutivosConPin || []).length;
@@ -1754,7 +1764,16 @@
         const _prevMed  = _snapshot.medicos;
         const _prevEjec = _snapshot.ejecutivos;
         ejecutivosDatosPin    = listas.ejecutivosConPin || []; // Completa (con supervisores) para PINs
-        ejecutivosData        = (listas.ejecutivosConPin || []).filter(e => (e.rol || '') !== 'Supervisor'); // Sin supervisores
+        {
+          const _rolSesion2 = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+          const _esAdmin2 = _rolSesion2 === 'admin' || _rolSesion2 === 'administrador';
+          ejecutivosData = (listas.ejecutivosConPin || []).filter(function(e) {
+            const r = (e.rol || '').toLowerCase().trim();
+            if (r === 'supervisor') return false;
+            if (!_esAdmin2 && (r === 'admin' || r === 'administrador')) return false;
+            return true;
+          });
+        }
         medicosEspecialidades = listas.medicos || [];
         if (_prevMed >= 0 && medicosEspecialidades.length > _prevMed) {
           const n = medicosEspecialidades.length - _prevMed;
