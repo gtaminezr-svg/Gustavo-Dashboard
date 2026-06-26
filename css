@@ -3900,14 +3900,12 @@ body.dark #vistaPlazoCotizacion button[style*="background: white"] {
   color: #cbd5e1 !important;
 }
 
-/* Barra de controles (Movilidad / IGV / Total) y selector de seguro */
-body.dark #tarifarioControles,
-body.dark #coberturaControles {
+/* Barra de controles (Movilidad / IGV / Total) */
+body.dark #tarifarioControles {
   background: #16243f !important;
   border-color: rgba(255,255,255,0.10) !important;
 }
-body.dark #tarifarioControles label,
-body.dark #coberturaControles > span { color: #cbd5e1 !important; }
+body.dark #tarifarioControles label { color: #cbd5e1 !important; }
 body.dark #tarifarioControles > div[style*="background:#f0fdf4"] {
   background: rgba(22,101,52,0.22) !important;
   border-color: rgba(34,197,94,0.35) !important;
