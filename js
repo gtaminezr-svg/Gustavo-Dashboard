@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27f — Mobile dark mode: cards de casos, gráfico distribución y perfil se adaptan
+  // v2026.06.27g — Mobile dark mode: stats section selector, cards y pie chart se adaptan
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -1357,16 +1357,19 @@
         const label = s.pct >= 7 ? '<text x="' + s.lx.toFixed(1) + '" y="' + (s.ly + 4).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="800" fill="white">' + s.pct + '%</text>' : '';
         return '<path d="' + s.path + '" fill="' + s.color + '" stroke="white" stroke-width="2"></path>' + label;
       }).join('');
+      const _legClr = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.75)' : '#475569';
       const legend = slices.map(function(s) {
         return '<div style="display:flex;align-items:center;gap:8px;">' +
           '<div style="width:10px;height:10px;border-radius:3px;background:' + s.color + ';flex-shrink:0;"></div>' +
-          '<span style="font-size:12px;color:#475569;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</span>' +
+          '<span style="font-size:12px;color:' + _legClr + ';font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + s.name + '</span>' +
           '<span style="font-size:12px;font-weight:700;color:' + s.color + ';">' + s.pct + '%</span>' +
         '</div>';
       }).join('');
+      const _pieBg  = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.07)' : 'white';
+      const _pieLbl = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.45)' : '#94a3b8';
       pieHtml =
-        '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
-          '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
+        '<div style="background:' + _pieBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+          '<div style="font-size:11px;font-weight:700;color:' + _pieLbl + ';text-transform:uppercase;margin-bottom:14px;">Top Seguros</div>' +
           '<div style="display:flex;align-items:center;gap:16px;">' +
             '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 ' + sz + ' ' + sz + '" style="flex-shrink:0;">' + svgPaths + '</svg>' +
             '<div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;">' + legend + '</div>' +
@@ -1382,41 +1385,51 @@
       const y = anioActual - 2 + i;
       return '<option value="' + y + '"' + (y === anio ? ' selected' : '') + '>' + y + '</option>';
     }).join('');
+    const esDark = document.body.classList.contains('dark');
+    const statCardBg  = esDark ? 'rgba(255,255,255,0.07)' : 'white';
+    const statLblClr  = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+    const statSubClr  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+    const selBg       = esDark ? '#1e2d4a' : 'white';
+    const selTxtClr   = esDark ? '#ffffff' : '#1e293b';
+    const calIconClr  = esDark ? '#ffffff' : '#2b1070';
+    const progTxtClr  = esDark ? 'rgba(255,255,255,0.75)' : '#475569';
+    const progTrack   = esDark ? 'rgba(255,255,255,0.10)' : '#e2e8f0';
+    const pieLegClr   = esDark ? 'rgba(255,255,255,0.75)' : '#475569';
     container.innerHTML =
-      '<div style="background:white;border-radius:16px;padding:14px 16px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:16px;display:flex;align-items:center;gap:10px;">' +
-        '<i class="fas fa-calendar-alt" style="color:#2b1070;font-size:16px;flex-shrink:0;"></i>' +
-        '<select id="mobStatsPickerMes" onchange="_mobStatsAplicarFecha()" style="flex:1;border:none;background:transparent;font-size:15px;font-weight:700;color:#1e293b;cursor:pointer;outline:none;">' + mesOptions + '</select>' +
-        '<select id="mobStatsPickerAnio" onchange="_mobStatsAplicarFecha()" style="width:80px;border:none;background:transparent;font-size:15px;font-weight:700;color:#1e293b;cursor:pointer;outline:none;">' + anioOptions + '</select>' +
+      '<div style="background:' + selBg + ';border-radius:16px;padding:14px 16px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:16px;display:flex;align-items:center;gap:10px;">' +
+        '<i class="fas fa-calendar-alt" style="color:' + calIconClr + ';font-size:16px;flex-shrink:0;"></i>' +
+        '<select id="mobStatsPickerMes" onchange="_mobStatsAplicarFecha()" style="flex:1;border:none;background:' + selBg + ';font-size:15px;font-weight:700;color:' + selTxtClr + ';cursor:pointer;outline:none;">' + mesOptions + '</select>' +
+        '<select id="mobStatsPickerAnio" onchange="_mobStatsAplicarFecha()" style="width:80px;border:none;background:' + selBg + ';font-size:15px;font-weight:700;color:' + selTxtClr + ';cursor:pointer;outline:none;">' + anioOptions + '</select>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">' +
-        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
+        '<div onclick="mobAbrirListaStats(\'mes\')" style="background:' + statCardBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #2b1070;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:' + statLblClr + ';text-transform:uppercase;margin-bottom:8px;">Total del Mes</div>' +
           '<div style="font-size:36px;font-weight:900;color:#2b1070;">' + delMes.length + '</div>' +
-          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+          '<div style="font-size:11px;color:' + statSubClr + ';margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div onclick="mobAbrirListaStats(\'cerrados\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;cursor:pointer;">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Cerrados</div>' +
+        '<div onclick="mobAbrirListaStats(\'cerrados\')" style="background:' + statCardBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #10b981;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:' + statLblClr + ';text-transform:uppercase;margin-bottom:8px;">Cerrados</div>' +
           '<div style="font-size:36px;font-weight:900;color:#10b981;">' + completados + '</div>' +
-          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+          '<div style="font-size:11px;color:' + statSubClr + ';margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div onclick="mobAbrirListaStats(\'pendientes\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;cursor:pointer;">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Pendientes</div>' +
+        '<div onclick="mobAbrirListaStats(\'pendientes\')" style="background:' + statCardBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #f59e0b;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:' + statLblClr + ';text-transform:uppercase;margin-bottom:8px;">Pendientes</div>' +
           '<div style="font-size:36px;font-weight:900;color:#f59e0b;">' + pendientes + '</div>' +
-          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+          '<div style="font-size:11px;color:' + statSubClr + ';margin-top:4px;">Ver registros →</div>' +
         '</div>' +
-        '<div onclick="mobAbrirListaStats(\'enproceso\')" style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;cursor:pointer;">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">En Proceso</div>' +
+        '<div onclick="mobAbrirListaStats(\'enproceso\')" style="background:' + statCardBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);border-left:4px solid #3b82f6;cursor:pointer;">' +
+          '<div style="font-size:10px;font-weight:700;color:' + statLblClr + ';text-transform:uppercase;margin-bottom:8px;">En Proceso</div>' +
           '<div style="font-size:36px;font-weight:900;color:#3b82f6;">' + enProceso + '</div>' +
-          '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ver registros →</div>' +
+          '<div style="font-size:11px;color:' + statSubClr + ';margin-top:4px;">Ver registros →</div>' +
         '</div>' +
       '</div>' +
-      '<div style="background:white;border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
-        '<div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:12px;">Progreso de Cierres</div>' +
+      '<div style="background:' + statCardBg + ';border-radius:16px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.07);margin-bottom:14px;">' +
+        '<div style="font-size:11px;font-weight:700;color:' + statLblClr + ';text-transform:uppercase;margin-bottom:12px;">Progreso de Cierres</div>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
-          '<span style="font-size:13px;font-weight:600;color:#475569;">' + completados + ' de ' + delMes.length + ' casos</span>' +
+          '<span style="font-size:13px;font-weight:600;color:' + progTxtClr + ';">' + completados + ' de ' + delMes.length + ' casos</span>' +
           '<span style="font-size:20px;font-weight:900;color:#2b1070;">' + pct + '%</span>' +
         '</div>' +
-        '<div style="width:100%;height:10px;background:#e2e8f0;border-radius:50px;overflow:hidden;">' +
+        '<div style="width:100%;height:10px;background:' + progTrack + ';border-radius:50px;overflow:hidden;">' +
           '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#2b1070,#4f46e5);border-radius:50px;transition:width .6s ease;"></div>' +
         '</div>' +
       '</div>' +
