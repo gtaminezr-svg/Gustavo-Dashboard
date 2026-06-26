@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26d — Panel resumen de exámenes seleccionados con precio por ítem
+  // v2026.06.26e — Casilla "Solo Sí Cubre" para filtrar exámenes cubiertos
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3691,6 +3691,7 @@ function abrirSelectorFechaPanel() {
   let _tarifarioTabActual = 'cotizacion';
   let _tarifarioSeleccionados = {};
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
+  let _tarifarioTextoBusqueda = '';
 
   function mostrarVistaPlazoCotizacion() {
     _enVistaSeccion = true;
@@ -3740,12 +3741,22 @@ function abrirSelectorFechaPanel() {
   }
 
   function filtrarTarifario(q) {
-    const texto = (q || '').toLowerCase().trim();
-    _tarifarioFiltrado = texto
-      ? _tarifarioData.filter(function(r) {
-          return r.nombre.toLowerCase().includes(texto) || r.codigo.includes(texto);
-        })
-      : _tarifarioData.slice();
+    if (typeof q === 'string') _tarifarioTextoBusqueda = q;
+    _aplicarFiltrosTarifario();
+  }
+
+  function _aplicarFiltrosTarifario() {
+    const texto = (_tarifarioTextoBusqueda || '').toLowerCase().trim();
+    const chkCob = document.getElementById('chkSoloCubre');
+    const soloCubre = chkCob ? chkCob.checked : false;
+    _tarifarioFiltrado = _tarifarioData.filter(function(r) {
+      if (texto && !(r.nombre.toLowerCase().includes(texto) || r.codigo.includes(texto))) return false;
+      if (soloCubre) {
+        var cubreAlguno = r.coberturas && Object.keys(r.coberturas).some(function(s) { return r.coberturas[s] === true; });
+        if (!cubreAlguno) return false;
+      }
+      return true;
+    });
     _renderTarifario();
   }
 
