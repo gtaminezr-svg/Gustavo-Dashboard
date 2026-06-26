@@ -3883,4 +3883,67 @@ body.dark .toast-progress {
   background: #5b8dee;
 }
 
+/* ════════════ Plazo / Cotización — Modo oscuro ════════════ */
+/* Barra de búsqueda */
+body.dark #inputBuscarTarifario {
+  background: #16243f !important;
+  border-color: rgba(255,255,255,0.14) !important;
+  color: #e2e8f0 !important;
+}
+body.dark #inputBuscarTarifario::placeholder { color: #7c8aa3 !important; }
+
+/* Tab inactivo (fondo blanco). El tab activo es morado inline y se mantiene. */
+body.dark #vistaPlazoCotizacion button[style*="background:white"],
+body.dark #vistaPlazoCotizacion button[style*="background: white"] {
+  background: #16243f !important;
+  border-color: rgba(255,255,255,0.14) !important;
+  color: #cbd5e1 !important;
+}
+
+/* Barra de controles (Movilidad / IGV / Total) */
+body.dark #tarifarioControles {
+  background: #16243f !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+body.dark #tarifarioControles label { color: #cbd5e1 !important; }
+body.dark #tarifarioControles > div[style*="background:#f0fdf4"] {
+  background: rgba(22,101,52,0.22) !important;
+  border-color: rgba(34,197,94,0.35) !important;
+}
+
+/* Contenedor de la tabla (div con background:white inline, no es botón) */
+body.dark #vistaPlazoCotizacion [style*="background:white"]:not(button),
+body.dark #vistaPlazoCotizacion [style*="background: white"]:not(button) {
+  background: #1a2a4a !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.35) !important;
+}
+
+/* Tabla del tarifario */
+body.dark #tablaTarifarioContenedor thead tr {
+  background: #0f1e3a !important;
+  border-bottom-color: rgba(255,255,255,0.12) !important;
+}
+body.dark #tablaTarifarioContenedor th { color: #94a3b8 !important; }
+body.dark #tablaTarifarioContenedor tbody tr {
+  background: #1a2a4a !important;
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+}
+body.dark #tablaTarifarioContenedor tbody tr:nth-child(even) { background: #16243f !important; }
+/* Fila seleccionada (debe ir después del striping para ganar) */
+body.dark #tablaTarifarioContenedor tbody tr[style*="background:#ede9f8"] { background: #2e2350 !important; }
+/* Texto de celdas */
+body.dark #tablaTarifarioContenedor td { color: #cbd5e1 !important; }
+body.dark #tablaTarifarioContenedor td[style*="color:#1e293b"] { color: #e2e8f0 !important; }
+body.dark #tablaTarifarioContenedor td[style*="color:#2b1070"] { color: #a78bfa !important; }
+/* Badge de plazo */
+body.dark #tablaTarifarioContenedor span[style*="background:#ede9f8"] {
+  background: rgba(124,92,255,0.18) !important;
+  color: #c4b5fd !important;
+}
+/* Encabezado 'Sin plazo registrado' */
+body.dark #tablaTarifarioContenedor td[colspan] {
+  background: #0f1e3a !important;
+  color: #94a3b8 !important;
+}
+
 </style>
