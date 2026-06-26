@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27g — Mobile dark mode: stats section selector, cards y pie chart se adaptan
+  // v2026.06.27h — Re-render mobile sections al cambiar modo oscuro/claro
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -87,7 +87,11 @@
     if (esMobile) {
       const mq = window.matchMedia('(prefers-color-scheme: dark)');
       _applyTheme(mq.matches);
-      mq.addEventListener('change', function(e) { _applyTheme(e.matches); });
+      mq.addEventListener('change', function(e) {
+        _applyTheme(e.matches);
+        if (typeof _renderMobResumen === 'function') _renderMobResumen();
+        if (typeof _renderMobStats   === 'function') _renderMobStats();
+      });
     } else {
       const saved = localStorage.getItem('sislab_tema');
       if (saved) {
@@ -933,6 +937,8 @@
       if (typeof renderizarMedicoLectorMes === 'function') renderizarMedicoLectorMes();
       if (typeof medicoSeleccionado !== 'undefined' && medicoSeleccionado && typeof mostrarFichaMedico === 'function') mostrarFichaMedico(medicoSeleccionado);
       if (typeof actualizarProgresoCasos === 'function') actualizarProgresoCasos();
+      if (typeof _renderMobResumen === 'function') _renderMobResumen();
+      if (typeof _renderMobStats   === 'function') _renderMobStats();
 
       // Fase 3: revelar el nuevo tema con fade-in
       app.style.opacity = '1';
