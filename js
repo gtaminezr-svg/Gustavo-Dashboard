@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26n — Seguro Principal más grande, Ingresos del Mes más pequeño
+  // v2026.06.26o — Seguro Principal aún más grande (ganador 55px, empate 34px)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4774,7 +4774,7 @@ function renderizarPacientesJunio() {
       labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = '#818cf8';
       iconoSeguroTop.style.opacity = '0.09';
-      textSeguroTop.innerHTML = '<span style="font-size: 38px; font-weight: 900; color: #2b1070;">-</span>';
+      textSeguroTop.innerHTML = '<span style="font-size: 55px; font-weight: 900; color: #2b1070;">-</span>';
 
     } else if (topSeguros.length === 1) {
       // 1 Ganador
@@ -4784,7 +4784,7 @@ function renderizarPacientesJunio() {
       labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = color1;
       iconoSeguroTop.style.opacity = '0.12';
-      textSeguroTop.innerHTML = `<span style="font-size: 35px; font-weight: 900; color: ${color1};">${seg1}</span>`;
+      textSeguroTop.innerHTML = `<span style="font-size: 55px; font-weight: 900; color: ${color1};">${seg1}</span>`;
 
     } else {
       // Empate — usar colores de marca (dark mode CSS fuerza blanco via !important)
@@ -4799,9 +4799,9 @@ function renderizarPacientesJunio() {
       iconoSeguroTop.style.opacity = '0.12';
 
       textSeguroTop.innerHTML = `
-        <span style="font-size: 23px; font-weight: 900; color: ${c1};">${seg1}</span>
-        <span style="font-size: 16px; font-weight: 700; color: #94a3b8;">vs</span>
-        <span style="font-size: 23px; font-weight: 900; color: ${c2};">${seg2}</span>
+        <span style="font-size: 34px; font-weight: 900; color: ${c1};">${seg1}</span>
+        <span style="font-size: 20px; font-weight: 700; color: #94a3b8;">vs</span>
+        <span style="font-size: 34px; font-weight: 900; color: ${c2};">${seg2}</span>
       `;
     }
   }
