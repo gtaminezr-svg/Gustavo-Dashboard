@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26w — Bloques de Registro de Personal con tinte medio visible del tema
+  // v2026.06.26x — Cotización: buscador, controles y tabla se acoplan al color del tema
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -418,6 +418,10 @@
         /* botones de pestaña en Panel de Casos */
         'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
         'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
+        /* Cotización: buscador, barra de controles y tarjeta de la tabla */
+        'body:not(.dark) #inputBuscarTarifario { background: ' + softBg1 + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) #tarifarioControles { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) #tarifarioTablaCard { background: ' + softBg1 + ' !important; }',
         /* filas de la lista de casos (tiran-paciente) y cabecera de columnas */
         'body:not(.dark) .tira-paciente { background: rgba(255,255,255,0.55) !important; border-bottom-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .tira-paciente:hover { background: rgba(255,255,255,0.82) !important; }',
@@ -430,6 +434,7 @@
     aplicarColorTema(hex, light);
     sessionStorage.setItem('sislab_color', hex);
     if (typeof renderizarCalendario === 'function') { try { renderizarCalendario(); } catch(e) {} }
+    try { _renderTarifario(); } catch(e) {}
     var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
     google.script.run
       .withSuccessHandler(function() {})
@@ -458,6 +463,7 @@
     if (estilo) estilo.remove();
     sessionStorage.removeItem('sislab_color');
     if (typeof renderizarCalendario === 'function') { try { renderizarCalendario(); } catch(e) {} }
+    try { _renderTarifario(); } catch(e) {}
     var usuario = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
     google.script.run
       .withSuccessHandler(function() {})
@@ -3836,6 +3842,15 @@ function abrirSelectorFechaPanel() {
     const fmt = function(n) { return 'S/. ' + (parseFloat(n) || 0).toFixed(2); };
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = _tarifarioTabActual === 'cotizacion' ? 'flex' : 'none';
+
+    // Tinte según la paleta de color del tema (solo modo claro)
+    const _temaHexTar = (!document.body.classList.contains('dark') && sessionStorage.getItem('sislab_color')) || '';
+    const bgPar    = _temaHexTar ? _colorLighten(_temaHexTar, 0.95) : '#fff';
+    const bgImpar  = _temaHexTar ? _colorLighten(_temaHexTar, 0.88) : '#fafbfc';
+    const bgHead   = _temaHexTar ? _colorLighten(_temaHexTar, 0.80) : '#f8fafc';
+    const bgSel    = _temaHexTar ? _colorLighten(_temaHexTar, 0.72) : '#ede9f8';
+    const bordeHd  = _temaHexTar ? _colorLighten(_temaHexTar, 0.55) : '#e2e8f0';
+    const bordeFl  = _temaHexTar ? _colorLighten(_temaHexTar, 0.74) : '#f1f5f9';
     if (_tarifarioTabActual === 'cotizacion') {
       const seguros = _tarifarioSeguros;
       const badgeCob = function(cubre) {
@@ -3847,7 +3862,7 @@ function abrirSelectorFechaPanel() {
         return '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;">' + s + '</th>';
       }).join('');
       let html = '<table style="width:100%;border-collapse:collapse;">';
-      html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
+      html += '<thead><tr style="background:' + bgHead + ';border-bottom:2px solid ' + bordeHd + ';">' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;width:40px;"></th>' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
         thSeg +
@@ -3858,12 +3873,12 @@ function abrirSelectorFechaPanel() {
         '</tr></thead><tbody>';
       datos.forEach(function(r, i) {
         const sel = !!_tarifarioSeleccionados[r.codigo];
-        const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        const bg = i % 2 === 0 ? bgPar : bgImpar;
         const tdSeg = seguros.map(function(s) {
           const cubre = r.coberturas && r.coberturas[s] === true;
           return '<td style="padding:10px 10px;text-align:center;">' + badgeCob(cubre) + '</td>';
         }).join('');
-        html += '<tr style="background:' + (sel ? '#ede9f8' : bg) + ';border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')">' +
+        html += '<tr style="background:' + (sel ? bgSel : bg) + ';border-bottom:1px solid ' + bordeFl + ';cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')">' +
           '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
           '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
           tdSeg +
@@ -3889,12 +3904,12 @@ function abrirSelectorFechaPanel() {
       const conPlazo = datos.filter(function(r) { return r.plazo; });
       const sinPlazo = datos.filter(function(r) { return !r.plazo; });
       const renderFila = function(r, i) {
-        const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        const bg = i % 2 === 0 ? bgPar : bgImpar;
         const tdSeg = seguros.map(function(s) {
           const cubre = r.coberturas && r.coberturas[s] === true;
           return '<td style="padding:10px 10px;text-align:center;">' + badgeCob(cubre) + '</td>';
         }).join('');
-        return '<tr style="background:' + bg + ';border-bottom:1px solid #f1f5f9;">' +
+        return '<tr style="background:' + bg + ';border-bottom:1px solid ' + bordeFl + ';">' +
           '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
           tdSeg +
           '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
@@ -3905,7 +3920,7 @@ function abrirSelectorFechaPanel() {
           '</td></tr>';
       };
       let html = '<table style="width:100%;border-collapse:collapse;">';
-      html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
+      html += '<thead><tr style="background:' + bgHead + ';border-bottom:2px solid ' + bordeHd + ';">' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
         thSeg +
         '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
@@ -3915,7 +3930,7 @@ function abrirSelectorFechaPanel() {
         conPlazo.forEach(function(r, i) { html += renderFila(r, i); });
       }
       if (sinPlazo.length && conPlazo.length) {
-        html += '<tr><td colspan="' + colspanTotal + '" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:#f8fafc;border-bottom:1px solid #e2e8f0;">Sin plazo registrado (' + sinPlazo.length + ')</td></tr>';
+        html += '<tr><td colspan="' + colspanTotal + '" style="padding:10px 16px;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;background:' + bgHead + ';border-bottom:1px solid ' + bordeHd + ';">Sin plazo registrado (' + sinPlazo.length + ')</td></tr>';
       }
       if (sinPlazo.length) {
         sinPlazo.forEach(function(r, i) { html += renderFila(r, i + conPlazo.length); });
