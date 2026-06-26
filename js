@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26y — Médico Lector del Mes: flechas ◀ ▶ para navegar entre meses
+  // v2026.06.26z — Sidebar se acopla al color de la paleta (fondo, hover, barra de progreso)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -426,6 +426,14 @@
         'body:not(.dark) .tira-paciente { background: rgba(255,255,255,0.55) !important; border-bottom-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .tira-paciente:hover { background: rgba(255,255,255,0.82) !important; }',
         'body:not(.dark) #panelCasosColHeader { background: ' + softBg2 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
+        /* sidebar: fondo suave + hover de items + barra de progreso */
+        'body:not(.dark) .sidebar { background: ' + softGrad + ' !important; border-right-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .menu-item:hover { background: ' + softBg2 + ' !important; color: ' + colHeaderTxt + ' !important; }',
+        'body:not(.dark) .rail-hamburger { background: ' + softBg2 + ' !important; color: ' + colHeaderTxt + ' !important; border: none !important; }',
+        'body:not(.dark) .rail-hamburger:hover { background: ' + borderSoft + ' !important; }',
+        'body:not(.dark) #progresoCasosBarra { background: linear-gradient(90deg, ' + hex + ', ' + dkHex + ') !important; }',
+        'body:not(.dark) #progresoCasosPct { color: ' + dkHex + ' !important; }',
+        'body:not(.dark) #progresoCasosWrap span:first-child { color: ' + colHeaderTxt + ' !important; }',
       ].join('\n');
     } catch(e) {}
   }
