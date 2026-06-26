@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25e — Auto-refresh ya no resetea la sección activa al ir a Pendientes
+  // v2026.06.25d — Detección de móvil — inyecta estilos directamente para evitar caché de GAS
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
