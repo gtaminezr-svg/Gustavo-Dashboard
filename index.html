@@ -769,14 +769,24 @@
           </div>
         </div>
 
-        <!-- Contenedor de tabla -->
-        <div style="flex:1; overflow-y:auto; background:white; border-radius:16px; box-shadow:0 2px 12px rgba(15,23,42,.06);">
-          <div id="tablaTarifarioContenedor" style="padding:0;">
-            <div style="display:flex; align-items:center; justify-content:center; height:200px; color:#94a3b8; gap:10px;">
-              <i class="fas fa-spinner fa-spin" style="font-size:20px;"></i>
-              <span style="font-size:14px; font-weight:600;">Cargando tarifario...</span>
+        <!-- Área principal: tabla + panel resumen -->
+        <div style="flex:1; display:flex; gap:16px; min-height:0;">
+
+          <!-- Contenedor de tabla -->
+          <div style="flex:1; overflow-y:auto; background:white; border-radius:16px; box-shadow:0 2px 12px rgba(15,23,42,.06); min-width:0;">
+            <div id="tablaTarifarioContenedor" style="padding:0;">
+              <div style="display:flex; align-items:center; justify-content:center; height:200px; color:#94a3b8; gap:10px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:20px;"></i>
+                <span style="font-size:14px; font-weight:600;">Cargando tarifario...</span>
+              </div>
             </div>
           </div>
+
+          <!-- Panel resumen de selección -->
+          <div id="panelResumenCotizacion" style="display:none; width:270px; flex-shrink:0; background:white; border-radius:16px; box-shadow:0 2px 12px rgba(15,23,42,.06); flex-direction:column; overflow:hidden;">
+            <div id="resumenCotizacionContenido" style="flex:1; overflow-y:auto; display:flex; flex-direction:column;"></div>
+          </div>
+
         </div>
 
       </div>
