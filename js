@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26l — Ingresos del Mes: número más pequeño para que se vea el sufijo S/.
+  // v2026.06.26m — Lista de casos responde a la paleta de color del tema
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -409,6 +409,10 @@
         /* botones de pestaña en Panel de Casos */
         'body:not(.dark) button[data-tabp] { color: ' + hex + ' !important; }',
         'body:not(.dark) button[data-tabp].activo { background: ' + hex + ' !important; color: ' + onVivid + ' !important; }',
+        /* filas de la lista de casos (tiran-paciente) y cabecera de columnas */
+        'body:not(.dark) .tira-paciente { background: rgba(255,255,255,0.55) !important; border-bottom-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) .tira-paciente:hover { background: rgba(255,255,255,0.82) !important; }',
+        'body:not(.dark) #panelCasosColHeader { background: ' + softBg2 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
       ].join('\n');
     } catch(e) {}
   }
