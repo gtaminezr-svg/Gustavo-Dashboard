@@ -2512,8 +2512,7 @@ body.dark #iconoIngresos {
   display: none !important;
 }
 body:not(.dark) #iconoAtendidos,
-body:not(.dark) #iconoIngresos,
-body:not(.dark) #iconoSeguroTop {
+body:not(.dark) #iconoIngresos {
   display: none;
 }
 
@@ -2522,6 +2521,12 @@ body.dark #btnDescargarBase {
   border-color: rgba(255,255,255,0.30) !important;
   color: rgba(255,255,255,0.80) !important;
   background: transparent !important;
+}
+body.dark #btnDescargarBase:hover {
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.60) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.08) !important;
 }
 
 /* Dropdown "Descargar Base" — dark mode */

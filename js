@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26g — Admin puede ver y editar a los Supervisores en Registro de Personal
+  // v2026.06.26h — Panel de Casos: donut chart, seguro claro fix, ingresos más grandes, hover Descargar Base
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4722,7 +4722,7 @@ function renderizarPacientesJunio() {
     const textoIngreso = 'S/. ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     txtTotalIngresos.textContent = textoIngreso;
     const len = textoIngreso.length;
-    txtTotalIngresos.style.fontSize = len <= 10 ? '34px' : len <= 13 ? '26px' : len <= 16 ? '20px' : '16px';
+    txtTotalIngresos.style.fontSize = len <= 10 ? '40px' : len <= 13 ? '32px' : len <= 16 ? '24px' : '18px';
   }
 
   const cardSeguroTop = document.getElementById('cardSeguroTop');
@@ -4766,38 +4766,38 @@ function renderizarPacientesJunio() {
     };
 
     if (topSeguros.length === 0) {
-      cardSeguroTop.style.background = 'white';
-      labelSeguroTop.style.color = '#94a3b8';
+      cardSeguroTop.style.background = '';
+      labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = '#818cf8';
-      iconoSeguroTop.style.opacity = '0.08';
+      iconoSeguroTop.style.opacity = '0.09';
       textSeguroTop.innerHTML = '<span style="font-size: 32px; font-weight: 900; color: #2b1070;">-</span>';
-      
+
     } else if (topSeguros.length === 1) {
       // 1 Ganador
       const seg1 = topSeguros[0];
       const color1 = getColor(seg1);
-      cardSeguroTop.style.background = 'white';
-      labelSeguroTop.style.color = '#94a3b8';
+      cardSeguroTop.style.background = '';
+      labelSeguroTop.style.color = '';
       iconoSeguroTop.style.color = color1;
-      iconoSeguroTop.style.opacity = '0.08';
+      iconoSeguroTop.style.opacity = '0.12';
       textSeguroTop.innerHTML = `<span style="font-size: 30px; font-weight: 900; color: ${color1};">${seg1}</span>`;
-      
+
     } else {
-      // Empate (Degradado)
+      // Empate — usar colores de marca (dark mode CSS fuerza blanco via !important)
       const seg1 = topSeguros[0];
       const seg2 = topSeguros[1];
       const c1 = getColor(seg1);
       const c2 = getColor(seg2);
-      
-      cardSeguroTop.style.background = `linear-gradient(90deg, ${c1} 0%, ${c2} 100%)`;
-      labelSeguroTop.style.color = 'rgba(255,255,255,0.9)';
-      iconoSeguroTop.style.color = '#ffffff';
-      iconoSeguroTop.style.opacity = '0.2';
-      
+
+      cardSeguroTop.style.background = '';
+      labelSeguroTop.style.color = '';
+      iconoSeguroTop.style.color = '#818cf8';
+      iconoSeguroTop.style.opacity = '0.12';
+
       textSeguroTop.innerHTML = `
-        <span style="font-size: 18px; font-weight: 900; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${seg1}</span>
-        <span style="font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.6);">-</span>
-        <span style="font-size: 18px; font-weight: 900; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">${seg2}</span>
+        <span style="font-size: 18px; font-weight: 900; color: ${c1};">${seg1}</span>
+        <span style="font-size: 14px; font-weight: 700; color: #94a3b8;">vs</span>
+        <span style="font-size: 18px; font-weight: 900; color: ${c2};">${seg2}</span>
       `;
     }
   }
@@ -5128,7 +5128,7 @@ function getColorEjecutivo(nombre) {
 }
 
 // ==========================================================
-// GRÁFICO DE BARRAS HORIZONTALES: EJECUTIVOS (MÁRGENES CORREGIDOS)
+// GRÁFICO DE DONUT: REGISTROS POR EJECUTIVO
 // ==========================================================
 let animacionBarrasEjecutivosId = null;
 
@@ -5143,134 +5143,123 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
     animacionBarrasEjecutivosId = null;
   }
 
-  // 1. Obtener ejecutivos del sistema
+  // 1. Contar casos por ejecutivo
   const conteo = {};
-  const selectEjecutivos = document.getElementById('ejecutivo');
-  if (selectEjecutivos) {
-    Array.from(selectEjecutivos.options).forEach(opt => {
-      if (opt.value && opt.value.trim() !== '') {
-        conteo[opt.value.trim()] = 0;
-      }
-    });
-  }
-
-  // 2. Contar casos
   pacientesDelMes.forEach(p => {
-    let ejec = (p.ejecutivo || 'Sin asignar').trim();
+    const ejec = (p.ejecutivo || 'Sin asignar').trim();
     conteo[ejec] = (conteo[ejec] || 0) + 1;
   });
-
   if (conteo['Sin asignar'] === 0) delete conteo['Sin asignar'];
 
-  // 3. Ordenar de MAYOR a MENOR
+  // 2. Ordenar de mayor a menor
   const lista = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
+  const total = lista.reduce((s, i) => s + i[1], 0);
 
-  const width = canvas.width;   // Ahora es 600
-  const height = canvas.height; // Ahora es 340
+  const width = canvas.width;
+  const height = canvas.height;
 
-  if (lista.length === 0) {
+  if (lista.length === 0 || total === 0) {
     ctx.clearRect(0, 0, width, height);
-    return; 
+    return;
   }
 
-  // 4. Variables Espaciales del Canvas
-  const maxVal = Math.max(...lista.map(item => item[1]), 1);
-  const barCount = lista.length;
+  // 3. Layout: donut a la izquierda, leyenda a la derecha
+  const legendW = 200;
+  const donutAreaW = width - legendW;
+  const cx = donutAreaW / 2;
+  const cy = height / 2;
+  const outerR = Math.min(cx, cy) - 10;
+  const innerR = outerR * 0.54;
+  const holeColor = esDark ? '#0f1b35' : '#f1f1f3';
 
-  const leftArea  = 110; // espacio para nombres
-  const rightArea = 70;  // espacio para números
-  const topArea    = 2;
-  const bottomArea = 42;
-  const chartWidth = width - leftArea - rightArea;
-  const available  = height - topArea - bottomArea;
-
-  // Barras dinámicas: se adaptan al número de ejecutivos
-  const maxBarH = 54;
-  const minBarH = 16;
-  const gap     = 8;
-  const barHeight = Math.min(maxBarH, Math.max(minBarH, Math.floor((available - gap * (barCount - 1)) / barCount)));
-  const barStep   = barHeight + gap;
-  const totalGroupH = barCount * barStep - gap;
-  const startY = topArea + Math.max(0, (available - totalGroupH) / 2);
-  const labelSize = barHeight >= 28 ? 15 : 12;
-  const numSize   = barHeight >= 28 ? 16 : 12;
-
+  const duration = 900;
   let startTime = null;
-  const duration = 1000;
 
   function easeOutExpo(x) { return x === 1 ? 1 : 1 - Math.pow(2, -10 * x); }
 
   function animar(currentTime) {
     if (!startTime) startTime = currentTime;
-    const timeElapsed = currentTime - startTime;
-    let progress = Math.min(timeElapsed / duration, 1);
-    const easeProgress = easeOutExpo(progress);
+    const progress = easeOutExpo(Math.min((currentTime - startTime) / duration, 1));
 
     ctx.clearRect(0, 0, width, height);
 
-    lista.forEach((item, index) => {
-      const nombreCompleto = item[0] === 'Sin asignar' ? 'S/A' : item[0]; 
-      const nombre = nombreCompleto.split(' ')[0]; 
-      const valor = item[1];
+    // — Segmentos del donut —
+    let angleStart = -Math.PI / 2;
+    lista.forEach((item, idx) => {
+      const nombre = item[0] === 'Sin asignar' ? 'S/A' : item[0].split(' ')[0];
       const color = getColorEjecutivo(nombre);
-      
-      const barW = (valor / maxVal) * chartWidth * easeProgress;
-      const y = startY + index * barStep;
-      const widthVisible = Math.max(barW, 4);
+      const slice = (item[1] / total) * Math.PI * 2 * progress;
 
-      // 1. Dibujar NOMBRE
-      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
-      ctx.font = `bold ${labelSize}px sans-serif`;
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(nombre.toUpperCase(), leftArea - 15, y + barHeight / 2);
-
-      // 2. Pintar BARRA HORIZONTAL
-      ctx.fillStyle = color;
-
-      const radius = Math.min(6, widthVisible / 2, barHeight / 2);
       ctx.beginPath();
-      ctx.moveTo(leftArea, y);
-      ctx.lineTo(leftArea + widthVisible - radius, y);
-      ctx.quadraticCurveTo(leftArea + widthVisible, y, leftArea + widthVisible, y + radius);
-      ctx.lineTo(leftArea + widthVisible, y + barHeight - radius);
-      ctx.quadraticCurveTo(leftArea + widthVisible, y + barHeight, leftArea + widthVisible - radius, y + barHeight);
-      ctx.lineTo(leftArea, y + barHeight);
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, outerR, angleStart, angleStart + slice);
+      ctx.closePath();
+      ctx.fillStyle = color;
       ctx.fill();
 
-      // 3. Dibujar CANTIDAD DE CASOS
-      if (progress > 0.4) {
-        ctx.globalAlpha = Math.min(1, (progress - 0.4) * 2);
-
-        if (widthVisible > 40) {
-          ctx.fillStyle = 'white';
-          ctx.font = `bold ${numSize}px sans-serif`;
-          ctx.textAlign = 'right';
-          ctx.fillText(valor, leftArea + widthVisible - 12, y + barHeight / 2 + 1);
-        } else {
-          ctx.fillStyle = color;
-          ctx.font = `bold ${numSize}px sans-serif`;
-          ctx.textAlign = 'left';
-          ctx.fillText(valor, leftArea + widthVisible + 10, y + barHeight / 2 + 1);
-        }
-        ctx.globalAlpha = 1.0;
-      }
+      angleStart += slice;
     });
 
-    // Línea base vertical decorativa (Con un pequeño rebose arriba y abajo para verse mejor)
-    const finBarras = startY + (barStep * (barCount - 1)) + barHeight;
+    // Hueco central
     ctx.beginPath();
-    ctx.moveTo(leftArea, startY - 8);
-    ctx.lineTo(leftArea, finBarras + 8);
-    ctx.strokeStyle = esDark ? 'rgba(255,255,255,0.20)' : '#bae6fd';
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.fillStyle = holeColor;
+    ctx.fill();
+
+    // Texto central: total
+    if (progress > 0.5) {
+      const alpha = Math.min(1, (progress - 0.5) * 2);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.90)' : '#2b1070';
+      ctx.font = `bold ${Math.round(innerR * 0.52)}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(total, cx, cy - 7);
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.50)' : '#94a3b8';
+      ctx.font = `${Math.round(innerR * 0.26)}px sans-serif`;
+      ctx.fillText('casos', cx, cy + Math.round(innerR * 0.30));
+      ctx.globalAlpha = 1;
+    }
+
+    // — Leyenda —
+    const lx = donutAreaW + 12;
+    const itemH = 22;
+    const totalH = lista.length * itemH;
+    const ly0 = (height - totalH) / 2;
+
+    lista.forEach((item, idx) => {
+      const nombreCompleto = item[0] === 'Sin asignar' ? 'Sin asignar' : item[0].split(' ')[0];
+      const color = getColorEjecutivo(nombreCompleto);
+      const valor = item[1];
+      const pct = Math.round((valor / total) * 100);
+      const y = ly0 + idx * itemH;
+
+      // pastilla de color
+      ctx.beginPath();
+      ctx.roundRect(lx, y + 4, 12, 12, 3);
+      ctx.fillStyle = color;
+      ctx.fill();
+
+      // nombre
+      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
+      ctx.font = `bold 12px sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      const label = nombreCompleto.length > 10 ? nombreCompleto.slice(0, 10) + '.' : nombreCompleto;
+      ctx.fillText(label.toUpperCase(), lx + 18, y + 10);
+
+      // valor y %
+      ctx.fillStyle = color;
+      ctx.font = `bold 12px sans-serif`;
+      ctx.textAlign = 'right';
+      ctx.fillText(`${valor} (${pct}%)`, width - 4, y + 10);
+    });
 
     if (progress < 1) {
       animacionBarrasEjecutivosId = requestAnimationFrame(animar);
     }
   }
-  
+
   animacionBarrasEjecutivosId = requestAnimationFrame(animar);
 }
 
