@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27i — Tab "Precio con Seguro": MAPFRE, VIP, LA POSITIVA en Cotización
+  // v2026.06.27j — Tab "Precio con Seguro": selección de exámenes, total y panel resumen
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3961,6 +3961,91 @@ function abrirSelectorFechaPanel() {
     { nombre: 'PARASITOLOGICO SIMPLE',    codigo: '330602', mapfre: 30.68, vip:  9.00, laPositiva: 11.70 },
     { nombre: 'ROTAVIRUS (HECES)',        codigo: '330348', mapfre: 31.20, vip: 22.00, laPositiva: 28.60 },
   ];
+  let _seguroSeleccionados = {};
+  let _seguroActivo = 'mapfre';
+
+  function toggleSeleccionSeguro(codigo) {
+    if (_seguroSeleccionados[codigo]) {
+      delete _seguroSeleccionados[codigo];
+    } else {
+      var r = _PRECIOS_SEGURO.find(function(x) { return x.codigo === codigo; });
+      if (r) _seguroSeleccionados[codigo] = { nombre: r.nombre, mapfre: r.mapfre, vip: r.vip, laPositiva: r.laPositiva };
+    }
+    recalcularTotalSeguro();
+    _renderPreciosSeguro();
+    _renderResumenSeguro();
+  }
+
+  function _cambiarSeguroActivo(tipo) {
+    _seguroActivo = tipo;
+    var colActivos = { mapfre: '#2563eb', vip: '#d97706', laPositiva: '#16a34a' };
+    var ids = { mapfre: 'btnSeguroMapfre', vip: 'btnSeguroVip', laPositiva: 'btnSeguroLaPositiva' };
+    Object.keys(ids).forEach(function(t) {
+      var b = document.getElementById(ids[t]);
+      if (!b) return;
+      if (t === tipo) {
+        b.style.background = colActivos[t]; b.style.color = 'white'; b.style.border = 'none';
+      } else {
+        b.style.background = 'white'; b.style.color = '#475569'; b.style.border = '2px solid #e2e8f0';
+      }
+    });
+    recalcularTotalSeguro();
+    _renderResumenSeguro();
+  }
+
+  function recalcularTotalSeguro() {
+    var total = 0;
+    Object.values(_seguroSeleccionados).forEach(function(v) { total += v[_seguroActivo] || 0; });
+    var el = document.getElementById('totalSeguroValor');
+    if (el) el.textContent = 'S/. ' + total.toFixed(2);
+  }
+
+  function limpiarSeleccionSeguro() {
+    _seguroSeleccionados = {};
+    recalcularTotalSeguro();
+    _renderPreciosSeguro();
+    _renderResumenSeguro();
+  }
+
+  function _renderResumenSeguro() {
+    var panel = document.getElementById('panelResumenCotizacion');
+    var contenido = document.getElementById('resumenCotizacionContenido');
+    if (!panel || !contenido) return;
+    var items = Object.entries(_seguroSeleccionados);
+    if (items.length === 0 || _tarifarioTabActual !== 'seguro') { panel.style.display = 'none'; return; }
+    panel.style.display = 'flex';
+    var labelMap = { mapfre: 'MAPFRE', vip: 'VIP', laPositiva: 'LA POSITIVA' };
+    var colorMap = { mapfre: '#1d4ed8', vip: '#b45309', laPositiva: '#166534' };
+    var subtotal = 0;
+    var filas = items.map(function(entry) {
+      var codigo = entry[0], v = entry[1];
+      var precio = v[_seguroActivo] || 0;
+      subtotal += precio;
+      return '<div style="padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:12px;font-weight:700;color:#1e293b;line-height:1.35;overflow-wrap:break-word;">' + v.nombre + '</div>' +
+          '<div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-top:2px;">' + codigo + '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">' +
+          '<span style="font-size:13px;font-weight:700;color:' + colorMap[_seguroActivo] + ';">S/. ' + precio.toFixed(2) + '</span>' +
+          '<button onclick="toggleSeleccionSeguro(\'' + codigo + '\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:11px;font-weight:700;padding:0;line-height:1;">✕ quitar</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    contenido.innerHTML =
+      '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+        '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
+        '<button onclick="limpiarSeleccionSeguro()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:11px;font-weight:700;">✕ Limpiar</button>' +
+      '</div>' +
+      '<div style="flex:1;overflow-y:auto;">' + filas + '</div>' +
+      '<div style="padding:8px 14px;background:#eef2ff;border-top:1px solid #c7d2fe;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;font-weight:700;color:#4338ca;flex-shrink:0;">' +
+        '<i class="fas fa-tag"></i> Precio ' + labelMap[_seguroActivo] +
+      '</div>' +
+      '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+        '<span style="font-size:13px;font-weight:700;color:#166534;"><i class="fas fa-calculator" style="margin-right:4px;"></i>Total</span>' +
+        '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + subtotal.toFixed(2) + '</span>' +
+      '</div>';
+  }
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
   let _tarifarioTextoBusqueda = '';
 
@@ -4039,6 +4124,7 @@ function abrirSelectorFechaPanel() {
     const bgPar   = _temaHex ? _colorLighten(_temaHex, 0.95) : '#fff';
     const bgImpar = _temaHex ? _colorLighten(_temaHex, 0.88) : '#fafbfc';
     const bgHead  = _temaHex ? _colorLighten(_temaHex, 0.80) : '#f8fafc';
+    const bgSel   = _temaHex ? _colorLighten(_temaHex, 0.72) : '#ede9f8';
     const bordeHd = _temaHex ? _colorLighten(_temaHex, 0.55) : '#e2e8f0';
     const bordeFl = _temaHex ? _colorLighten(_temaHex, 0.74) : '#f1f5f9';
     const fmt = function(n) { return 'S/. ' + parseFloat(n).toFixed(2); };
@@ -4052,6 +4138,7 @@ function abrirSelectorFechaPanel() {
     }
     let html = '<table style="width:100%;border-collapse:collapse;">';
     html += '<thead><tr style="background:' + bgHead + ';border-bottom:2px solid ' + bordeHd + ';">' +
+      '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;width:40px;"></th>' +
       '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
       '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
       '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>MAPFRE<div style="font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px;">Sin IGV</div></th>' +
@@ -4059,8 +4146,10 @@ function abrirSelectorFechaPanel() {
       '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>LA POSITIVA<div style="font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px;">Con IGV</div></th>' +
       '</tr></thead><tbody>';
     datos.forEach(function(r, i) {
-      const bg = i % 2 === 0 ? bgPar : bgImpar;
-      html += '<tr style="background:' + bg + ';border-bottom:1px solid ' + bordeFl + ';">' +
+      const sel = !!_seguroSeleccionados[r.codigo];
+      const bg = sel ? bgSel : (i % 2 === 0 ? bgPar : bgImpar);
+      html += '<tr style="background:' + bg + ';border-bottom:1px solid ' + bordeFl + ';cursor:pointer;" onclick="toggleSeleccionSeguro(\'' + r.codigo + '\')">' +
+        '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionSeguro(\'' + r.codigo + '\')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
         '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
         '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
         '<td style="padding:12px 10px;text-align:center;"><span style="display:inline-block;background:#dbeafe;color:#1d4ed8;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700;">' + fmt(r.mapfre) + '</span></td>' +
@@ -4086,8 +4175,15 @@ function abrirSelectorFechaPanel() {
     });
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = tab === 'cotizacion' ? 'flex' : 'none';
-    if (tab === 'seguro') { _renderPreciosSeguro(); } else { _renderTarifario(); }
-    _renderResumenCotizacion();
+    const segCtrl = document.getElementById('seguroControles');
+    if (segCtrl) segCtrl.style.display = tab === 'seguro' ? 'flex' : 'none';
+    if (tab === 'seguro') {
+      _renderPreciosSeguro();
+      _renderResumenSeguro();
+    } else {
+      _renderTarifario();
+      _renderResumenCotizacion();
+    }
   }
 
   function _renderTarifario() {

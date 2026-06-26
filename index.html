@@ -780,6 +780,19 @@
           </div>
         </div>
 
+        <!-- Barra de controles de precios con seguro -->
+        <div id="seguroControles" style="display:none; align-items:center; gap:10px; flex-shrink:0; margin-bottom:16px; padding:12px 20px; background:#f8fafc; border:1.5px solid #eef2f7; border-radius:14px;">
+          <span style="font-size:13px; font-weight:700; color:#475569; white-space:nowrap; margin-right:4px;"><i class="fas fa-shield-alt" style="color:#2b1070;"></i> Precio de:</span>
+          <button id="btnSeguroMapfre" onclick="_cambiarSeguroActivo('mapfre')" style="padding:7px 16px; border-radius:40px; border:none; font-size:12px; font-weight:700; cursor:pointer; background:#2563eb; color:white; transition:all .2s;">MAPFRE <span style="font-size:10px; opacity:.8;">(Sin IGV)</span></button>
+          <button id="btnSeguroVip" onclick="_cambiarSeguroActivo('vip')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">VIP <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
+          <button id="btnSeguroLaPositiva" onclick="_cambiarSeguroActivo('laPositiva')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">LA POSITIVA <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
+            <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total:</span>
+            <span id="totalSeguroValor" style="font-size:17px; font-weight:900; color:#166534;">S/. 0.00</span>
+            <button onclick="limpiarSeleccionSeguro()" style="background:none; border:none; cursor:pointer; color:#dc2626; font-size:13px; font-weight:700; padding:2px 6px; border-radius:6px;">✕ Limpiar</button>
+          </div>
+        </div>
+
         <!-- Área principal: tabla + panel resumen -->
         <div style="flex:1; display:flex; gap:16px; min-height:0;">
 
