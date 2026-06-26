@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26b — Cobertura en columnas de Cotización y Plazo; fix workflow deploy
+  // v2026.06.26c — Badges de cobertura con texto "Sí Cubre"/"No Cubre"
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3781,8 +3781,8 @@ function abrirSelectorFechaPanel() {
       const seguros = _tarifarioSeguros;
       const badgeCob = function(cubre) {
         return cubre
-          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i></span>'
-          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i></span>';
+          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i> Sí Cubre</span>'
+          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i> No Cubre</span>';
       };
       const thSeg = seguros.map(function(s) {
         return '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;">' + s + '</th>';
@@ -3821,8 +3821,8 @@ function abrirSelectorFechaPanel() {
       const colspanTotal = 3 + seguros.length;
       const badgeCob = function(cubre) {
         return cubre
-          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i></span>'
-          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i></span>';
+          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i> Sí Cubre</span>'
+          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i> No Cubre</span>';
       };
       const thSeg = seguros.map(function(s) {
         return '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;">' + s + '</th>';
