@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26p — Médico Lector del Mes: avatar a la izquierda, conteo grande, copa de fondo
+  // v2026.06.26q — Médico Lector del Mes: elementos y copa de fondo más grandes
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -6898,25 +6898,25 @@ function renderizarMedicoLectorMes() {
   const copaColor = esDark ? 'rgba(251,191,36,0.08)' : 'rgba(251,191,36,0.10)';
 
   cont.innerHTML = `
-    <div style="position:relative; width:100%; display:flex; align-items:center; gap:18px; padding:10px 6px; overflow:hidden;">
+    <div style="position:relative; width:100%; display:flex; align-items:center; gap:22px; padding:10px 6px; overflow:hidden;">
 
       <!-- Copa de fondo decorativa -->
-      <i class="fas fa-trophy" style="position:absolute; right:-10px; top:50%; transform:translateY(-50%); font-size:100px; color:${copaColor}; pointer-events:none; z-index:0;"></i>
+      <i class="fas fa-trophy" style="position:absolute; right:-22px; top:50%; transform:translateY(-50%); font-size:140px; color:${copaColor}; pointer-events:none; z-index:0;"></i>
 
       <!-- Avatar + badge de copa -->
       <div style="position:relative; flex-shrink:0; z-index:1;">
-        <div style="width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; color:white; box-shadow:0 4px 14px rgba(16,185,129,0.35);">${iniciales}</div>
-        <div style="position:absolute; bottom:-2px; right:-2px; background:#fbbf24; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2.5px solid ${esDark ? '#0f1e3d' : 'white'}; box-shadow:0 2px 6px rgba(0,0,0,0.20);">
-          <i class="fas fa-trophy" style="color:white; font-size:11px;"></i>
+        <div style="width:92px; height:92px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:33px; font-weight:800; color:white; box-shadow:0 4px 14px rgba(16,185,129,0.35);">${iniciales}</div>
+        <div style="position:absolute; bottom:-2px; right:-2px; background:#fbbf24; width:33px; height:33px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid ${esDark ? '#0f1e3d' : 'white'}; box-shadow:0 2px 6px rgba(0,0,0,0.20);">
+          <i class="fas fa-trophy" style="color:white; font-size:14px;"></i>
         </div>
       </div>
 
       <!-- Nombre + conteo -->
       <div style="flex:1; min-width:0; z-index:1;">
-        <div style="font-size:15px; font-weight:800; color:${textoNombre}; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${top.nombre}</div>
-        <div style="display:flex; align-items:baseline; gap:6px; margin-top:6px;">
-          <span style="font-size:38px; font-weight:900; color:#10b981; line-height:1;">${top.total}</span>
-          <span style="font-size:13px; font-weight:700; color:${textoLabel};">lectura${top.total === 1 ? '' : 's'}</span>
+        <div style="font-size:19px; font-weight:800; color:${textoNombre}; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${top.nombre}</div>
+        <div style="display:flex; align-items:baseline; gap:7px; margin-top:7px;">
+          <span style="font-size:48px; font-weight:900; color:#10b981; line-height:1;">${top.total}</span>
+          <span style="font-size:16px; font-weight:700; color:${textoLabel};">lectura${top.total === 1 ? '' : 's'}</span>
         </div>
       </div>
 
