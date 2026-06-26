@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26j — Donut y leyenda alineados arriba (aprovecha espacio superior)
+  // v2026.06.26k — Gráfico de torta (pastel completo) en Registros por Ejecutivo
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -5171,8 +5171,6 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
   const outerR = Math.min(Math.min(donutAreaW / 2, height / 2) - 40, 118);
   // Subimos el centro para aprovechar el espacio superior (no centrado vertical)
   const cy = outerR + 22;
-  const innerR = outerR * 0.6;
-  const holeColor = esDark ? '#0f1b35' : '#f1f1f3';
 
   const duration = 900;
   let startTime = null;
@@ -5185,7 +5183,7 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
 
     ctx.clearRect(0, 0, width, height);
 
-    // — Segmentos del donut —
+    // — Porciones del pastel —
     let angleStart = -Math.PI / 2;
     lista.forEach((item, idx) => {
       const nombre = item[0] === 'Sin asignar' ? 'S/A' : item[0].split(' ')[0];
@@ -5202,18 +5200,26 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
       angleStart += slice;
     });
 
-    // Hueco central
-    ctx.beginPath();
-    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
-    ctx.fillStyle = holeColor;
-    ctx.fill();
+    // Separadores blancos entre porciones (look clásico de torta)
+    if (lista.length > 1) {
+      let aSep = -Math.PI / 2;
+      ctx.strokeStyle = esDark ? 'rgba(15,27,53,0.9)' : '#ffffff';
+      ctx.lineWidth = 2;
+      lista.forEach((item) => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(aSep) * outerR, cy + Math.sin(aSep) * outerR);
+        ctx.stroke();
+        aSep += (item[1] / total) * Math.PI * 2 * progress;
+      });
+    }
 
     // — Porcentaje sobre cada porción del pastel —
     if (progress > 0.6) {
       const alphaPct = Math.min(1, (progress - 0.6) * 2.5);
       ctx.globalAlpha = alphaPct;
       let aStart = -Math.PI / 2;
-      const midR = (innerR + outerR) / 2;
+      const midR = outerR * 0.62;
       lista.forEach((item) => {
         const frac = item[1] / total;
         const slice = frac * Math.PI * 2;
@@ -5234,21 +5240,6 @@ function dibujarBarrasEjecutivosPanel(pacientesDelMes) {
         }
         aStart += slice;
       });
-      ctx.globalAlpha = 1;
-    }
-
-    // Texto central: total
-    if (progress > 0.5) {
-      const alpha = Math.min(1, (progress - 0.5) * 2);
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.90)' : '#2b1070';
-      ctx.font = `bold ${Math.round(innerR * 0.55)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(total, cx, cy - 6);
-      ctx.fillStyle = esDark ? 'rgba(255,255,255,0.50)' : '#94a3b8';
-      ctx.font = `bold ${Math.round(innerR * 0.26)}px sans-serif`;
-      ctx.fillText('casos', cx, cy + Math.round(innerR * 0.32));
       ctx.globalAlpha = 1;
     }
 
