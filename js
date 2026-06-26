@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26k — Gráfico de torta (pastel completo) en Registros por Ejecutivo
+  // v2026.06.26l — Ingresos del Mes: número más pequeño para que se vea el sufijo S/.
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4722,7 +4722,7 @@ function renderizarPacientesJunio() {
     const textoIngreso = 'S/. ' + sumaIngresos.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     txtTotalIngresos.textContent = textoIngreso;
     const len = textoIngreso.length;
-    txtTotalIngresos.style.fontSize = len <= 10 ? '40px' : len <= 13 ? '32px' : len <= 16 ? '24px' : '18px';
+    txtTotalIngresos.style.fontSize = len <= 10 ? '30px' : len <= 13 ? '26px' : len <= 16 ? '21px' : '16px';
   }
 
   const cardSeguroTop = document.getElementById('cardSeguroTop');
