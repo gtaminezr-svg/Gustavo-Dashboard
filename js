@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26q — Médico Lector del Mes: elementos y copa de fondo más grandes
+  // v2026.06.26r — Limpiar sessionStorage en beforeunload para evitar datos pegados
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -455,6 +455,14 @@
     Swal.close();
     Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
   }
+
+  // Limpiar sesión al cerrar/salir para evitar datos pegados en la próxima apertura
+  window.addEventListener('beforeunload', function() {
+    sessionStorage.removeItem('sislab_auth');
+    sessionStorage.removeItem('sislab_usuario');
+    sessionStorage.removeItem('sislab_rol');
+    sessionStorage.removeItem('sislab_color');
+  });
 
   window.onload = function() {
     if (sessionStorage.getItem('sislab_auth') === '1') {
