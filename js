@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25f — Pestaña Cobertura por seguro en Plazo / Cotización
+  // v2026.06.25g — Cobertura integrada en columnas de Cotización
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
