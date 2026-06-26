@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27e — Icono ojo para mostrar/ocultar PIN en login y modales de ejecutivo
+  // v2026.06.27f — Mobile dark mode: cards de casos, gráfico distribución y perfil se adaptan
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -1095,6 +1095,7 @@
     _renderMobSaludo();
     const container = document.getElementById('mobTarjetasResumen');
     if (!container) return;
+    const esDark = document.body.classList.contains('dark');
     const bd = bdPacientes || [];
     const estados = [
       { key: 'Pendiente',   label: 'Pendiente',   icon: 'fas fa-clock',        color: '#f59e0b', bg: '#fffbeb', border: '#fde68a' },
@@ -1104,17 +1105,23 @@
     ];
     const counts = {};
     estados.forEach(function(e) { counts[e.key] = _mobFiltrarEstado(bd, e.key).length; });
+    const cardBg     = esDark ? 'rgba(255,255,255,0.07)' : null;
+    const cardBorder = esDark ? 'rgba(255,255,255,0.12)' : null;
+    const labelClr   = esDark ? 'rgba(255,255,255,0.75)' : '#475569';
+    const chevClr    = esDark ? 'rgba(255,255,255,0.30)' : '#94a3b8';
     container.innerHTML = estados.map(function(e) {
       const cnt = counts[e.key];
-      return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + e.bg + ';border:2px solid ' + e.border + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
+      const bg  = cardBg     || e.bg;
+      const brd = cardBorder || e.border;
+      return '<div class="mob-resumen-card" onclick="mobAbrirLista(\'' + e.key + '\')" style="background:' + bg + ';border:2px solid ' + brd + ';border-radius:18px;padding:20px 16px;cursor:pointer;transition:transform .15s ease;display:flex;flex-direction:column;gap:10px;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
-          '<div style="width:42px;height:42px;background:' + e.color + '20;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
+          '<div style="width:42px;height:42px;background:' + e.color + '30;border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
             '<i class="' + e.icon + '" style="font-size:18px;color:' + e.color + ';"></i>' +
           '</div>' +
-          '<i class="fas fa-chevron-right" style="font-size:12px;color:#94a3b8;"></i>' +
+          '<i class="fas fa-chevron-right" style="font-size:12px;color:' + chevClr + ';"></i>' +
         '</div>' +
         '<div style="font-size:36px;font-weight:900;color:' + e.color + ';line-height:1;">' + cnt + '</div>' +
-        '<div style="font-size:13px;font-weight:700;color:#475569;">' + e.label + '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:' + labelClr + ';">' + e.label + '</div>' +
       '</div>';
     }).join('');
     _renderMobDonut(estados, counts);
@@ -1123,6 +1130,7 @@
   function _renderMobDonut(estados, counts) {
     const chartEl = document.getElementById('mobDonutChart');
     if (!chartEl) return;
+    const esDark = document.body.classList.contains('dark');
     const total = estados.reduce(function(s, e) { return s + counts[e.key]; }, 0);
     if (total === 0) { chartEl.innerHTML = ''; return; }
     const size = 180, cx = size / 2, cy = size / 2, r = 72, stroke = 28;
@@ -1135,7 +1143,7 @@
       offset += dash;
       return seg;
     });
-    const svgSegs = segments.map(function(s, i) {
+    const svgSegs = segments.map(function(s) {
       if (s.dash < 0.5) return '';
       return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none"' +
         ' stroke="' + s.color + '" stroke-width="' + stroke + '"' +
@@ -1144,23 +1152,33 @@
         ' stroke-linecap="round"' +
         '></circle>';
     }).join('');
+
+    const cardBg    = esDark ? '#1e2d4a' : 'white';
+    const titleClr  = esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8';
+    const ringBg    = esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9';
+    const totalFill = esDark ? '#ffffff' : '#1e293b';
+    const subFill   = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+    const legTxt    = esDark ? 'rgba(255,255,255,0.80)' : '#475569';
+    const legPct    = esDark ? 'rgba(255,255,255,0.40)' : '#94a3b8';
+
     const legend = estados.map(function(e) {
       const pct = total > 0 ? Math.round(counts[e.key] / total * 100) : 0;
       return '<div style="display:flex;align-items:center;gap:8px;min-width:110px;">' +
         '<div style="width:10px;height:10px;border-radius:3px;background:' + e.color + ';flex-shrink:0;"></div>' +
-        '<span style="font-size:12px;color:#475569;font-weight:600;">' + e.label + '</span>' +
-        '<span style="font-size:12px;color:#94a3b8;margin-left:auto;">' + pct + '%</span>' +
+        '<span style="font-size:12px;color:' + legTxt + ';font-weight:600;">' + e.label + '</span>' +
+        '<span style="font-size:12px;color:' + legPct + ';margin-left:auto;">' + pct + '%</span>' +
       '</div>';
     }).join('');
+
     chartEl.innerHTML =
-      '<div style="background:white;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(15,23,42,.07);">' +
-        '<div style="font-size:13px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;">Distribución de Casos</div>' +
+      '<div style="background:' + cardBg + ';border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(15,23,42,.12);">' +
+        '<div style="font-size:13px;font-weight:700;color:' + titleClr + ';text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;">Distribución de Casos</div>' +
         '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">' +
           '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" style="flex-shrink:0;">' +
-            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#f1f5f9" stroke-width="' + stroke + '"></circle>' +
+            '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + ringBg + '" stroke-width="' + stroke + '"></circle>' +
             svgSegs +
-            '<text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="28" font-weight="900" fill="#1e293b">' + total + '</text>' +
-            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">Total</text>' +
+            '<text x="' + cx + '" y="' + (cy - 8) + '" text-anchor="middle" font-size="28" font-weight="900" fill="' + totalFill + '">' + total + '</text>' +
+            '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="11" font-weight="600" fill="' + subFill + '">Total</text>' +
           '</svg>' +
           '<div style="display:flex;flex-direction:column;gap:10px;flex:1;">' + legend + '</div>' +
         '</div>' +
@@ -1568,30 +1586,40 @@
   function _renderMobPerfil() {
     const container = document.getElementById('mobPerfilContenido');
     if (!container) return;
+    const esDark = document.body.classList.contains('dark');
     const nombre = sessionStorage.getItem('sislab_usuario') || '—';
     const rol = sessionStorage.getItem('sislab_rol') || '—';
     const usuario = sessionStorage.getItem('sislab_usuario') || '—';
     const total = (bdPacientes || []).length;
     const misRegistros = (bdPacientes || []).filter(function(p) { return p.ejecutivo === nombre || p.ejecutivo === usuario; }).length;
+
+    const nomClr   = esDark ? '#ffffff'                  : '#1e293b';
+    const subClr   = esDark ? 'rgba(255,255,255,0.45)'   : '#64748b';
+    const cardBg   = esDark ? 'rgba(255,255,255,0.07)'   : 'white';
+    const lblClr   = esDark ? 'rgba(255,255,255,0.35)'   : '#94a3b8';
+    const num1Clr  = esDark ? '#a5b4fc'                  : '#2b1070';
+    const num2Clr  = esDark ? 'rgba(255,255,255,0.70)'   : '#475569';
+    const logoutBg = esDark ? 'rgba(239,68,68,0.15)'     : '#fee2e2';
+
     container.innerHTML =
       '<div style="text-align:center;margin-bottom:24px;padding-top:8px;">' +
         '<div style="width:80px;height:80px;background:linear-gradient(135deg,#2b1070,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 4px 16px rgba(43,16,112,.3);">' +
           '<i class="fas fa-user" style="font-size:32px;color:white;"></i>' +
         '</div>' +
-        '<div style="font-size:20px;font-weight:800;color:#1e293b;">' + nombre + '</div>' +
-        '<div style="font-size:13px;color:#64748b;margin-top:6px;">' + usuario + ' · <span style="background:#ede9f8;color:#2b1070;padding:2px 10px;border-radius:20px;font-weight:700;">' + rol + '</span></div>' +
+        '<div style="font-size:20px;font-weight:800;color:' + nomClr + ';">' + nombre + '</div>' +
+        '<div style="font-size:13px;color:' + subClr + ';margin-top:6px;">' + usuario + ' · <span style="background:#ede9f8;color:#2b1070;padding:2px 10px;border-radius:20px;font-weight:700;">' + rol + '</span></div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">' +
-        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Mis Registros</div>' +
-          '<div style="font-size:34px;font-weight:900;color:#2b1070;">' + misRegistros + '</div>' +
+        '<div style="background:' + cardBg + ';border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.10);">' +
+          '<div style="font-size:10px;font-weight:700;color:' + lblClr + ';text-transform:uppercase;margin-bottom:8px;">Mis Registros</div>' +
+          '<div style="font-size:34px;font-weight:900;color:' + num1Clr + ';">' + misRegistros + '</div>' +
         '</div>' +
-        '<div style="background:white;border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.07);">' +
-          '<div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:8px;">Total Sistema</div>' +
-          '<div style="font-size:34px;font-weight:900;color:#475569;">' + total + '</div>' +
+        '<div style="background:' + cardBg + ';border-radius:16px;padding:18px;text-align:center;box-shadow:0 2px 8px rgba(15,23,42,.10);">' +
+          '<div style="font-size:10px;font-weight:700;color:' + lblClr + ';text-transform:uppercase;margin-bottom:8px;">Total Sistema</div>' +
+          '<div style="font-size:34px;font-weight:900;color:' + num2Clr + ';">' + total + '</div>' +
         '</div>' +
       '</div>' +
-      '<button onclick="cerrarSesion()" style="width:100%;padding:16px;background:#fee2e2;border:none;border-radius:16px;font-size:15px;font-weight:700;color:#dc2626;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">' +
+      '<button onclick="cerrarSesion()" style="width:100%;padding:16px;background:' + logoutBg + ';border:none;border-radius:16px;font-size:15px;font-weight:700;color:#dc2626;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">' +
         '<i class="fas fa-sign-out-alt"></i> Cerrar Sesión' +
       '</button>';
   }
