@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27h — Re-render mobile sections al cambiar modo oscuro/claro
+  // v2026.06.27i — Tab "Precio con Seguro": MAPFRE, VIP, LA POSITIVA en Cotización
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3947,6 +3947,20 @@ function abrirSelectorFechaPanel() {
   let _tarifarioFiltrado = [];
   let _tarifarioTabActual = 'cotizacion';
   let _tarifarioSeleccionados = {};
+
+  // Precios especiales por seguro (fuente: Libro1.xlsx)
+  // MAPFRE = Sin IGV  |  VIP y LA POSITIVA = Con IGV
+  const _PRECIOS_SEGURO = [
+    { nombre: 'HEMOGRAMA',                codigo: '330410', mapfre: 14.30, vip: 10.00, laPositiva: 13.00 },
+    { nombre: 'EX ORINA',                 codigo: '330505', mapfre: 11.70, vip:  9.00, laPositiva: 11.70 },
+    { nombre: 'UROCULTIVO (ORINA)',        codigo: '330308', mapfre: 29.90, vip: 25.00, laPositiva: 32.50 },
+    { nombre: 'GLUCOSA',                   codigo: '330118', mapfre:  9.10, vip:  7.00, laPositiva:  9.10 },
+    { nombre: 'REACCION INFLAMATORIA',    codigo: '330823', mapfre: 15.60, vip:  9.00, laPositiva: 11.70 },
+    { nombre: 'COPROCULTIVO',             codigo: '330304', mapfre: 31.20, vip: 25.00, laPositiva: 32.50 },
+    { nombre: 'PARASITOLOGICO (SERIADO)', codigo: '330604', mapfre: 29.90, vip: 26.00, laPositiva: 33.80 },
+    { nombre: 'PARASITOLOGICO SIMPLE',    codigo: '330602', mapfre: 30.68, vip:  9.00, laPositiva: 11.70 },
+    { nombre: 'ROTAVIRUS (HECES)',        codigo: '330348', mapfre: 31.20, vip: 22.00, laPositiva: 28.60 },
+  ];
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
   let _tarifarioTextoBusqueda = '';
 
@@ -3999,6 +4013,7 @@ function abrirSelectorFechaPanel() {
 
   function filtrarTarifario(q) {
     if (typeof q === 'string') _tarifarioTextoBusqueda = q;
+    if (_tarifarioTabActual === 'seguro') { _renderPreciosSeguro(); return; }
     _aplicarFiltrosTarifario();
   }
 
@@ -4017,9 +4032,49 @@ function abrirSelectorFechaPanel() {
     _renderTarifario();
   }
 
+  function _renderPreciosSeguro() {
+    const cont = document.getElementById('tablaTarifarioContenedor');
+    if (!cont) return;
+    const _temaHex = (!document.body.classList.contains('dark') && sessionStorage.getItem('sislab_color')) || '';
+    const bgPar   = _temaHex ? _colorLighten(_temaHex, 0.95) : '#fff';
+    const bgImpar = _temaHex ? _colorLighten(_temaHex, 0.88) : '#fafbfc';
+    const bgHead  = _temaHex ? _colorLighten(_temaHex, 0.80) : '#f8fafc';
+    const bordeHd = _temaHex ? _colorLighten(_temaHex, 0.55) : '#e2e8f0';
+    const bordeFl = _temaHex ? _colorLighten(_temaHex, 0.74) : '#f1f5f9';
+    const fmt = function(n) { return 'S/. ' + parseFloat(n).toFixed(2); };
+    const q = (_tarifarioTextoBusqueda || '').toLowerCase().trim();
+    const datos = q
+      ? _PRECIOS_SEGURO.filter(function(r) { return r.nombre.toLowerCase().includes(q) || r.codigo.includes(q); })
+      : _PRECIOS_SEGURO;
+    if (!datos.length) {
+      cont.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#94a3b8;gap:10px;"><i class="fas fa-search"></i><span style="font-size:14px;font-weight:600;">Sin resultados para esa búsqueda</span></div>';
+      return;
+    }
+    let html = '<table style="width:100%;border-collapse:collapse;">';
+    html += '<thead><tr style="background:' + bgHead + ';border-bottom:2px solid ' + bordeHd + ';">' +
+      '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
+      '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
+      '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#1d4ed8;text-transform:uppercase;"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>MAPFRE<div style="font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px;">Sin IGV</div></th>' +
+      '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;"><i class="fas fa-star" style="margin-right:4px;"></i>VIP<div style="font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px;">Con IGV</div></th>' +
+      '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;"><i class="fas fa-shield-alt" style="margin-right:4px;"></i>LA POSITIVA<div style="font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px;">Con IGV</div></th>' +
+      '</tr></thead><tbody>';
+    datos.forEach(function(r, i) {
+      const bg = i % 2 === 0 ? bgPar : bgImpar;
+      html += '<tr style="background:' + bg + ';border-bottom:1px solid ' + bordeFl + ';">' +
+        '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
+        '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
+        '<td style="padding:12px 10px;text-align:center;"><span style="display:inline-block;background:#dbeafe;color:#1d4ed8;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700;">' + fmt(r.mapfre) + '</span></td>' +
+        '<td style="padding:12px 10px;text-align:center;"><span style="display:inline-block;background:#fef3c7;color:#b45309;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700;">' + fmt(r.vip) + '</span></td>' +
+        '<td style="padding:12px 10px;text-align:center;"><span style="display:inline-block;background:#dcfce7;color:#166534;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700;">' + fmt(r.laPositiva) + '</span></td>' +
+        '</tr>';
+    });
+    html += '</tbody></table>';
+    cont.innerHTML = html;
+  }
+
   function seleccionarTabTarifario(tab) {
     _tarifarioTabActual = tab;
-    const btns = { cotizacion: 'tabCotizacion', plazo: 'tabPlazo' };
+    const btns = { cotizacion: 'tabCotizacion', plazo: 'tabPlazo', seguro: 'tabSeguro' };
     Object.keys(btns).forEach(function(k) {
       const b = document.getElementById(btns[k]);
       if (!b) return;
@@ -4031,7 +4086,7 @@ function abrirSelectorFechaPanel() {
     });
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = tab === 'cotizacion' ? 'flex' : 'none';
-    _renderTarifario();
+    if (tab === 'seguro') { _renderPreciosSeguro(); } else { _renderTarifario(); }
     _renderResumenCotizacion();
   }
 
