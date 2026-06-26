@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.26v — Calendario se tiñe con la paleta de color seleccionada
+  // v2026.06.26w — Bloques de Registro de Personal con tinte medio visible del tema
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -353,13 +353,19 @@
       }
       var softGrad  = 'linear-gradient(145deg, ' + softBg1 + ', ' + softBg2 + ')';
       var vividGrad = 'linear-gradient(145deg, ' + lightHex + ', ' + hex + ')';
+      // Degradado medio: más notorio que softGrad pero aún legible con texto oscuro
+      var medBg1    = _colorLighten(hex, 0.72);
+      var medBg2    = _colorLighten(hex, 0.50);
+      var medGrad   = 'linear-gradient(145deg, ' + medBg1 + ', ' + medBg2 + ')';
+      var borderMed = _colorLighten(hex, 0.40);
       estilo.textContent = [
         /* cards y bloques: degradado suave */
         'body:not(.dark) .stats-card-demo { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .dash-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .panel-casos-block { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        'body:not(.dark) .rp-panel { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
-        'body:not(.dark) .rp-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        /* bloques de Registro de Personal: tinte medio para que se note el color */
+        'body:not(.dark) .rp-panel { background: ' + medGrad + ' !important; border-color: ' + borderMed + ' !important; }',
+        'body:not(.dark) .rp-card { background: ' + medGrad + ' !important; border-color: ' + borderMed + ' !important; }',
         'body:not(.dark) .carrusel-card { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
         /* .cal-panel: solo los blancos (excluir el panel oscuro de fecha actual) */
         'body:not(.dark) .cal-panel:not([style*="#1e293b"]) { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
@@ -367,7 +373,7 @@
         'body:not(.dark) .cal-weekdays { background: ' + softBg2 + ' !important; border-bottom-color: ' + borderSoft + ' !important; }',
         'body:not(.dark) .cal-weekdays > div { color: ' + colHeaderTxt + ' !important; }',
         /* bloques sin clase: por ID */
-        'body:not(.dark) #bloque7 { background: ' + softGrad + ' !important; border-color: ' + borderSoft + ' !important; }',
+        'body:not(.dark) #bloque7 { background: ' + medGrad + ' !important; border-color: ' + borderMed + ' !important; }',
         /* table-card: suave para que las filas sean legibles */
         'body:not(.dark) .table-card { background: ' + softGrad + ' !important; }',
         /* encabezado de la bandeja: vivid + diferenciado como barra de título */
