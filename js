@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25f — Pestaña Cobertura por seguro en Plazo / Cotización
+  // v2026.06.25g — Cobertura integrada en columnas de Cotización
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3806,10 +3806,20 @@ function abrirSelectorFechaPanel() {
     const controles = document.getElementById('tarifarioControles');
     if (controles) controles.style.display = _tarifarioTabActual === 'cotizacion' ? 'flex' : 'none';
     if (_tarifarioTabActual === 'cotizacion') {
+      const seguros = _tarifarioSeguros;
+      const badgeCob = function(cubre) {
+        return cubre
+          ? '<span style="display:inline-flex;align-items:center;gap:4px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-check"></i></span>'
+          : '<span style="display:inline-flex;align-items:center;gap:4px;background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;"><i class="fas fa-xmark"></i></span>';
+      };
+      const thSeg = seguros.map(function(s) {
+        return '<th style="padding:14px 10px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;">' + s + '</th>';
+      }).join('');
       let html = '<table style="width:100%;border-collapse:collapse;">';
       html += '<thead><tr style="background:#f8fafc;border-bottom:2px solid #e2e8f0;">' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;width:40px;"></th>' +
         '<th style="padding:14px 16px;text-align:left;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Examen</th>' +
+        thSeg +
         '<th style="padding:14px 16px;text-align:center;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Código</th>' +
         '<th style="padding:14px 16px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Sin IGV</th>' +
         '<th style="padding:14px 16px;text-align:right;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Con IGV</th>' +
@@ -3818,9 +3828,14 @@ function abrirSelectorFechaPanel() {
       datos.forEach(function(r, i) {
         const sel = !!_tarifarioSeleccionados[r.codigo];
         const bg = i % 2 === 0 ? '#fff' : '#fafbfc';
+        const tdSeg = seguros.map(function(s) {
+          const cubre = r.coberturas && r.coberturas[s] === true;
+          return '<td style="padding:10px 10px;text-align:center;">' + badgeCob(cubre) + '</td>';
+        }).join('');
         html += '<tr style="background:' + (sel ? '#ede9f8' : bg) + ';border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')">' +
           '<td style="padding:12px 16px;text-align:center;"><input type="checkbox" ' + (sel ? 'checked' : '') + ' onclick="event.stopPropagation();toggleSeleccionTarifario(\'' + r.codigo.replace(/'/g, '') + '\',' + r.sinIgv + ',' + r.conIgv + ')" style="width:16px;height:16px;cursor:pointer;accent-color:#2b1070;"></td>' +
           '<td style="padding:12px 16px;font-size:13px;font-weight:600;color:#1e293b;">' + r.nombre + '</td>' +
+          tdSeg +
           '<td style="padding:12px 16px;text-align:center;font-size:12px;color:#64748b;font-family:monospace;">' + r.codigo + '</td>' +
           '<td style="padding:12px 16px;text-align:right;font-size:13px;color:#475569;">' + fmt(r.sinIgv) + '</td>' +
           '<td style="padding:12px 16px;text-align:right;font-size:13px;font-weight:700;color:#2b1070;">' + fmt(r.conIgv) + '</td>' +
