@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.25g — Cobertura integrada en columnas de Cotización
+  // v2026.06.26a — Cobertura integrada en columnas de Cotización (cache bust)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3753,7 +3753,7 @@ function abrirSelectorFechaPanel() {
 
   function seleccionarTabTarifario(tab) {
     _tarifarioTabActual = tab;
-    const btns = { cotizacion: 'tabCotizacion', plazo: 'tabPlazo', cobertura: 'tabCobertura' };
+    const btns = { cotizacion: 'tabCotizacion', plazo: 'tabPlazo' };
     Object.keys(btns).forEach(function(k) {
       const b = document.getElementById(btns[k]);
       if (!b) return;
