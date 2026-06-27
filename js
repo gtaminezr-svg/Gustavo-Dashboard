@@ -947,6 +947,24 @@
   function toggleNamesPanel() {
     const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
+    // En la sección Plazo/Cotización la tabla es grande: animar el ancho de
+    // .main-content reflowea la tabla en cada frame y se ve con lag. Ahí el
+    // colapso se hace instantáneo (un solo reflujo). En el resto de secciones
+    // se conserva la animación CSS fluida.
+    const heavy = document.getElementById('vistaPlazoCotizacion');
+    const heavyVisible = heavy && getComputedStyle(heavy).display !== 'none';
+    if (heavyVisible && sidebar && main) {
+      const sT = sidebar.style.transition;
+      const mT = main.style.transition;
+      sidebar.style.transition = 'none';
+      main.style.transition = 'none';
+      sidebar.classList.toggle('collapsed');
+      main.classList.toggle('rail-only');
+      void main.offsetWidth; // aplica el cambio sin animación
+      sidebar.style.transition = sT;
+      main.style.transition = mT;
+      return;
+    }
     if (sidebar) sidebar.classList.toggle('collapsed');
     if (main) main.classList.toggle('rail-only');
   }
