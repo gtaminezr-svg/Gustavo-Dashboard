@@ -4226,6 +4226,7 @@ function abrirSelectorFechaPanel() {
   }
 
   function _renderTarifario() {
+    if (_tarifarioTabActual === 'seguro') { _renderPreciosSeguro(); return; }
     const cont = document.getElementById('tablaTarifarioContenedor');
     if (!cont) return;
     const datos = _tarifarioFiltrado;
