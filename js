@@ -956,24 +956,28 @@
     const heavy = document.getElementById('vistaPlazoCotizacion');
     const heavyVisible = heavy && getComputedStyle(heavy).display !== 'none';
     if (heavyVisible && sidebar && main) {
-      // Limpiar cualquier transform en vuelo (clics rápidos) antes de medir
+      // Delta de margin-left entre estado normal (250px) y colapsado (76px),
+      // según el CSS de .main-content / .main-content.rail-only.
+      const collapsing = !main.classList.contains('rail-only');
+      const dx = collapsing ? (250 - 76) : (76 - 250);
+      // Aplicamos el layout final de main-content YA (reflujo único de la tabla)
+      // pero invertido con transform para que se vea en su posición inicial.
+      // No forzamos el reflujo de forma síncrona: lo dejamos para el pipeline
+      // del navegador mientras esperamos 2 frames (rAF), así el clic responde
+      // al instante y el primer frame del movimiento ya sale fluido. El sidebar
+      // se togglea junto con el "play" para que ambos arranquen sincronizados.
       main.style.transition = 'none';
-      main.style.transform = '';
-      const firstLeft = main.getBoundingClientRect().left;
-      // Estado final inmediato, sin transición de ancho/margen (un solo reflujo)
-      sidebar.classList.toggle('collapsed');
-      main.classList.toggle('rail-only');
-      const lastLeft = main.getBoundingClientRect().left;
-      const dx = firstLeft - lastLeft;
-      if (dx === 0) { main.style.transition = ''; return; }
-      // Invertir con transform para que se vea en la posición inicial
       main.style.transform = 'translateX(' + dx + 'px)';
       main.style.willChange = 'transform';
+      main.classList.toggle('rail-only');
       document.body.style.overflowX = 'hidden';
-      void main.offsetWidth; // forzar aplicación del transform invertido
-      // Animar el transform de vuelta a 0 (sincronizado con el ancho del sidebar)
-      main.style.transition = 'transform .28s ease';
-      main.style.transform = 'translateX(0)';
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          sidebar.classList.toggle('collapsed');
+          main.style.transition = 'transform .28s ease';
+          main.style.transform = 'translateX(0)';
+        });
+      });
       const _cleanup = function() {
         main.style.transition = '';
         main.style.transform = '';
@@ -982,7 +986,7 @@
         main.removeEventListener('transitionend', _cleanup);
       };
       main.addEventListener('transitionend', _cleanup);
-      setTimeout(_cleanup, 380); // respaldo si transitionend no dispara
+      setTimeout(_cleanup, 460); // respaldo si transitionend no dispara
       return;
     }
     if (sidebar) sidebar.classList.toggle('collapsed');
