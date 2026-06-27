@@ -851,7 +851,82 @@
         <span class="notif-item-badge" style="background:${item.bg}22; color:${item.bg};">${item.count}</span>
       </div>`).join('');
 
+    // ── PRUEBA (temporal): notificación de escritorio tipo WhatsApp ──────────
+    html += `<div style="padding:10px 14px; border-top:1px solid ${borderColor};">
+      <button onclick="probarNotificacionEscritorio()"
+        style="width:100%; background:#004EE0; color:white; border:none; border-radius:10px; padding:10px; font-size:12px; font-weight:700; cursor:pointer;">
+        <i class="fas fa-flask"></i> Probar notificación de escritorio
+      </button>
+    </div>`;
+
     body.innerHTML = html;
+  }
+
+  // ── PRUEBA (temporal): verifica si la Notification API funciona en el iframe
+  // de Apps Script y si llega estando la ventana fuera de foco / minimizada.
+  function probarNotificacionEscritorio() {
+    if (!('Notification' in window)) {
+      Swal.fire({ icon: 'error', title: 'No disponible',
+        html: 'Este navegador o entorno <b>no expone</b> la Notification API.<br>Probablemente el iframe de Apps Script la bloquea. Tocaría usar el método alternativo (título + favicon + sonido).',
+        confirmButtonColor: '#2b1070' });
+      return;
+    }
+
+    var disparar = function() {
+      Swal.fire({
+        icon: 'info', title: 'Permiso concedido ✅',
+        html: 'En <b>3 segundos</b> enviaré una notificación de prueba.<br><br><b>Cambia a otra ventana o minimiza ahora</b> para ver si llega como en WhatsApp.',
+        timer: 3000, timerProgressBar: true, showConfirmButton: false
+      });
+      setTimeout(function() {
+        var fueraFoco = document.hidden || !document.hasFocus();
+        try {
+          var n = new Notification('Sislab — Notificación de prueba', {
+            body: fueraFoco
+              ? '¡Funciona estando fuera de foco! ✅'
+              : 'Se disparó, pero la ventana estaba en foco.',
+            tag: 'sislab-prueba'
+          });
+          n.onclick = function() { window.focus(); n.close(); };
+          // Reportar el resultado cuando el usuario vuelva al dashboard
+          var _reportar = function() {
+            Swal.fire({ icon: 'success', title: '¡La notificación se disparó!',
+              html: 'La <b>Notification API funciona</b> en este entorno.' +
+                    (fueraFoco ? '<br>Además se detectó correctamente que la ventana estaba fuera de foco.' : '<br>(La ventana estaba en foco al dispararse.)'),
+              confirmButtonColor: '#2b1070' });
+            window.removeEventListener('focus', _reportar);
+          };
+          window.addEventListener('focus', _reportar);
+          setTimeout(_reportar, 6000); // respaldo por si no dispara 'focus'
+        } catch (e) {
+          Swal.fire({ icon: 'error', title: 'La API existe pero falló',
+            html: 'Se intentó mostrar la notificación y dio error:<br><code style="font-size:11px;">' + (e && e.message ? e.message : e) + '</code><br><br>Casi seguro la bloquea el iframe de Apps Script. Iríamos por el método alternativo.',
+            confirmButtonColor: '#2b1070' });
+        }
+      }, 3000);
+    };
+
+    var manejarPermiso = function(permiso) {
+      if (permiso === 'granted') { disparar(); return; }
+      Swal.fire({ icon: 'warning', title: 'Permiso: ' + permiso,
+        html: permiso === 'denied'
+          ? 'El permiso está <b>denegado</b>. Revisa los permisos de notificaciones del sitio en el navegador (candado de la barra de direcciones) y vuelve a probar.'
+          : 'No se tomó una decisión (<b>default</b>). Si no apareció el cuadro de permiso del navegador, es señal de que el iframe lo bloquea.',
+        confirmButtonColor: '#2b1070' });
+    };
+
+    try {
+      var p = Notification.requestPermission(manejarPermiso); // navegadores viejos (callback)
+      if (p && typeof p.then === 'function') p.then(manejarPermiso).catch(function(e) {
+        Swal.fire({ icon: 'error', title: 'No se pudo pedir permiso',
+          html: 'Error al solicitar el permiso:<br><code style="font-size:11px;">' + (e && e.message ? e.message : e) + '</code><br><br>Es típico cuando el iframe bloquea la API.',
+          confirmButtonColor: '#2b1070' });
+      });
+    } catch (e) {
+      Swal.fire({ icon: 'error', title: 'No se pudo pedir permiso',
+        html: 'Excepción al solicitar el permiso:<br><code style="font-size:11px;">' + (e && e.message ? e.message : e) + '</code>',
+        confirmButtonColor: '#2b1070' });
+    }
   }
 
   function abrirPaletaColores() {
