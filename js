@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27q — Popup de bienvenida sin auto-cierre, con botón Aceptar
+  // v2026.06.27r — Editar programación desde el calendario (ícono lápiz)
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -6566,6 +6566,13 @@ function calClickDia(fechaStr, esPasado) {
       listaHTML += `
         <div style="display:flex; align-items:center; gap:8px; background:${progChipBg}; border-radius:8px; padding:8px 12px; margin-bottom:6px;">
           <span style="flex:1; font-size:13px; color:${progChipClr}; font-weight:600;">📅 ${p.nombre} <span style="font-weight:400;">· ${p.medico}</span></span>
+          <button onclick="editarProgramacionCal('${progId}', '${fechaStr}')"
+            title="Editar ficha"
+            style="flex-shrink:0; background:transparent; border:none; cursor:pointer; color:#2b1070; font-size:14px; padding:5px 7px; border-radius:6px; line-height:1; transition:background 0.15s;"
+            onmouseover="this.style.background='rgba(43,16,112,0.12)'"
+            onmouseout="this.style.background='transparent'">
+            <i class="fas fa-pen"></i>
+          </button>
           <button onclick="confirmarEliminarProgramacion('${progId}', '${fechaStr}')"
             title="Eliminar programación"
             style="flex-shrink:0; background:transparent; border:none; cursor:pointer; color:#ef4444; font-size:14px; padding:5px 7px; border-radius:6px; line-height:1; transition:background 0.15s;"
@@ -6660,6 +6667,7 @@ function confirmarEliminarProgramacion(id, fechaStr) {
 function abrirModalProgramacion(fechaStr) {
   Swal.close();
   // Reutilizamos el modal existente, solo cambiamos el título y agregamos la fecha programada
+  programacionEditandoId = ""; // modo crear (no edición)
   fechaProgramadaActual = fechaStr;
   const fecha = new Date(fechaStr + 'T00:00:00');
   const fechaFormateada = fecha.toLocaleDateString('es-PE', { year:'numeric', month:'long', day:'numeric' });
@@ -6701,6 +6709,65 @@ function abrirModalProgramacion(fechaStr) {
 }
 
 let fechaProgramadaActual = "";
+let programacionEditandoId = ""; // ID de la programación en edición ("" = crear nueva)
+
+// Abre el modal de programación con los datos de una programación existente para editarla
+function editarProgramacionCal(id, fechaStr) {
+  const prog = pacientesProgramados.find(p => (p.id || p.dni).toString() === id.toString());
+  if (!prog) {
+    Swal.fire({ icon: 'error', title: 'No encontrado', text: 'No se pudo cargar la programación.', confirmButtonColor: '#2b1070' });
+    return;
+  }
+  // Preparamos el modal en modo "programación" (limpia, botones e inputs correctos)
+  abrirModalProgramacion(prog.fechaProgramada || fechaStr);
+
+  // Marcamos que estamos editando
+  programacionEditandoId = id;
+  const fecha = new Date((prog.fechaProgramada || fechaStr) + 'T00:00:00');
+  const fechaFormateada = fecha.toLocaleDateString('es-PE', { year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('modalTitulo').textContent = `Editar Programación · ${fechaFormateada}`;
+
+  // Pre-cargamos los campos
+  document.getElementById('nombre').value = prog.nombre || '';
+  document.getElementById('dni').value = prog.dni || '';
+  document.getElementById('edad').value = prog.edad || '';
+  document.getElementById('telefono').value = prog.telefono || '';
+  document.getElementById('caso').value = prog.caso || '';
+  document.getElementById('ejecutivo').value = prog.ejecutivo || '';
+  document.getElementById('seguro').value = prog.seguro || '';
+  document.getElementById('especialidadFiltro').value = prog.especialidad || '';
+
+  // Poblar el desplegable de médicos y seleccionar el correspondiente
+  const selMedico = document.getElementById('medico');
+  selMedico.innerHTML = '<option value="">-- Seleccionar --</option>';
+  (medicosEspecialidades || []).forEach(function(m) {
+    const o = document.createElement('option');
+    o.value = m.nombre;
+    o.textContent = m.nombre;
+    selMedico.appendChild(o);
+  });
+  selMedico.value = prog.medico || '';
+
+  document.getElementById('vencimiento').value = prog.vencimiento || '';
+  document.getElementById('observaciones').value = prog.observaciones || '';
+  document.getElementById('precioTotal').value = prog.precioTotal || '0.00';
+
+  examenesSeleccionados = prog.listaExamenes ? [...prog.listaExamenes] : [];
+  dibujarTagsExamenes();
+  if (typeof actualizarEspecialidadDestino === 'function') actualizarEspecialidadDestino();
+  if (typeof actualizarSeguroInyectado === 'function') actualizarSeguroInyectado();
+
+  // Cambiar la etiqueta del botón a "Actualizar Programación"
+  const acciones = document.querySelector('.modal-actions');
+  if (acciones) {
+    acciones.innerHTML = `
+      <button type="button" class="btn-secondary" onclick="cerrarModal(); restaurarBotonesModal();">Cancelar</button>
+      <button type="button" class="btn-primary" onclick="guardarProgramacion()">
+        <i class="fas fa-calendar-check"></i> Actualizar Programación
+      </button>
+    `;
+  }
+}
 
 function guardarProgramacion() {
   const nombre = document.getElementById('nombre').value.trim();
@@ -6728,6 +6795,8 @@ function guardarProgramacion() {
     return;
   }
 
+  const esEdicionProg = !!programacionEditandoId;
+
   const datosProg = {
     fechaProgramada: fechaProgramadaActual,
     nombre: document.getElementById('nombre').value,
@@ -6747,21 +6816,23 @@ function guardarProgramacion() {
     medicoLector: "",
     ejecutivoCierre: ""
   };
+  if (esEdicionProg) datosProg.id = programacionEditandoId;
 
   Swal.fire({
     target: document.getElementById('modalClinico'),
-    title: 'Guardando programación...',
+    title: esEdicionProg ? 'Actualizando programación...' : 'Guardando programación...',
     allowOutsideClick: false,
     didOpen: () => Swal.showLoading()
   });
 
-  google.script.run
+  const _runner = google.script.run
     .withSuccessHandler(function(msg) {
+      programacionEditandoId = "";
       cerrarModal();
       iniciarCalendario();
       Swal.fire({
         icon: 'success',
-        title: '¡Programado!',
+        title: esEdicionProg ? '¡Actualizado!' : '¡Programado!',
         text: msg,
         timer: 1500,
         showConfirmButton: false,
@@ -6778,8 +6849,13 @@ function guardarProgramacion() {
         text: err.message || 'No se pudo guardar.',
         confirmButtonColor: '#2b1070'
       });
-    })
-    .guardarPacienteProgramado(datosProg);
+    });
+
+  if (esEdicionProg) {
+    _runner.actualizarPacienteProgramado(datosProg);
+  } else {
+    _runner.guardarPacienteProgramado(datosProg);
+  }
 }
 
 function restaurarBotonesModal() {

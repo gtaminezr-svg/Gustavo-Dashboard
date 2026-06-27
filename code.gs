@@ -441,6 +441,51 @@ function guardarPacienteProgramado(datos) {
   }
 }
 
+// Actualizar una programación existente (identificada por su ID)
+function actualizarPacienteProgramado(datos) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("ProgramacionExamenes");
+    if (!hoja || hoja.getLastRow() < 2) {
+      throw new Error("No hay programaciones registradas.");
+    }
+    const idBuscado = (datos.id || "").toString().trim();
+    if (!idBuscado) throw new Error("Falta el identificador de la programación.");
+
+    const rangoId = hoja.getRange(2, 1, hoja.getLastRow() - 1, 1).getValues();
+    let fila = -1;
+    for (let i = 0; i < rangoId.length; i++) {
+      if (rangoId[i][0].toString().trim() === idBuscado) { fila = i + 2; break; }
+    }
+    if (fila === -1) throw new Error("No se encontró la programación a actualizar.");
+
+    let examenesUnificados = "";
+    if (datos.listaExamenes && Array.isArray(datos.listaExamenes)) {
+      examenesUnificados = datos.listaExamenes.join(", ");
+    }
+
+    // Conserva la columna A (ID) y reescribe el resto de campos
+    hoja.getRange(fila, 2).setValue(datos.fechaProgramada);
+    hoja.getRange(fila, 3).setValue(datos.nombre);
+    hoja.getRange(fila, 4).setValue(datos.dni);
+    hoja.getRange(fila, 5).setValue(datos.edad);
+    hoja.getRange(fila, 6).setValue(datos.telefono);
+    hoja.getRange(fila, 7).setValue(datos.caso);
+    hoja.getRange(fila, 8).setValue(datos.ejecutivo);
+    hoja.getRange(fila, 9).setValue(examenesUnificados);
+    hoja.getRange(fila, 10).setValue(datos.observaciones);
+    hoja.getRange(fila, 11).setValue(datos.seguro);
+    hoja.getRange(fila, 12).setValue(datos.medico);
+    hoja.getRange(fila, 13).setValue(datos.vencimiento);
+    hoja.getRange(fila, 15).setValue(datos.precioTotal);
+    hoja.getRange(fila, 18).setValue(datos.especialidad || "");
+    return "Programación actualizada correctamente";
+  } catch(e) {
+    Logger.log("Error actualizarPacienteProgramado: " + e);
+    throw new Error("No se pudo actualizar la programación");
+  }
+}
+
 // Obtener todos los pacientes programados para el calendario
 function obtenerPacientesProgramados() {
   try {
