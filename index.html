@@ -778,6 +778,12 @@
             <input type="checkbox" id="chkSoloCubre" onchange="filtrarTarifario()" style="width:17px; height:17px; accent-color:#16a34a; cursor:pointer;">
             <i class="fas fa-shield-heart" style="color:#16a34a;"></i> Solo Sí Cubre
           </label>
+          <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
+            <i class="fas fa-user-shield" style="color:#7c3aed;"></i> % Paciente:
+            <input type="number" id="inputPctCotizacion" min="0" max="100" placeholder="0" oninput="recalcularTotalTarifario()"
+              style="width:62px; padding:5px 8px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#7c3aed; background:white; outline:none; text-align:center;">
+            <span style="color:#94a3b8; font-size:12px;">%</span>
+          </div>
           <div style="margin-left:auto; display:flex; align-items:center; gap:14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
             <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total:</span>
             <span id="totalCotizacionValor" style="font-size:17px; font-weight:900; color:#166534;">S/. 0.00</span>
@@ -805,6 +811,12 @@
             <input type="checkbox" id="chkSeguroIgv" checked onchange="recalcularTotalSeguro()" style="width:16px; height:16px; accent-color:#2b1070; cursor:pointer;">
             <i class="fas fa-percent" style="color:#2b1070;"></i> Incluir IGV
           </label>
+          <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
+            <i class="fas fa-user-shield" style="color:#7c3aed;"></i> % Paciente:
+            <input type="number" id="inputPctSeguro" min="0" max="100" placeholder="0" oninput="recalcularTotalSeguro()"
+              style="width:62px; padding:5px 8px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#7c3aed; background:white; outline:none; text-align:center;">
+            <span style="color:#94a3b8; font-size:12px;">%</span>
+          </div>
           <div style="margin-left:auto; display:flex; align-items:center; gap:14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
             <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total:</span>
             <span id="totalSeguroValor" style="font-size:17px; font-weight:900; color:#166534;">S/. 0.00</span>

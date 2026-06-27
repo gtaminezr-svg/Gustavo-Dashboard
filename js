@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27l — Movilidad como lista desplegable (40/80/120) en Cotización y Seguro
+  // v2026.06.27m — Campo % Paciente para copago en Cotización y Precio con Seguro
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -4019,6 +4019,8 @@ function abrirSelectorFechaPanel() {
     _seguroSeleccionados = {};
     var selMov = document.getElementById('selSeguroMovilidad');
     if (selMov) selMov.value = '0';
+    var inpPct = document.getElementById('inputPctSeguro');
+    if (inpPct) inpPct.value = '';
     recalcularTotalSeguro();
     _renderPreciosSeguro();
   }
@@ -4035,6 +4037,9 @@ function abrirSelectorFechaPanel() {
     var subtotal = 0;
     var selMovSeg = document.getElementById('selSeguroMovilidad');
     var movVal = selMovSeg ? (parseFloat(selMovSeg.value) || 0) : 0;
+    var inpPctSeg = document.getElementById('inputPctSeguro');
+    var pct = inpPctSeg ? (parseFloat(inpPctSeg.value) || 0) : 0;
+    pct = Math.min(100, Math.max(0, pct));
     var chkIgv = document.getElementById('chkSeguroIgv');
     var usarIgv = chkIgv ? chkIgv.checked : true;
     var filas = items.map(function(entry) {
@@ -4053,6 +4058,7 @@ function abrirSelectorFechaPanel() {
       '</div>';
     }).join('');
     var total = subtotal + movVal;
+    var copago = pct > 0 ? total * pct / 100 : 0;
     contenido.innerHTML =
       '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
@@ -4071,7 +4077,13 @@ function abrirSelectorFechaPanel() {
       '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:700;color:#166534;"><i class="fas fa-calculator" style="margin-right:4px;"></i>Total</span>' +
         '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + total.toFixed(2) + '</span>' +
-      '</div>';
+      '</div>' +
+      (pct > 0
+        ? '<div style="padding:12px 16px;background:#f5f3ff;border-top:2px solid #ddd6fe;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+            '<span style="font-size:13px;font-weight:700;color:#7c3aed;"><i class="fas fa-user-shield" style="margin-right:4px;"></i>Paga paciente (' + pct + '%)</span>' +
+            '<span style="font-size:16px;font-weight:900;color:#7c3aed;">S/. ' + copago.toFixed(2) + '</span>' +
+          '</div>'
+        : '');
   }
   let _tarifarioSeguros = [];        // nombres de seguros (encabezados de Sheets)
   let _tarifarioTextoBusqueda = '';
@@ -4366,6 +4378,9 @@ function abrirSelectorFechaPanel() {
     var usarIgv = chkIgv ? chkIgv.checked : true;
     var selMov = document.getElementById('selMovilidad');
     var movVal = selMov ? (parseFloat(selMov.value) || 0) : 0;
+    var inpPct = document.getElementById('inputPctCotizacion');
+    var pct = inpPct ? (parseFloat(inpPct.value) || 0) : 0;
+    pct = Math.min(100, Math.max(0, pct));
     var subtotal = 0;
     var filas = items.map(function(entry) {
       var codigo = entry[0], v = entry[1];
@@ -4383,6 +4398,7 @@ function abrirSelectorFechaPanel() {
         '</div>';
     }).join('');
     var total = subtotal + movVal;
+    var copago = pct > 0 ? total * pct / 100 : 0;
     contenido.innerHTML =
       '<div style="padding:14px 16px;border-bottom:2px solid #eef2f7;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:800;color:#2b1070;"><i class="fas fa-list-check"></i> Seleccionados (' + items.length + ')</span>' +
@@ -4398,13 +4414,21 @@ function abrirSelectorFechaPanel() {
       '<div style="padding:14px 16px;background:#f0fdf4;border-top:2px solid #bbf7d0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
         '<span style="font-size:13px;font-weight:700;color:#166534;"><i class="fas fa-calculator" style="margin-right:4px;"></i>Total</span>' +
         '<span style="font-size:16px;font-weight:900;color:#166534;">S/. ' + total.toFixed(2) + '</span>' +
-      '</div>';
+      '</div>' +
+      (pct > 0
+        ? '<div style="padding:12px 16px;background:#f5f3ff;border-top:2px solid #ddd6fe;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">' +
+            '<span style="font-size:13px;font-weight:700;color:#7c3aed;"><i class="fas fa-user-shield" style="margin-right:4px;"></i>Paga paciente (' + pct + '%)</span>' +
+            '<span style="font-size:16px;font-weight:900;color:#7c3aed;">S/. ' + copago.toFixed(2) + '</span>' +
+          '</div>'
+        : '');
   }
 
   function limpiarSeleccionTarifario() {
     _tarifarioSeleccionados = {};
     const selMov = document.getElementById('selMovilidad');
     if (selMov) selMov.value = '0';
+    const inpPct = document.getElementById('inputPctCotizacion');
+    if (inpPct) inpPct.value = '';
     recalcularTotalTarifario();
     _renderTarifario();
   }
