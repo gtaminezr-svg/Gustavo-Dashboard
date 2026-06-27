@@ -4108,7 +4108,7 @@ function abrirSelectorFechaPanel() {
     if (!_tarifarioData.length) {
       _cargarTarifario();
     } else {
-      _renderTarifario();
+      seleccionarTabTarifario(_tarifarioTabActual);
     }
   }
 
@@ -4126,7 +4126,7 @@ function abrirSelectorFechaPanel() {
           _tarifarioSeguros = [];
         }
         _tarifarioFiltrado = _tarifarioData.slice();
-        _renderTarifario();
+        seleccionarTabTarifario(_tarifarioTabActual);
       })
       .withFailureHandler(function() {
         const c = document.getElementById('tablaTarifarioContenedor');
