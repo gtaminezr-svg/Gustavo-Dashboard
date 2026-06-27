@@ -3973,4 +3973,65 @@ body.dark #resumenCotizacionContenido span[style*="color:#166534"] { color: #86e
 body.dark #resumenCotizacionContenido div[style*="border-top:1px"] { border-top-color: rgba(255,255,255,.06) !important; }
 body.dark #resumenCotizacionContenido span[style*="color:#475569"] { color: #94a3b8 !important; }
 
+/* ── Precio con Seguro — barra de controles dark mode ─────────────────────── */
+body.dark #seguroControles {
+  background: #16243f !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+body.dark #seguroControles > span,
+body.dark #seguroControles label,
+body.dark #seguroControles > div { color: #cbd5e1 !important; }
+/* Botones de seguro inactivos */
+body.dark #btnSeguroVip,
+body.dark #btnSeguroLaPositiva {
+  background: #1e2d4a !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+/* Separador vertical */
+body.dark #seguroControles > div[style*="background:#e2e8f0"] {
+  background: rgba(255,255,255,0.12) !important;
+}
+/* Total (fondo verde) */
+body.dark #seguroControles > div[style*="background:#f0fdf4"] {
+  background: rgba(22,101,52,0.22) !important;
+  border-color: rgba(34,197,94,0.35) !important;
+}
+body.dark #seguroControles #totalSeguroValor { color: #86efac !important; }
+
+/* ── Select de movilidad y input % en ambas barras — dark mode ────────────── */
+body.dark #seguroControles select,
+body.dark #tarifarioControles select {
+  background: #1e2d4a !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #a78bfa !important;
+}
+body.dark #seguroControles input[type="number"],
+body.dark #tarifarioControles input[type="number"] {
+  background: #1e2d4a !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #c4b5fd !important;
+}
+
+/* ── Tarifario controles (movilidad select + % paciente) — dark mode ─────── */
+body.dark #tarifarioControles > div { color: #cbd5e1 !important; }
+body.dark #tarifarioControles > div[style*="background:#f0fdf4"] {
+  background: rgba(22,101,52,0.22) !important;
+  border-color: rgba(34,197,94,0.35) !important;
+}
+
+/* ── Panel resumen: bloque copago % paciente — dark mode ──────────────────── */
+body.dark #resumenCotizacionContenido div[style*="background:#f5f3ff"] {
+  background: rgba(109,40,217,0.20) !important;
+  border-top-color: rgba(167,139,250,0.25) !important;
+}
+body.dark #resumenCotizacionContenido span[style*="color:#7c3aed"] { color: #c4b5fd !important; }
+/* Etiqueta seguro activo (fondo #eef2ff) */
+body.dark #resumenCotizacionContenido div[style*="background:#eef2ff"] {
+  background: rgba(67,56,202,0.20) !important;
+  border-top-color: rgba(99,102,241,0.25) !important;
+}
+body.dark #resumenCotizacionContenido span[style*="color:#4338ca"],
+body.dark #resumenCotizacionContenido [style*="color:#4338ca"] { color: #a5b4fc !important; }
+
 </style>
