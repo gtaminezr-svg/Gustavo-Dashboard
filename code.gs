@@ -291,18 +291,87 @@ function obtenerPacientes(){
   }
 }
 
-function eliminarPaciente(idODni) {
+function eliminarPaciente(idODni, usuario, pin, motivo) {
   const ss = SpreadsheetApp.openById(SHEET_ID);
+
+  // ── 1) Validar PIN del usuario que tiene la sesión abierta ────────────────
+  const nombreUsuario = (usuario || '').toString().trim();
+  const pinIngresado  = (pin || '').toString().trim();
+  if (!nombreUsuario || !pinIngresado) {
+    throw new Error('Se requiere PIN de verificación para eliminar.');
+  }
+  const hojaEjec = ss.getSheetByName('Ejecutivos');
+  let pinCorrecto = null;
+  let rolUsuario = '';
+  if (hojaEjec && hojaEjec.getLastRow() >= 2) {
+    const dataEjec = hojaEjec.getRange(2, 1, hojaEjec.getLastRow() - 1, 6).getValues();
+    for (let i = 0; i < dataEjec.length; i++) {
+      if (dataEjec[i][0].toString().trim() === nombreUsuario) {
+        pinCorrecto = dataEjec[i][1] ? dataEjec[i][1].toString().trim() : '';
+        rolUsuario  = dataEjec[i][5] ? dataEjec[i][5].toString().trim() : 'Ejecutivo';
+        break;
+      }
+    }
+  }
+  if (pinCorrecto === null) {
+    throw new Error('Usuario no encontrado para validar el PIN.');
+  }
+  if (pinIngresado !== pinCorrecto) {
+    throw new Error('PIN incorrecto. No se eliminó el registro.');
+  }
+
+  // ── 2) Ubicar el paciente y capturar sus datos antes de borrar ────────────
   const hoja = ss.getSheetByName('Pacientes');
   const datos = hoja.getDataRange().getValues();
 
   for (let i = 1; i < datos.length; i++) {
     if (datos[i][0].toString() === idODni.toString() || datos[i][3].toString() === idODni.toString()) {
+      const dniPac    = datos[i][3] ? datos[i][3].toString().trim() : '';
+      const nombrePac = datos[i][2] ? datos[i][2].toString().trim() : '';
+      const estadoPac = datos[i][13] ? datos[i][13].toString().trim() : '';
+
+      // ── 3) Registrar la eliminación en la bitácora ANTES de borrar ────────
+      _registrarEliminacion({
+        dni: dniPac,
+        nombre: nombrePac,
+        estado: estadoPac,
+        usuario: nombreUsuario,
+        rol: rolUsuario,
+        motivo: (motivo || '').toString().trim()
+      });
+
       hoja.deleteRow(i + 1);
       return true;
     }
   }
   throw new Error('Paciente no encontrado.');
+}
+
+// Escribe una fila en la hoja "RegistroEliminaciones" (la crea si no existe).
+function _registrarEliminacion(info) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let hojaLog = ss.getSheetByName('RegistroEliminaciones');
+    if (!hojaLog) {
+      hojaLog = ss.insertSheet('RegistroEliminaciones');
+      hojaLog.appendRow(['Fecha/Hora', 'DNI', 'Nombre Paciente', 'Estado', 'Eliminado por', 'Rol', 'Motivo']);
+      hojaLog.getRange(1, 1, 1, 7).setFontWeight('bold');
+      hojaLog.setFrozenRows(1);
+    }
+    const fechaHora = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm:ss');
+    hojaLog.appendRow([
+      fechaHora,
+      info.dni || '',
+      info.nombre || '',
+      info.estado || '',
+      info.usuario || '',
+      info.rol || '',
+      info.motivo || ''
+    ]);
+  } catch (e) {
+    Logger.log('Error en _registrarEliminacion: ' + e.toString());
+    // No interrumpimos la eliminación si falla el log, pero queda en Logger.
+  }
 }
 
 function generarReporteMedico(nombreMedico, mes, anio) {

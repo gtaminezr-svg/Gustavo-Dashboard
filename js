@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27m — Campo % Paciente para copago en Cotización y Precio con Seguro
+  // v2026.06.27n — PIN de verificación y bitácora al eliminar pacientes
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -3010,6 +3010,8 @@ function refrescarEjecutivosYAbrir() {
     const modal = document.getElementById('modalClinico');
     const destinoAlerta = modal.classList.contains('active') ? modal : 'body';
 
+    const usuarioActual = (window.__nombreUsuario || sessionStorage.getItem('sislab_usuario') || '').toString().trim();
+
     Swal.fire({
       target: destinoAlerta,
       icon: 'warning',
@@ -3022,37 +3024,75 @@ function refrescarEjecutivosYAbrir() {
       cancelButtonColor: '#64748b'
     }).then((result) => {
       if (!result.isConfirmed) return;
-      
+
+      // Paso 2: pedir motivo + PIN del usuario con sesión abierta
       Swal.fire({
         target: destinoAlerta,
-        title: 'Eliminando...',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
-      });
+        title: '<div style="font-size:20px; font-weight:800; color:#b91c1c;"><i class="fas fa-shield-alt" style="margin-right:8px;"></i>Confirmar eliminación</div>',
+        html: `
+          <div style="text-align:left; margin-top:8px;">
+            <label style="display:block; font-size:13px; font-weight:700; color:#475569; margin-bottom:5px;">Motivo de la eliminación</label>
+            <textarea id="swalMotivoElim" rows="3" placeholder="Explique por qué se elimina este registro..."
+              style="width:100%; box-sizing:border-box; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:13px; color:#1e293b; outline:none; resize:vertical; font-family:inherit;"></textarea>
+            <label style="display:block; font-size:13px; font-weight:700; color:#475569; margin:14px 0 5px;">PIN de seguridad${usuarioActual ? ' de <b style="color:#1e293b;">' + usuarioActual + '</b>' : ''}</label>
+            <div style="position:relative;">
+              <input id="swalPinElim" type="password" inputmode="numeric" placeholder="••••••"
+                style="width:100%; box-sizing:border-box; height:44px; padding:0 40px 0 14px; border:1.5px solid #e2e8f0; border-radius:10px; font-size:18px; font-weight:800; letter-spacing:3px; color:#1e293b; outline:none;">
+              <button type="button" onclick="_togglePinVis('swalPinElim',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:15px;padding:4px;line-height:1;" title="Mostrar / ocultar PIN"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+        `,
+        width: 400,
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#b91c1c',
+        cancelButtonColor: '#64748b',
+        reverseButtons: true,
+        focusConfirm: false,
+        preConfirm: () => {
+          const motivo = (document.getElementById('swalMotivoElim').value || '').trim();
+          const pin    = (document.getElementById('swalPinElim').value || '').trim();
+          if (!motivo) { Swal.showValidationMessage('Debe ingresar el motivo de la eliminación.'); return false; }
+          if (!pin)    { Swal.showValidationMessage('Debe ingresar su PIN de seguridad.'); return false; }
+          return { motivo: motivo, pin: pin };
+        }
+      }).then((res) => {
+        if (!res.isConfirmed) return;
+        const motivo = res.value.motivo;
+        const pin    = res.value.pin;
 
-      google.script.run
-        .withSuccessHandler(() => {
-          Swal.fire({
-            target: destinoAlerta,
-            icon: 'success',
-            title: 'Paciente eliminado',
-            timer: 1500,
-            showConfirmButton: false
-          }).then(() => {
-            cerrarModal(); // Cierra el modal en caso de que estuviera abierto
-            cargarDatosDelServidor();
-          });
-        })
-        .withFailureHandler(err => {
-          Swal.fire({
-            target: destinoAlerta,
-            icon: 'error',
-            title: 'Error',
-            text: err.message || 'No se pudo eliminar.',
-            confirmButtonColor: '#2b1070'
-          });
-        })
-       .eliminarPaciente(document.getElementById('dniOriginal').value);
+        Swal.fire({
+          target: destinoAlerta,
+          title: 'Eliminando...',
+          allowOutsideClick: false,
+          didOpen: () => { Swal.showLoading(); }
+        });
+
+        google.script.run
+          .withSuccessHandler(() => {
+            Swal.fire({
+              target: destinoAlerta,
+              icon: 'success',
+              title: 'Paciente eliminado',
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              cerrarModal(); // Cierra el modal en caso de que estuviera abierto
+              cargarDatosDelServidor();
+            });
+          })
+          .withFailureHandler(err => {
+            Swal.fire({
+              target: destinoAlerta,
+              icon: 'error',
+              title: 'Error',
+              text: err.message || 'No se pudo eliminar.',
+              confirmButtonColor: '#2b1070'
+            });
+          })
+         .eliminarPaciente(document.getElementById('dniOriginal').value, usuarioActual, pin, motivo);
+      });
     });
   }
 
