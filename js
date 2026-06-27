@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27n — PIN de verificación y bitácora al eliminar pacientes
+  // v2026.06.27o — La sesión ya no se cierra al recargar con Ctrl+R
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -493,14 +493,10 @@
     Swal.fire({ icon: 'success', title: 'Color restablecido', text: 'Se restauró el color por defecto.', timer: 1600, showConfirmButton: false, timerProgressBar: true });
   }
 
-  // Limpiar sesión al cerrar/salir para evitar datos pegados en la próxima apertura
-  window.addEventListener('beforeunload', function() {
-    sessionStorage.removeItem('sislab_auth');
-    sessionStorage.removeItem('sislab_usuario');
-    sessionStorage.removeItem('sislab_rol');
-    sessionStorage.removeItem('sislab_color');
-  });
-
+  // Nota: NO se limpia sessionStorage en 'beforeunload' porque ese evento
+  // también se dispara al recargar (Ctrl+R), lo que cerraría la sesión sin
+  // querer. sessionStorage ya se borra solo al cerrar la pestaña/navegador,
+  // y "Cerrar Sesión" limpia estos datos explícitamente.
   window.onload = function() {
     if (sessionStorage.getItem('sislab_auth') === '1') {
       window.__nombreUsuario = sessionStorage.getItem('sislab_usuario') || '';
