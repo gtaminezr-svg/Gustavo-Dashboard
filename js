@@ -6585,33 +6585,36 @@ function calClickDia(fechaStr, esPasado) {
       <div style="text-align:left; max-height:300px; overflow-y:auto;">
         ${listaHTML}
       </div>
-      ${!esPasado ? `
-      <button onclick="abrirModalProgramacion('${fechaStr}')" style="
-        margin-top:16px;
-        width:100%;
-        background:#2b1070;
-        color:white;
-        border:none;
-        border-radius:10px;
-        padding:12px;
-        font-size:14px;
-        font-weight:600;
-        cursor:pointer;
-      ">+ Programar Examen para este día</button>
-      ` : `
-      <div style="
-        margin-top:16px;
-        width:100%;
-        background:${esDark ? 'rgba(255,255,255,0.06)' : '#f1f5f9'};
-        color:${esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8'};
-        border-radius:10px;
-        padding:12px;
-        font-size:13px;
-        font-weight:600;
-        text-align:center;
-        box-sizing:border-box;
-      ">No se puede programar en fechas pasadas</div>
-      `}
+      ${(function() {
+        const _rolCal = (window.__rolUsuario || sessionStorage.getItem('sislab_rol') || '').toLowerCase().trim();
+        const _puedeEnPasado = _rolCal === 'admin' || _rolCal === 'supervisor';
+        if (!esPasado || _puedeEnPasado) {
+          return `<button onclick="abrirModalProgramacion('${fechaStr}')" style="
+            margin-top:16px;
+            width:100%;
+            background:#2b1070;
+            color:white;
+            border:none;
+            border-radius:10px;
+            padding:12px;
+            font-size:14px;
+            font-weight:600;
+            cursor:pointer;
+          ">+ Programar Examen para este día</button>`;
+        }
+        return `<div style="
+          margin-top:16px;
+          width:100%;
+          background:${esDark ? 'rgba(255,255,255,0.06)' : '#f1f5f9'};
+          color:${esDark ? 'rgba(255,255,255,0.35)' : '#94a3b8'};
+          border-radius:10px;
+          padding:12px;
+          font-size:13px;
+          font-weight:600;
+          text-align:center;
+          box-sizing:border-box;
+        ">No se puede programar en fechas pasadas</div>`;
+      })()}
     `,
     showConfirmButton: false,
     showCloseButton: true,
