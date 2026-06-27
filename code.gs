@@ -930,8 +930,8 @@ function validarCredenciales(usuario, pin) {
     const hoja = ss.getSheetByName("Ejecutivos");
     if (!hoja || hoja.getLastRow() < 2) return { ok: false };
 
-    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol, G=ColorTema
-    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 7).getValues();
+    // Columnas: A=Nombre, B=PIN, C=Tipo, D=Fecha, E=Usuarios, F=Rol, G=ColorTema, H=ModoOscuro
+    const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 8).getValues();
 
     for (var i = 0; i < data.length; i++) {
       var usuarioHoja = (data[i][4] || "").toString().trim();
@@ -939,10 +939,11 @@ function validarCredenciales(usuario, pin) {
       var nombreHoja  = (data[i][0] || "").toString().trim();
       var rolHoja     = (data[i][5] || "Admin").toString().trim();
       var colorTema   = (data[i][6] || "").toString().trim();
+      var modoOscuro  = (data[i][7] || "").toString().trim();
 
       if (usuarioHoja.toLowerCase() === usuario.toLowerCase().trim()
           && pinHoja === pin.toString().trim()) {
-        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja, colorTema: colorTema };
+        return { ok: true, nombre: nombreHoja, usuario: usuarioHoja, rol: rolHoja, colorTema: colorTema, modoOscuro: modoOscuro };
       }
     }
     return { ok: false };
@@ -952,23 +953,47 @@ function validarCredenciales(usuario, pin) {
   }
 }
 
+// Busca la fila de un usuario en "Ejecutivos" por Nombre (col A) o Usuario (col E).
+// Devuelve el número de fila real (>=2) o -1 si no existe.
+function _buscarFilaUsuarioEjec(hoja, usuario) {
+  const u = (usuario || "").toString().trim().toLowerCase();
+  if (!u || !hoja || hoja.getLastRow() < 2) return -1;
+  const data = hoja.getRange(2, 1, hoja.getLastRow() - 1, 5).getValues(); // A..E
+  for (var i = 0; i < data.length; i++) {
+    var nombre = (data[i][0] || "").toString().trim().toLowerCase(); // A
+    var login  = (data[i][4] || "").toString().trim().toLowerCase(); // E
+    if (nombre === u || login === u) return i + 2;
+  }
+  return -1;
+}
+
 ////////////// Guardar color de tema del usuario //////////////
 function guardarColorTema(usuario, color) {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const hoja = ss.getSheetByName("Ejecutivos");
-    if (!hoja || hoja.getLastRow() < 2) return { ok: false };
-
-    const data = hoja.getRange(2, 5, hoja.getLastRow() - 1, 1).getValues();
-    for (var i = 0; i < data.length; i++) {
-      if ((data[i][0] || "").toString().trim().toLowerCase() === usuario.toString().trim().toLowerCase()) {
-        hoja.getRange(i + 2, 7).setValue(color); // Col G
-        return { ok: true };
-      }
-    }
-    return { ok: false, error: 'Usuario no encontrado.' };
+    const fila = _buscarFilaUsuarioEjec(hoja, usuario);
+    if (fila === -1) return { ok: false, error: 'Usuario no encontrado.' };
+    hoja.getRange(fila, 7).setValue(color); // Col G
+    return { ok: true };
   } catch (e) {
     Logger.log("Error en guardarColorTema: " + e);
+    return { ok: false, error: e.message };
+  }
+}
+
+////////////// Guardar preferencia de modo oscuro del usuario //////////////
+function guardarModoOscuro(usuario, valor) {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const hoja = ss.getSheetByName("Ejecutivos");
+    const fila = _buscarFilaUsuarioEjec(hoja, usuario);
+    if (fila === -1) return { ok: false, error: 'Usuario no encontrado.' };
+    var v = (valor || "").toString().trim().toLowerCase() === 'dark' ? 'dark' : 'light';
+    hoja.getRange(fila, 8).setValue(v); // Col H
+    return { ok: true };
+  } catch (e) {
+    Logger.log("Error en guardarModoOscuro: " + e);
     return { ok: false, error: e.message };
   }
 }

@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27r — Editar programación desde el calendario (ícono lápiz)
+  // v2026.06.27s — Persistir modo oscuro y paleta por usuario en el servidor
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -571,6 +571,17 @@
               sessionStorage.removeItem('sislab_color');
               _limpiarVisualColorTema();
             }
+            // Modo oscuro guardado por usuario en el servidor (robusto frente a
+            // que localStorage no persista en el iframe de Apps Script). En
+            // desktop respetamos la preferencia; en móvil sigue al sistema.
+            var _esMobLogin = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+            if (!_esMobLogin && (result.modoOscuro === 'dark' || result.modoOscuro === 'light')) {
+              var _userDark = result.modoOscuro === 'dark';
+              document.body.classList.toggle('dark', _userDark);
+              var _tgLogin = document.querySelector('.theme-toggle');
+              if (_tgLogin) _tgLogin.classList.toggle('dark', _userDark);
+              try { localStorage.setItem('sislab_tema', _userDark ? 'dark' : 'light'); } catch(e) {}
+            }
             const screen = document.getElementById('loginScreen');
             screen.style.opacity = '0';
             setTimeout(function() {
@@ -913,7 +924,16 @@
       const t = document.querySelector('.theme-toggle');
       if (t) t.classList.toggle('dark');
       document.body.classList.toggle('dark');
-      localStorage.setItem('sislab_tema', document.body.classList.contains('dark') ? 'dark' : 'light');
+      var _esOscuro = document.body.classList.contains('dark');
+      localStorage.setItem('sislab_tema', _esOscuro ? 'dark' : 'light');
+      // Persistir por usuario en el servidor (sobrevive entre sesiones)
+      var _uTema = sessionStorage.getItem('sislab_usuario') || window.__nombreUsuario || '';
+      if (_uTema) {
+        google.script.run
+          .withSuccessHandler(function() {})
+          .withFailureHandler(function() {})
+          .guardarModoOscuro(_uTema, _esOscuro ? 'dark' : 'light');
+      }
 
       // Limpiar estilos inline del botón Descargar Base (los onmouseover/out dejan
       // el color "pegado" del modo anterior; al limpiarlos vuelven a mandar el CSS)
