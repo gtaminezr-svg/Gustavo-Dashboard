@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27o — La sesión ya no se cierra al recargar con Ctrl+R
+  // v2026.06.27p — El popup de bienvenida espera los datos antes de mostrar alertas
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -118,6 +118,7 @@
   let _notifDismissed = false;
   let _notifItems = [];
   let _bienvenidaMostrada = false;
+  let _notifDataCargada = false; // true cuando ya llegaron los pacientes del servidor
   let _snapshot = { pacientes: -1, medicos: -1, ejecutivos: -1, programados: -1 };
   let examenesSeleccionados = []; 
   let dniFichaActual = "";
@@ -263,6 +264,7 @@
   function _ejecutarLogout() {
     clearTimeout(_inactividadTimer);
     _bienvenidaMostrada = false;
+    _notifDataCargada = false;
     _mobSeccionActual = 'casos';
     var _perfilCont = document.getElementById('mobPerfilContenido');
     if (_perfilCont) _perfilCont.innerHTML = '';
@@ -1654,6 +1656,7 @@
       .withSuccessHandler(function(pacientes) {
         const _prevPac = _snapshot.pacientes;
         bdPacientes = pacientes;
+        _notifDataCargada = true; // ya tenemos datos reales para el resumen/popup
         console.log(bdPacientes);
         const _storedPac = parseInt(localStorage.getItem('sislab_snap_pac') || '-1', 10);
         if (_prevPac >= 0 && pacientes.length > _prevPac) {
@@ -1766,6 +1769,13 @@
     if (!cont) return;
     const esDark = document.body.classList.contains('dark');
     const hex = sessionStorage.getItem('sislab_color') || '#004EE0';
+    const txtSubLoad = esDark ? 'rgba(255,255,255,0.45)' : '#94a3b8';
+    // Mientras no lleguen los datos reales del servidor, mantener el spinner
+    // en vez de mostrar "sin alertas" prematuramente.
+    if (!_notifDataCargada) {
+      cont.innerHTML = '<div style="text-align:center;padding:16px 0;color:' + txtSubLoad + ';font-size:13px;"><i class="fas fa-circle-notch fa-spin"></i>&nbsp; Cargando datos...</div>';
+      return;
+    }
     const { vencidos, porVencer, pendientes, agendados } = _notifData;
     const nuevosCasos = _notifItems.filter(i => i.icono === 'fas fa-user-plus');
 
@@ -1869,6 +1879,10 @@
     _notifData = { vencidos, porVencer, pendientes, agendados };
     _notifDismissed = false;
 
+    // Refrescar el popup de bienvenida si aún está abierto (antes de cualquier
+    // return temprano, para que nunca se quede con datos viejos).
+    _actualizarBvnNotificaciones();
+
     const btn = document.getElementById('btnCampana');
     const dot = document.getElementById('bellDot');
     if (!btn || !dot) return;
@@ -1888,8 +1902,6 @@
     // Si el panel está abierto, re-renderizarlo con los datos actualizados
     const _panel = document.getElementById('panelNotificaciones');
     if (_panel && _panel.dataset.abierto === 'true') renderPanelNotificaciones();
-    // Actualizar popup de bienvenida si aún está visible
-    _actualizarBvnNotificaciones();
   }
 
   // Barra de progreso del sidebar: % de casos cerrados (Completados, sea lectura realizada o desestimados)
