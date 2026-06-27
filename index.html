@@ -759,8 +759,17 @@
           </button>
         </div>
 
-        <!-- Barra de controles de cotización -->
-        <div id="tarifarioControles" style="display:none; align-items:center; gap:22px; flex-shrink:0; margin-bottom:16px; padding:12px 20px; background:#f8fafc; border:1.5px solid #eef2f7; border-radius:14px;">
+        <!-- Barra de controles unificada (Cotización + Precio con Seguro) -->
+        <div id="tarifarioControles" style="display:none; flex-wrap:wrap; align-items:center; gap:10px; flex-shrink:0; margin-bottom:16px; padding:12px 20px; background:#f8fafc; border:1.5px solid #eef2f7; border-radius:14px;">
+          <!-- Selector de seguro: visible solo en tab "Precio con Seguro" -->
+          <div id="seguroSelector" style="display:none; align-items:center; gap:8px; flex-shrink:0;">
+            <span style="font-size:13px; font-weight:700; color:#475569; white-space:nowrap;"><i class="fas fa-shield-alt" style="color:#2b1070;"></i> Precio de:</span>
+            <button id="btnSeguroMapfre" onclick="_cambiarSeguroActivo('mapfre')" style="padding:7px 16px; border-radius:40px; border:none; font-size:12px; font-weight:700; cursor:pointer; background:#2563eb; color:white; transition:all .2s;">MAPFRE <span style="font-size:10px; opacity:.8;">(Sin IGV)</span></button>
+            <button id="btnSeguroVip" onclick="_cambiarSeguroActivo('vip')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">VIP <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
+            <button id="btnSeguroLaPositiva" onclick="_cambiarSeguroActivo('laPositiva')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">LA POSITIVA <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
+            <div style="width:1px; height:28px; background:#e2e8f0; margin:0 4px; flex-shrink:0;"></div>
+          </div>
+          <!-- Movilidad compartida -->
           <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#475569;">
             <i class="fas fa-motorcycle" style="color:#2b1070;"></i> Movilidad:
             <select id="selMovilidad" onchange="recalcularTotalTarifario()" style="padding:5px 10px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#2b1070; background:white; cursor:pointer; outline:none;">
@@ -770,57 +779,28 @@
               <option value="120">S/. 120.00</option>
             </select>
           </div>
+          <!-- IGV compartido -->
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:600; color:#475569;">
             <input type="checkbox" id="chkIgv" checked onchange="recalcularTotalTarifario()" style="width:17px; height:17px; accent-color:#2b1070; cursor:pointer;">
             <i class="fas fa-percent" style="color:#2b1070;"></i> Incluir IGV
           </label>
-          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:600; color:#475569;">
+          <!-- Solo Sí Cubre: solo visible en tab cotización -->
+          <label id="soloCubreLabel" style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:600; color:#475569;">
             <input type="checkbox" id="chkSoloCubre" onchange="filtrarTarifario()" style="width:17px; height:17px; accent-color:#16a34a; cursor:pointer;">
             <i class="fas fa-shield-heart" style="color:#16a34a;"></i> Solo Sí Cubre
           </label>
+          <!-- % Paciente compartido -->
           <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
             <i class="fas fa-user-shield" style="color:#7c3aed;"></i> % Paciente:
             <input type="number" id="inputPctCotizacion" min="0" max="100" placeholder="0" oninput="recalcularTotalTarifario()"
               style="width:62px; padding:5px 8px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#7c3aed; background:white; outline:none; text-align:center;">
             <span style="color:#94a3b8; font-size:12px;">%</span>
           </div>
+          <!-- Total combinado + Limpiar todo -->
           <div style="margin-left:auto; display:flex; align-items:center; gap:14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
             <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total:</span>
             <span id="totalCotizacionValor" style="font-size:17px; font-weight:900; color:#166534;">S/. 0.00</span>
-            <button onclick="limpiarSeleccionTarifario()" style="background:none; border:none; cursor:pointer; color:#dc2626; font-size:13px; font-weight:700; padding:2px 6px; border-radius:6px;">✕ Limpiar</button>
-          </div>
-        </div>
-
-        <!-- Barra de controles de precios con seguro -->
-        <div id="seguroControles" style="display:none; align-items:center; gap:10px; flex-shrink:0; margin-bottom:16px; padding:12px 20px; background:#f8fafc; border:1.5px solid #eef2f7; border-radius:14px;">
-          <span style="font-size:13px; font-weight:700; color:#475569; white-space:nowrap; margin-right:4px;"><i class="fas fa-shield-alt" style="color:#2b1070;"></i> Precio de:</span>
-          <button id="btnSeguroMapfre" onclick="_cambiarSeguroActivo('mapfre')" style="padding:7px 16px; border-radius:40px; border:none; font-size:12px; font-weight:700; cursor:pointer; background:#2563eb; color:white; transition:all .2s;">MAPFRE <span style="font-size:10px; opacity:.8;">(Sin IGV)</span></button>
-          <button id="btnSeguroVip" onclick="_cambiarSeguroActivo('vip')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">VIP <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
-          <button id="btnSeguroLaPositiva" onclick="_cambiarSeguroActivo('laPositiva')" style="padding:7px 16px; border-radius:40px; border:2px solid #e2e8f0; font-size:12px; font-weight:700; cursor:pointer; background:white; color:#475569; transition:all .2s;">LA POSITIVA <span style="font-size:10px; opacity:.7;">(Con IGV)</span></button>
-          <div style="width:1px; height:28px; background:#e2e8f0; margin:0 4px;"></div>
-          <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
-            <i class="fas fa-motorcycle" style="color:#2b1070;"></i> Movilidad:
-            <select id="selSeguroMovilidad" onchange="recalcularTotalSeguro()" style="padding:5px 10px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#2b1070; background:white; cursor:pointer; outline:none;">
-              <option value="0">Sin movilidad</option>
-              <option value="40">S/. 40.00</option>
-              <option value="80">S/. 80.00</option>
-              <option value="120">S/. 120.00</option>
-            </select>
-          </div>
-          <label style="display:flex; align-items:center; gap:7px; cursor:pointer; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
-            <input type="checkbox" id="chkSeguroIgv" checked onchange="recalcularTotalSeguro()" style="width:16px; height:16px; accent-color:#2b1070; cursor:pointer;">
-            <i class="fas fa-percent" style="color:#2b1070;"></i> Incluir IGV
-          </label>
-          <div style="display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:#475569; white-space:nowrap;">
-            <i class="fas fa-user-shield" style="color:#7c3aed;"></i> % Paciente:
-            <input type="number" id="inputPctSeguro" min="0" max="100" placeholder="0" oninput="recalcularTotalSeguro()"
-              style="width:62px; padding:5px 8px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-weight:700; color:#7c3aed; background:white; outline:none; text-align:center;">
-            <span style="color:#94a3b8; font-size:12px;">%</span>
-          </div>
-          <div style="margin-left:auto; display:flex; align-items:center; gap:14px; background:#f0fdf4; border:1.5px solid #bbf7d0; border-radius:12px; padding:8px 18px;">
-            <span style="font-size:13px; font-weight:600; color:#166534;"><i class="fas fa-calculator"></i> Total:</span>
-            <span id="totalSeguroValor" style="font-size:17px; font-weight:900; color:#166534;">S/. 0.00</span>
-            <button onclick="limpiarSeleccionSeguro()" style="background:none; border:none; cursor:pointer; color:#dc2626; font-size:13px; font-weight:700; padding:2px 6px; border-radius:6px;">✕ Limpiar</button>
+            <button onclick="limpiarTodo()" style="background:none; border:none; cursor:pointer; color:#dc2626; font-size:13px; font-weight:700; padding:2px 6px; border-radius:6px;">✕ Limpiar</button>
           </div>
         </div>
 

@@ -3973,14 +3973,14 @@ body.dark #resumenCotizacionContenido span[style*="color:#166534"] { color: #86e
 body.dark #resumenCotizacionContenido div[style*="border-top:1px"] { border-top-color: rgba(255,255,255,.06) !important; }
 body.dark #resumenCotizacionContenido span[style*="color:#475569"] { color: #94a3b8 !important; }
 
-/* ── Precio con Seguro — barra de controles dark mode ─────────────────────── */
-body.dark #seguroControles {
+/* ── Barra de controles unificada — dark mode ─────────────────────────────── */
+body.dark #tarifarioControles {
   background: #16243f !important;
   border-color: rgba(255,255,255,0.10) !important;
 }
-body.dark #seguroControles > span,
-body.dark #seguroControles label,
-body.dark #seguroControles > div { color: #cbd5e1 !important; }
+body.dark #tarifarioControles > div,
+body.dark #tarifarioControles label,
+body.dark #tarifarioControles span { color: #cbd5e1 !important; }
 /* Botones de seguro inactivos */
 body.dark #btnSeguroVip,
 body.dark #btnSeguroLaPositiva {
@@ -3988,36 +3988,26 @@ body.dark #btnSeguroLaPositiva {
   color: #94a3b8 !important;
   border-color: rgba(255,255,255,0.12) !important;
 }
-/* Separador vertical */
-body.dark #seguroControles > div[style*="background:#e2e8f0"] {
+/* Separador vertical dentro del selector de seguro */
+body.dark #seguroSelector > div[style*="background:#e2e8f0"] {
   background: rgba(255,255,255,0.12) !important;
 }
-/* Total (fondo verde) */
-body.dark #seguroControles > div[style*="background:#f0fdf4"] {
+/* Total combinado (fondo verde) */
+body.dark #tarifarioControles > div[style*="background:#f0fdf4"] {
   background: rgba(22,101,52,0.22) !important;
   border-color: rgba(34,197,94,0.35) !important;
 }
-body.dark #seguroControles #totalSeguroValor { color: #86efac !important; }
-
-/* ── Select de movilidad y input % en ambas barras — dark mode ────────────── */
-body.dark #seguroControles select,
+body.dark #totalCotizacionValor { color: #86efac !important; }
+/* Select y number inputs */
 body.dark #tarifarioControles select {
   background: #1e2d4a !important;
   border-color: rgba(255,255,255,0.15) !important;
   color: #a78bfa !important;
 }
-body.dark #seguroControles input[type="number"],
 body.dark #tarifarioControles input[type="number"] {
   background: #1e2d4a !important;
   border-color: rgba(255,255,255,0.15) !important;
   color: #c4b5fd !important;
-}
-
-/* ── Tarifario controles (movilidad select + % paciente) — dark mode ─────── */
-body.dark #tarifarioControles > div { color: #cbd5e1 !important; }
-body.dark #tarifarioControles > div[style*="background:#f0fdf4"] {
-  background: rgba(22,101,52,0.22) !important;
-  border-color: rgba(34,197,94,0.35) !important;
 }
 
 /* ── Panel resumen: bloque copago % paciente — dark mode ──────────────────── */
