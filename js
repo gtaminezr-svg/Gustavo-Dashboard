@@ -1,5 +1,5 @@
 <script>
-  // v2026.06.27p — El popup de bienvenida espera los datos antes de mostrar alertas
+  // v2026.06.27q — Popup de bienvenida sin auto-cierre, con botón Aceptar
   (function() {
     function _esMobile() {
       return window.innerWidth <= 768 ||
@@ -1852,21 +1852,15 @@
         '<button onclick="document.getElementById(\'_popupBienvenida\').remove();togglePanelNotificaciones(event);" style="margin-top:16px;width:100%;background:' + hex + ';color:white;border:none;border-radius:50px;padding:11px 0;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.85\'" onmouseout="this.style.opacity=\'1\'">' +
           '<i class="fas fa-bell"></i>&nbsp; Ver todas las notificaciones' +
         '</button>' +
-        /* timer bar */
-        '<div style="margin-top:14px;width:100%;height:3px;background:' + timerBg + ';border-radius:3px;overflow:hidden;">' +
-          '<div id="_bvnTimerBar" style="height:100%;width:100%;background:' + hex + ';border-radius:3px;transition:width 9s linear;"></div>' +
-        '</div>' +
+        /* accept button — cierra el popup manualmente (sin auto-cierre) */
+        '<button onclick="document.getElementById(\'_popupBienvenida\').remove();" style="margin-top:10px;width:100%;background:' + (esDark ? 'rgba(255,255,255,0.08)' : '#f1f5f9') + ';color:' + txtMain + ';border:none;border-radius:50px;padding:11px 0;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity=\'0.75\'" onmouseout="this.style.opacity=\'1\'">' +
+          'Aceptar' +
+        '</button>' +
       '</div>';
 
     document.body.appendChild(overlay);
 
-    // Start drain animation
-    setTimeout(function() { var b = document.getElementById('_bvnTimerBar'); if (b) b.style.width = '0%'; }, 60);
-
-    // Auto-close after 9.5s
-    setTimeout(function() { var el = document.getElementById('_popupBienvenida'); if (el) { el.style.opacity='0'; el.style.transition='opacity 0.3s'; setTimeout(function(){ if(el.parentNode) el.remove(); }, 300); } }, 9500);
-
-    // Close on overlay click
+    // Cierra al hacer clic fuera de la tarjeta
     overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
 
     // If data already loaded, fill immediately
