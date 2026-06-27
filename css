@@ -4024,4 +4024,21 @@ body.dark #resumenCotizacionContenido div[style*="background:#eef2ff"] {
 body.dark #resumenCotizacionContenido span[style*="color:#4338ca"],
 body.dark #resumenCotizacionContenido [style*="color:#4338ca"] { color: #a5b4fc !important; }
 
+/* ── Rendimiento: evitar lag al colapsar el sidebar en Plazo/Cotización ─────
+   La animación de ancho de .main-content re-maqueta esta sección en cada
+   frame, y la tabla del tarifario (con muchas filas) hace que ese reflujo
+   sea costoso. Con estas reglas el navegador aísla el subárbol de la tabla
+   y solo maqueta las filas visibles durante la animación, eliminando el
+   tirón sin cambiar el aspecto visual.                                      */
+#tarifarioTablaCard {
+  contain: layout paint;
+  transform: translateZ(0);   /* promueve su propia capa de composición */
+}
+/* Solo se maquetan/pintan las filas dentro del viewport; las que están fuera
+   se omiten (con un tamaño estimado para no alterar el scroll). */
+#tablaTarifarioContenedor tbody tr {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 46px;
+}
+
 </style>
