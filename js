@@ -948,21 +948,41 @@
     const sidebar = document.getElementById('sidebar');
     const main = document.querySelector('.main-content');
     // En la sección Plazo/Cotización la tabla es grande: animar el ancho de
-    // .main-content reflowea la tabla en cada frame y se ve con lag. Ahí el
-    // colapso se hace instantáneo (un solo reflujo). En el resto de secciones
-    // se conserva la animación CSS fluida.
+    // .main-content reflowea la tabla en cada frame y se ve con lag. Ahí usamos
+    // la técnica FLIP: aplicamos el estado final de golpe (un solo reflujo) y
+    // animamos con transform (corre en el compositor, sin reflujos por frame),
+    // logrando una animación fluida. En el resto de secciones se conserva la
+    // animación CSS de ancho normal.
     const heavy = document.getElementById('vistaPlazoCotizacion');
     const heavyVisible = heavy && getComputedStyle(heavy).display !== 'none';
     if (heavyVisible && sidebar && main) {
-      const sT = sidebar.style.transition;
-      const mT = main.style.transition;
-      sidebar.style.transition = 'none';
+      // Limpiar cualquier transform en vuelo (clics rápidos) antes de medir
       main.style.transition = 'none';
+      main.style.transform = '';
+      const firstLeft = main.getBoundingClientRect().left;
+      // Estado final inmediato, sin transición de ancho/margen (un solo reflujo)
       sidebar.classList.toggle('collapsed');
       main.classList.toggle('rail-only');
-      void main.offsetWidth; // aplica el cambio sin animación
-      sidebar.style.transition = sT;
-      main.style.transition = mT;
+      const lastLeft = main.getBoundingClientRect().left;
+      const dx = firstLeft - lastLeft;
+      if (dx === 0) { main.style.transition = ''; return; }
+      // Invertir con transform para que se vea en la posición inicial
+      main.style.transform = 'translateX(' + dx + 'px)';
+      main.style.willChange = 'transform';
+      document.body.style.overflowX = 'hidden';
+      void main.offsetWidth; // forzar aplicación del transform invertido
+      // Animar el transform de vuelta a 0 (sincronizado con el ancho del sidebar)
+      main.style.transition = 'transform .28s ease';
+      main.style.transform = 'translateX(0)';
+      const _cleanup = function() {
+        main.style.transition = '';
+        main.style.transform = '';
+        main.style.willChange = '';
+        document.body.style.overflowX = '';
+        main.removeEventListener('transitionend', _cleanup);
+      };
+      main.addEventListener('transitionend', _cleanup);
+      setTimeout(_cleanup, 380); // respaldo si transitionend no dispara
       return;
     }
     if (sidebar) sidebar.classList.toggle('collapsed');
